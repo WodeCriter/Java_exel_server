@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Accordion?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox spacing="10" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.171" fx:controller="exel.userinterface.resources.app.popups.about.AboutController">
+    <padding>
+        <Insets bottom="20" left="20" right="20" top="20" />
+    </padding>
+    <children>
+        <!-- Application Title -->
+        <Label text="Exel Spreadsheet Application">
+            <font>
+                <Font size="24" />
+            </font>
+        </Label>
+
+        <!-- Scrollable Content Area -->
+        <ScrollPane fitToWidth="true" prefHeight="400">
+            <content>
+                <VBox spacing="10">
+                    <children>
+
+                        <!-- "How to Use" Section Title -->
+                        <Label style="-fx-font-weight: bold; -fx-font-size: 16;" text="How to Use:" />
+
+                        <!-- Accordion with Expandable Items -->
+                        <Accordion>
+                            <panes>
+                                <!-- Each TitledPane Represents an Expandable Item -->
+                                <TitledPane text="Creating a New Spreadsheet">
+                                    <content>
+                                        <Label text="Go to File &gt; New to create a new spreadsheet." wrapText="true" />
+                                    </content>
+                                </TitledPane>
+                                <TitledPane text="Loading a Spreadsheet">
+                                    <content>
+                                        <Label text="Go to File &gt; Load to open an existing spreadsheet." wrapText="true" />
+                                    </content>
+                                </TitledPane>
+                                <TitledPane text="Saving a Spreadsheet">
+                                    <content>
+                                        <Label text="Go to File &gt; Save\Save As.." wrapText="true" />
+                                    </content>
+                                </TitledPane>
+                                <TitledPane text="Editing Cells contents">
+                                    <content>
+                                        <Label text="Click on a cell to edit its value in the input field. &gt; Press update cell" wrapText="true" />
+                                    </content>
+                                </TitledPane>
+                        <TitledPane text="Editing Cell alignment">
+                           <content>
+                              <Label text="Go to Cell&gt;Formatting&gt;(Choose an option)" wrapText="true" />
+                           </content>
+                        </TitledPane>
+                        <TitledPane layoutX="10.0" layoutY="110.0" text="Editing Cell background">
+                           <content>
+                              <Label text="Go to Cell&gt;Select backgorund color" wrapText="true" />
+                           </content>
+                        </TitledPane>
+                        <TitledPane layoutX="10.0" layoutY="135.0" text="Editing Text color">
+                           <content>
+                              <Label text="Go to Cell&gt;Edit text color" wrapText="true" />
+                           </content>
+                        </TitledPane>
+                        <TitledPane text="Reset Cell style">
+                           <content>
+                              <Label text="Go to Cell&gt;Clear cell style" wrapText="true" />
+                           </content>
+                        </TitledPane>
+                                <TitledPane text="Add Ranges">
+                                    <content>
+                                        <Label text="Press Add&gt; Use the Ranges menu to create ranges." wrapText="true" />
+                                    </content>
+                                </TitledPane>
+                        <TitledPane text="Delete Ranges">
+                           <content>
+                              <Label text="Right click on the range &gt; Delete Range" wrapText="true" />
+                           </content>
+                        </TitledPane>
+                        <TitledPane layoutX="10.0" layoutY="310.0" text="Cell height and width">
+                           <content>
+                              <Label text="Go to Sheet &gt; Edit dimensions &gt; (choose a relevant option)" wrapText="true" />
+                           </content>
+                        </TitledPane>
+                                <TitledPane text="Sorting and Filtering">
+                                    <content>
+                                        <Label text="Go to Sheet&gt; Sort\Filter" wrapText="true" />
+                                    </content>
+                                </TitledPane>
+                                <TitledPane text="Version History">
+                                    <content>
+                                        <Label text="View and revert to previous versions using the Versions menu." wrapText="true" />
+                                    </content>
+                                </TitledPane>
+                                <TitledPane text="Theme">
+                                    <content>
+                                        <Label text="Go to Bonuses&gt; App Skins &gt; (Choose a relevant option)" wrapText="true" />
+                                    </content>
+                                </TitledPane>
+                        <TitledPane layoutX="10.0" layoutY="335.0" text="Toggle animations">
+                           <content>
+                              <Label text="Go to Bonuses&gt; Animations" wrapText="true" />
+                           </content>
+                        </TitledPane>
+                            </panes>
+                        </Accordion>
+
+                    </children>
+                </VBox>
+            </content>
+        </ScrollPane>
+
+        <!-- Close Button -->
+        <Button maxWidth="100" onAction="#handleCloseButton" text="Close" />
+    </children>
+</VBox>

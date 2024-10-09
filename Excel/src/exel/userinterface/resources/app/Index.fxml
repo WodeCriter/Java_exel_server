@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckMenuItem?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuButton?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.RadioMenuItem?>
+<?import javafx.scene.control.SeparatorMenuItem?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="exel.userinterface.resources.app.IndexController">
+  <children>
+    <MenuBar maxWidth="-Infinity" prefHeight="25.0" prefWidth="640.0" VBox.vgrow="NEVER">
+      <menus>
+        <Menu mnemonicParsing="false" text="File">
+          <items>
+            <MenuItem fx:id="buttonNewFile" mnemonicParsing="false" onAction="#newFileEventListener" text="Create New Sheet" />
+            <MenuItem fx:id="buttonLoadFile" mnemonicParsing="false" onAction="#loadFileListener" text="Open Sheet" />
+            <MenuItem fx:id="buttonSaveFile" mnemonicParsing="false" onAction="#saveFileListener" text="Save" />
+            <MenuItem fx:id="buttonSaveAsFile" mnemonicParsing="false" onAction="#saveAsFileListener" text="Save As…" />
+          </items>
+        </Menu>
+        <Menu mnemonicParsing="false" text="Cell">
+          <items>
+                  <Menu mnemonicParsing="false" text="Formatting">
+                    <items>
+                      <MenuItem fx:id="formatLTR" mnemonicParsing="false" onAction="#formatLTRListener" text="Left to right" />
+                  <MenuItem fx:id="formatCenter" mnemonicParsing="false" onAction="#formatCenterListener" text="Center" />
+                  <MenuItem fx:id="formatRTL" mnemonicParsing="false" onAction="#formatRTLListener" text="Right to left " />
+                    </items>
+                  </Menu>
+            <MenuItem fx:id="formatBGColor" mnemonicParsing="false" onAction="#formatBGColorListener" text="Select background color" />
+                  <MenuItem fx:id="formatTextColor" mnemonicParsing="false" onAction="#formatTextColorListener" text="Change text color" />
+                  <SeparatorMenuItem mnemonicParsing="false" />
+                  <MenuItem fx:id="formatClearStyle" mnemonicParsing="false" onAction="#formatClearStyleListener" text="Clear cell style" />
+          </items>
+        </Menu>
+            <Menu mnemonicParsing="false" text="Sheet">
+              <items>
+                  <Menu mnemonicParsing="false" text="Edit dimensions">
+                    <items>
+                  <MenuItem fx:id="menuItemEditWidth" mnemonicParsing="false" onAction="#setWidthListener" text="Set Width" />
+                      <MenuItem fx:id="menuItemEditHeight" mnemonicParsing="false" onAction="#setHeightListener" text="Set Height" />
+                    </items>
+                  </Menu>
+                <MenuItem mnemonicParsing="false" onAction="#sortRangeListener" text="Sort" />
+                  <MenuItem mnemonicParsing="false" onAction="#filterListener" text="Filter" />
+              </items>
+            </Menu>
+            <Menu mnemonicParsing="false" text="Bonuses">
+               <items>
+                  <CheckMenuItem fx:id="cMenItemAnimations" mnemonicParsing="false" onAction="#animationsListener" text="Animations" />
+                  <Menu mnemonicParsing="false" text="App Skins">
+                     <items>
+                        <RadioMenuItem fx:id="radMenItemLightMode" mnemonicParsing="false" onAction="#lightModeListener" selected="true" text="Light mode" />
+                        <RadioMenuItem fx:id="radMenItemDarkMode" mnemonicParsing="false" onAction="#darkModeListener" text="Dark mode" />
+                     </items>
+                  </Menu>
+               </items>
+            </Menu>
+        <Menu mnemonicParsing="false" text="Help">
+          <items>
+            <MenuItem fx:id="menuItemUserGuide" mnemonicParsing="false" onAction="#userGuideListener" text="User guide" />
+          </items>
+        </Menu>
+      </menus>
+    </MenuBar>
+    <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="ALWAYS">
+      <children>
+            <BorderPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="375.0" prefWidth="640.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+               <top>
+                  <VBox prefHeight="60.0" prefWidth="630.0" BorderPane.alignment="CENTER">
+                     <children>
+                        <Label fx:id="labelFileLoaded" maxWidth="1.7976931348623157E308" text="Current file loaded : No file open">
+                           <VBox.margin>
+                              <Insets />
+                           </VBox.margin>
+                        </Label>
+                        <HBox prefHeight="100.0" prefWidth="200.0">
+                           <children>
+                              <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="100.0" prefWidth="523.0">
+                                 <children>
+                                    <GridPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefWidth="511.0">
+                                      <columnConstraints>
+                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                          <ColumnConstraints hgrow="SOMETIMES" maxWidth="303.0" minWidth="10.0" prefWidth="271.0" />
+                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="165.0" minWidth="10.0" prefWidth="69.0" />
+                                      </columnConstraints>
+                                      <rowConstraints>
+                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                      </rowConstraints>
+                                       <children>
+                                          <Label fx:id="labelOriginalVal" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Original cell value" GridPane.columnIndex="1" />
+                                          <Label fx:id="labelCoordinate" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Cell id (coordinate)" wrapText="true" />
+                                          <Label fx:id="labelCellVersion" text="Last Cell version" GridPane.columnIndex="2" />
+                                       </children>
+                                    </GridPane>
+                                    <HBox prefHeight="100.0" prefWidth="200.0">
+                                       <children>
+                                          <TextField fx:id="textFiledOriginalVal" prefHeight="25.0" prefWidth="424.0" promptText="Enter Original Value for Cell" />
+                                          <Button fx:id="buttonUpdateCell" mnemonicParsing="false" onAction="#updateCellButtonListener" text="Update cell" />
+                                       </children>
+                                       <padding>
+                                          <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
+                                       </padding>
+                                    </HBox>
+                                 </children>
+                              </VBox>
+                              <MenuButton fx:id="menuButtonSelectVersion" mnemonicParsing="false" prefHeight="38.0" prefWidth="110.0" text="Version Selector" />
+                           </children>
+                        </HBox>
+                     </children>
+                  </VBox>
+               </top>
+               <padding>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </padding>
+               <left>
+                  <VBox prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
+                     <children>
+                        <GridPane>
+                           <columnConstraints>
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                           </rowConstraints>
+                           <children>
+                              <Label contentDisplay="CENTER" maxWidth="1.7976931348623157E308" text="Ranges" textAlignment="CENTER" />
+                              <Button mnemonicParsing="false" onAction="#addNewRangeButtonListener" prefHeight="12.0" prefWidth="45.0" text="Add" GridPane.columnIndex="1" />
+                           </children>
+                        </GridPane>
+                        <ListView fx:id="rangesList" onMouseClicked="#rangeSelectedListener" prefHeight="269.0" prefWidth="90.0" VBox.vgrow="ALWAYS" />
+                     </children>
+                     <BorderPane.margin>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </BorderPane.margin>
+                     <padding>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </padding>
+                  </VBox>
+               </left>
+               <center>
+                   <AnchorPane fx:id="sheetContainer" prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER" />
+               </center>
+            </BorderPane>
+      </children>
+    </AnchorPane>
+  </children>
+</VBox>

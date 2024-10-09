@@ -1,0 +1,257 @@
+/* dark-theme.css */
+
+/* Root background */
+.root {
+    -fx-background-color: #2b2b2b;
+}
+
+/* Menu bar */
+.menu-bar {
+    -fx-background-color: linear-gradient(to bottom, #4b4f51, #2b2b2b);
+    -fx-border-color: #1e1e1e;
+    -fx-border-width: 0 0 1px 0; /* Bottom border */
+}
+
+/* Menu */
+.menu {
+    -fx-text-fill: #a9b7c6;
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+    -fx-border-insets: 0;
+    -fx-border-color: transparent;
+    -fx-border-width: 0;
+}
+
+
+
+.menu {
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+    -fx-border-color: transparent;
+    -fx-border-width: 0;
+}
+
+/* Context Menu */
+.context-menu {
+    -fx-background-color: #3c3f41;
+    -fx-text-fill: #a9b7c6;
+    -fx-border-color: #1e1e1e;
+    -fx-border-width: 1px;
+    -fx-padding: 0;
+}
+
+/* Menu Item */
+.context-menu .menu-item {
+    -fx-background-color: transparent;
+    -fx-text-fill: #a9b7c6;
+    -fx-padding: 5px 10px;
+}
+
+/* Menu Item hover */
+.context-menu .menu-item:focused, .context-menu .menu-item:hover {
+    -fx-background-color: #555555;
+    -fx-text-fill: #ffffff;
+}
+
+/* Selected Menu Item */
+.context-menu .menu-item:selected {
+    -fx-background-color: #555555;
+    -fx-text-fill: #ffffff;
+}
+
+/* Separator */
+.separator {
+    -fx-background-color: #555555;
+}
+
+/* Buttons */
+.button {
+    -fx-background-color: #555555;
+    -fx-text-fill: #a9b7c6;
+    -fx-border-color: #777777;
+    -fx-background-radius: 5px; /* Rounded corners */
+    -fx-border-radius: 5px;
+}
+
+/* MenuButton (Version Manager Button) */
+.menu-button {
+    -fx-text-fill: #a9b7c6;
+    -fx-background-radius: 5px; /* Rounded corners */
+    -fx-border-radius: 5px;
+}
+
+/* Text fields */
+.text-field {
+    -fx-background-color: #3c3f41;
+    -fx-text-fill: #a9b7c6;
+    -fx-prompt-text-fill: #7f8c8d;
+    -fx-background-radius: 5px; /* Rounded corners */
+}
+
+/* Labels */
+.label {
+    -fx-text-fill: #a9b7c6;
+}
+
+/* ListView */
+.list-view {
+    -fx-background-color: #3c3f41;
+    -fx-border-color: #555555;
+    -fx-border-radius: 5px; /* Rounded corners */
+}
+
+/* ListCell */
+.list-cell {
+    -fx-text-fill: #a9b7c6;
+    -fx-background-color: transparent;
+}
+
+.list-cell:filled:selected, .list-cell:filled:hover {
+    -fx-background-color: #555555;
+    -fx-text-fill: #ffffff;
+}
+
+/* Cell labels */
+.cell-label {
+    -fx-border-color: #555555;
+    -fx-border-width: 1px;
+    -fx-border-style: solid;
+    -fx-background-color: #3c3f41;
+    -fx-text-fill: #a9b7c6;
+}
+
+/* Header labels */
+.header-label {
+    -fx-text-fill: #a9b7c6;
+}
+
+/* Selected cell */
+.cell-selected {
+    -fx-border-color: #ffd700;
+    -fx-effect: dropshadow(three-pass-box, rgba(255, 215, 0, 0.8), 15, 0, 0, 0);
+    -fx-background-color: #4e5254;
+}
+
+.text-area {
+    -fx-border-color: #555555;
+    -fx-border-width: 1px;
+    -fx-border-style: solid;
+    -fx-background-color: #3c3f41;
+    -fx-text-fill: #a9b7c6;
+}
+
+.text-area .content {
+    -fx-background-color: #3c3f41;
+}
+
+/* Sheet Container */
+#sheetContainer {
+    -fx-background-color: #2b2b2b;
+}
+
+#menuButtonSelectVersion{
+    -fx-background-color: #555555;
+    -fx-border-color: #777777;
+}
+
+/* ScrollPane */
+.scroll-pane {
+    -fx-background-color: transparent;
+}
+
+/* ScrollPane viewport */
+.scroll-pane .viewport {
+    -fx-background-color: #2b2b2b;
+}
+
+/* GridPane */
+.grid-pane {
+    -fx-background-color: #2b2b2b;
+}
+
+
+/* Accordion */
+.accordion {
+    -fx-background-color: #3c3f41;
+    -fx-border-color: #555555;
+}
+
+/* TitledPane */
+.titled-pane {
+    -fx-background-color: #3c3f41;
+    -fx-border-color: #555555;
+    -fx-text-fill: #a9b7c6;
+}
+
+/* TitledPane Title */
+.titled-pane > .title {
+    -fx-background-color: linear-gradient(to bottom, #4b4f51, #2b2b2b);
+    -fx-text-fill: #a9b7c6;
+}
+
+/* TitledPane Content */
+.titled-pane > .content {
+    -fx-background-color: #3c3f41;
+    -fx-text-fill: #a9b7c6;
+}
+
+/* ScrollBar Thumb */
+.scroll-bar .thumb {
+    -fx-background-color: #555555;
+}
+
+/* ScrollBar Track */
+.scroll-bar .track {
+    -fx-background-color: #3c3f41;
+    -fx-background-radius: 5px;
+}
+
+/* ScrollBar Increment and Decrement Buttons */
+.scroll-bar .increment-button, .scroll-bar .decrement-button {
+    -fx-background-color: #3c3f41;
+    -fx-background-radius: 10px;
+    -fx-padding: 0;
+}
+
+/* ScrollBar Arrow Buttons */
+.scroll-bar .increment-button .arrow, .scroll-bar .decrement-button .arrow {
+    -fx-background-color: transparent;
+    -fx-background-image: none; /* Remove default image */
+    -fx-shape: "M0 4 L4 0 L8 4 Z"; /* Triangle shape */
+    -fx-background-insets: 0;
+    -fx-padding: 0;
+    -fx-fill: #a9b7c6; /* Arrow color */
+    -fx-scale-x: 1.5;
+    -fx-scale-y: 1.5;
+}
+
+/* Specific shapes for vertical and horizontal scrollbars */
+.scroll-bar:vertical .increment-button .arrow {
+    -fx-shape: "M0 4 L4 0 L8 4 Z"; /* Up arrow */
+}
+
+.scroll-bar:vertical .decrement-button .arrow {
+    -fx-shape: "M0 0 L4 4 L8 0 Z"; /* Down arrow */
+}
+
+.scroll-bar:horizontal .increment-button .arrow {
+    -fx-shape: "M4 0 L0 4 L4 8 Z"; /* Right arrow */
+}
+
+.scroll-bar:horizontal .decrement-button .arrow {
+    -fx-shape: "M0 4 L4 0 L0 0 Z"; /* Left arrow */
+}
+
+/* ScrollBar Hover Effects */
+.scroll-bar .increment-button:hover, .scroll-bar .decrement-button:hover {
+    -fx-background-color: #555555;
+}
+
+.scroll-bar .thumb:hover {
+    -fx-background-color: #666666;
+}
+
+/* Ensure ScrollPane content VBox has dark background */
+.scroll-content {
+    -fx-background-color: #2b2b2b;
+}
