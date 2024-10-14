@@ -12,6 +12,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
 import okhttp3.*;
 import org.jetbrains.annotations.NotNull;
+import exel.userinterface.util.Constants;
 
 import java.io.IOException;
 
@@ -23,7 +24,7 @@ public class LoginController {
     @FXML
     public Label errorMessageLabel;
 
-    private ChatAppMainController chatAppMainController;
+    //private ChatAppMainController chatAppMainController;
 
     private final StringProperty errorMessageProperty = new SimpleStringProperty();
 
@@ -70,12 +71,13 @@ public class LoginController {
                     Platform.runLater(() ->
                             errorMessageProperty.set("Something went wrong: " + responseBody)
                     );
-                } else {
-                    Platform.runLater(() -> {
-                        chatAppMainController.updateUserName(userName);
-                        chatAppMainController.switchToChatRoom();
-                    });
                 }
+//                else {
+//                    Platform.runLater(() -> {
+//                        chatAppMainController.updateUserName(userName);
+//                        chatAppMainController.switchToChatRoom();
+//                    });
+//                }
             }
         });
     }
@@ -91,10 +93,10 @@ public class LoginController {
     }
 
     private void updateHttpStatusLine(String data) {
-        chatAppMainController.updateHttpLine(data);
+        //chatAppMainController.updateHttpLine(data);
     }
 
-    public void setChatAppMainController(ChatAppMainController chatAppMainController) {
-        this.chatAppMainController = chatAppMainController;
-    }
+//    public void setChatAppMainController(ChatAppMainController chatAppMainController) {
+//        this.chatAppMainController = chatAppMainController;
+//    }
 }

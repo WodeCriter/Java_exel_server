@@ -1,5 +1,8 @@
 package exel.userinterface.util;
 
+
+import com.google.gson.Gson;
+
 public class Constants {
 
     // global constants

@@ -5,12 +5,16 @@ public class UserManager
     private List<String> userNames = new LinkedList<>();
 
     public void addUser(String userName){
-        if (isUserExist(userName))
+        if (isUserExists(userName))
             throw new RuntimeException("User already exists");
         userNames.add(userName);
     }
 
-    public boolean isUserExist(String userName){
+    public boolean removeUser(String userName){
+        return userNames.remove(userName);
+    }
+
+    public boolean isUserExists(String userName) {
         return userNames.contains(userName);
     }
 }

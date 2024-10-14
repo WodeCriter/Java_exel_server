@@ -13,5 +13,6 @@
     <orderEntry type="library" exported="" name="lib" level="project" />
     <orderEntry type="library" exported="" name="mod" level="project" />
     <orderEntry type="library" exported="" name="ok Http" level="project" />
+    <orderEntry type="library" exported="" name="gson" level="project" />
   </component>
 </module>
