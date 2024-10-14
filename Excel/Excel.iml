@@ -7,8 +7,11 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" exported="" name="angus-activation" level="project" />
-    <orderEntry type="library" exported="" name="javafx-swt" level="project" />
-    <orderEntry type="library" exported="" name="apache-tomcat-10.1" level="project" />
+    <orderEntry type="library" name="angus-activation" level="project" />
+    <orderEntry type="library" name="javafx-swt" level="project" />
+    <orderEntry type="library" name="apache-tomcat-10.1" level="project" />
+    <orderEntry type="library" exported="" name="lib" level="project" />
+    <orderEntry type="library" exported="" name="mod" level="project" />
+    <orderEntry type="library" exported="" name="ok Http" level="project" />
   </component>
 </module>
