@@ -49,6 +49,7 @@ public class UIManager {
         eventBus.subscribe(SheetResizeWidthEvent.class, this::handleSheetResizeWidthEvent);
         eventBus.subscribe(SheetResizeHeightEvent.class, this::handleSheetResizeHeightEvent);
         eventBus.subscribe(FilterRequestedEvent.class, this::handleFilterRequested);
+        eventBus.subscribe(LogInSuccessfulEvent.class, this::handleLogInSuccessfulEvent);
     }
 
     private void handleCreateNewSheet(CreateNewSheetEvent event) {
