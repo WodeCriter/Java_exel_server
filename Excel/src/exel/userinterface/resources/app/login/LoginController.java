@@ -75,6 +75,15 @@ public class LoginController {
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                if (response.code() == 302)
+                {
+                    Platform.runLater(() -> {
+                        //chatAppMainController.updateUserName(userName);
+                        //chatAppMainController.switchToChatRoom();
+                        displayAcceptMessage(response);
+                        eventBus.publish(new LogInSuccessfulEvent(response.header("Location")));
+                    });
+                }
                 if (response.code() != 200)
                 {
                     String responseBody = response.body().string();
