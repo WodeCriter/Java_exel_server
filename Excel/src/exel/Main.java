@@ -5,7 +5,6 @@ import exel.engine.imp.EngineImp;
 import exel.eventsys.EventBus;
 import exel.userinterface.UIManager;
 import javafx.application.Application;
-import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 public class Main extends Application {
@@ -17,8 +16,8 @@ public class Main extends Application {
             Engine engine = new EngineImp();
 
 
-            UIManager ui = new UIManager(engine, eventBus);
-            ui.showUI(primaryStage);
+            UIManager ui = new UIManager(engine, eventBus, primaryStage);
+            ui.showLogin(primaryStage);
 
         } catch (Exception e) {
             e.printStackTrace();

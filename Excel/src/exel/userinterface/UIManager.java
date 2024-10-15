@@ -1,13 +1,14 @@
 package exel.userinterface;
 
 import exel.engine.api.Engine;
-import exel.engine.imp.EngineImp;
 import exel.engine.spreadsheet.api.ReadOnlySheet;
 import exel.engine.spreadsheet.cell.api.ReadOnlyCell;
 import exel.engine.spreadsheet.range.ReadOnlyRange;
 import exel.eventsys.EventBus;
 import exel.eventsys.events.*;
 import exel.userinterface.resources.app.IndexController;
+import exel.userinterface.resources.app.home.HomeController;
+import exel.userinterface.resources.app.login.LoginController;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -22,10 +23,14 @@ public class UIManager {
     private EventBus eventBus;
     private ReadOnlySheet readOnlySheet;
     private IndexController indexController;
+    private HomeController homeController;
+    private Stage primaryStage;
 
-    public UIManager(Engine engine, EventBus eventBus) {
+
+    public UIManager(Engine engine, EventBus eventBus,Stage primaryStage ) {
         this.engine = engine;
         this.eventBus = eventBus;
+        this.primaryStage = primaryStage;
         subscribeToEvents();
     }
 
@@ -158,8 +163,12 @@ public class UIManager {
         eventBus.publish(new SheetDisplayRefactorEvent(updatedSheet));
     }
 
+    private void handleLogInSuccessfulEvent(LogInSuccessfulEvent event){
+        showHomePage(this.primaryStage);
+    }
 
-    public void showUI(Stage primaryStage) {
+
+    public void showLogin(Stage primaryStage) {
         try {
             // Assuming the FXML file is named "MainScreen.fxml" and is located in the "app" directory under resources
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/exel/userinterface/resources/app/login/login.fxml"));
@@ -168,9 +177,40 @@ public class UIManager {
 
             Object controller = loader.getController();
 
-            if (controller instanceof IndexController) {
-                ((IndexController) controller).setEventBus(eventBus);
-                this.indexController = (IndexController) controller;
+            if (controller instanceof LoginController) {
+                ((LoginController) controller).setEventBus(eventBus);
+                LoginController loginController = (LoginController) controller;
+            }
+            // Setting the title of the stage (optional)
+            primaryStage.setTitle("Exel");
+            Image icon = new Image(getClass().getResourceAsStream("/exel/userinterface/resources/images/Logo.png"));
+            primaryStage.getIcons().add(icon);
+
+            // Creating a scene object with the loaded layout
+            Scene scene = new Scene(root);
+
+            // Adding the scene to the stage
+            primaryStage.setScene(scene);
+
+            // Displaying the contents of the stage
+            primaryStage.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void showHomePage(Stage primaryStage) {
+        try {
+            // Assuming the FXML file is named "MainScreen.fxml" and is located in the "app" directory under resources
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/exel/userinterface/resources/app/home/home.fxml"));
+
+            Parent root = loader.load();
+
+            Object controller = loader.getController();
+
+            if (controller instanceof HomeController) {
+                ((HomeController) controller).setEventBus(eventBus);
+                HomeController HomeController = (HomeController) controller;
             }
             // Setting the title of the stage (optional)
             primaryStage.setTitle("Exel");
