@@ -85,6 +85,8 @@ public class LoginServlet extends HttpServlet {
                 }
             }
         }
+        else
+            response.setHeader("X-Possible-Error-Message", "Already logged in.");
     }
 
 // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
