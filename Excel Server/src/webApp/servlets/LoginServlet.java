@@ -2,7 +2,7 @@ package webApp.servlets;
 
 import com.sun.net.httpserver.Headers;
 import jakarta.servlet.annotation.WebServlet;
-import webApp.utils.Constants;
+import static webApp.utils.Constants.*;
 import webApp.utils.SessionUtils;
 import webApp.utils.ServletUtils;
 import webApp.userManager.*;
@@ -12,9 +12,9 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-import static webApp.utils.Constants.USERNAME;
+//import static webApp.utils.Constants.USERNAME;
 
-@WebServlet("/login")
+@WebServlet(LOGIN_URL)
 public class LoginServlet extends HttpServlet {
     // urls that starts with forward slash '/' are considered absolute
     // urls that doesn't start with forward slash '/' are considered relative to the place where this servlet request comes from
@@ -80,7 +80,7 @@ public class LoginServlet extends HttpServlet {
 
                         //redirect the request to the chat room - in order to actually change the URL
                         System.out.println("On login, request URI is: " + request.getRequestURI());
-                        //response.sendRedirect(CHAT_ROOM_URL);
+                        response.sendRedirect(HOME_URL);
                     }
                 }
             }
