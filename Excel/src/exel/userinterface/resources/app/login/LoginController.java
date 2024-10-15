@@ -76,7 +76,6 @@ public class LoginController {
                     Platform.runLater(() -> {
                         //chatAppMainController.updateUserName(userName);
                         //chatAppMainController.switchToChatRoom();
-                        String a = response.header("X-Possible-Error-Message");
                         displayAcceptMessage(response);
                     });
                 }
