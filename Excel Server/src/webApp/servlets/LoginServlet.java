@@ -58,7 +58,7 @@ public class LoginServlet extends HttpServlet {
                 {
                     if (userManager.isUserExists(usernameFromParameter))
                     {
-                        String errorMessage = "Username " + usernameFromParameter + " already exists. Please enter a different username.";
+                        String errorMessage = "Username \"" + usernameFromParameter + "\" already exists. Please enter a different username.";
                         // username already exists, forward the request back to index.jsp
                         // with a parameter that indicates that an error should be displayed
                         // the request dispatcher obtained from the servlet context is one that MUST get an absolute path (starting with'/')
