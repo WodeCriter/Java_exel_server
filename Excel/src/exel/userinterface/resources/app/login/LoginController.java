@@ -94,7 +94,7 @@ public class LoginController {
     }
 
     private void updateHttpStatusLine(String data) {
-        //chatAppMainController.updateHttpLine(data);
+        //chatAppMainController.updateHttpLine(data);///////
     }
 
     private void displayAcceptMessage(@NotNull Response response) {
