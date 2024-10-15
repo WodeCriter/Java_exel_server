@@ -40,7 +40,8 @@ public class LoginController {
     private void loginButtonClicked(ActionEvent event) {
 
         String userName = userNameTextField.getText();
-        if (userName.isEmpty()) {
+        if (userName.isEmpty())
+        {
             errorMessageProperty.set("User name is empty. You can't login with empty user name");
             return;
         }
@@ -66,18 +67,19 @@ public class LoginController {
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                if (response.code() != 200) {
+                if (response.code() != 200)
+                {
                     String responseBody = response.body().string();
-                    Platform.runLater(() ->
-                            errorMessageProperty.set("Something went wrong: " + responseBody)
-                    );
+                    Platform.runLater(() -> errorMessageProperty.set("Something went wrong: " + responseBody));
                 }
-//                else {
-//                    Platform.runLater(() -> {
-//                        chatAppMainController.updateUserName(userName);
-//                        chatAppMainController.switchToChatRoom();
-//                    });
-//                }
+                else {
+                    Platform.runLater(() -> {
+                        //chatAppMainController.updateUserName(userName);
+                        //chatAppMainController.switchToChatRoom();
+                        String a = response.header("X-Possible-Error-Message");
+                        displayAcceptMessage(response);
+                    });
+                }
             }
         });
     }
@@ -94,6 +96,14 @@ public class LoginController {
 
     private void updateHttpStatusLine(String data) {
         //chatAppMainController.updateHttpLine(data);
+    }
+
+    private void displayAcceptMessage(@NotNull Response response) {
+        String message = response.header("X-Possible-Error-Message");
+
+        if (message == null || message.isEmpty())
+            message = "User Added";
+        errorMessageProperty.set(message);
     }
 
 //    public void setChatAppMainController(ChatAppMainController chatAppMainController) {
