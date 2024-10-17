@@ -122,37 +122,4 @@ public class LoginController {
             message = "User Added";
         errorMessageProperty.set(message);
     }
-
-//    private void requestHomePage(String homeURL){
-//        HttpClientUtil.runAsync(homeURL, new Callback() {
-//
-//            @Override
-//            public void onFailure(@NotNull Call call, @NotNull IOException e) {
-//                Platform.runLater(() ->
-//                        errorMessageProperty.set("Something went wrong: " + e.getMessage())
-//                );
-//            }
-//
-//            @Override
-//            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-//                if (response.code() != 200)
-//                {
-//                    String responseBody = response.body().string();
-//                    Platform.runLater(() -> errorMessageProperty.set("Something went wrong: " + responseBody));
-//                }
-//                else {
-//                    Platform.runLater(() -> {
-//                        //chatAppMainController.updateUserName(userName);
-//                        //chatAppMainController.switchToChatRoom();
-//                        displayAcceptMessage(response);
-//                        response.header("Location")
-//                    });
-//                }
-//            }
-//        });
-//    }
-
-//    public void setChatAppMainController(ChatAppMainController chatAppMainController) {
-//        this.chatAppMainController = chatAppMainController;
-//    }
 }

@@ -166,6 +166,7 @@ public class UIManager {
 
     private void handleLogInSuccessfulEvent(LogInSuccessfulEvent event){
         showHomePage(this.primaryStage);
+        homeController.updateUsersList(event.getHomeURL());
     }
 
 
@@ -209,9 +210,10 @@ public class UIManager {
 
             Object controller = loader.getController();
 
-            if (controller instanceof HomeController) {
+            if (controller instanceof HomeController)
+            {
                 ((HomeController) controller).setEventBus(eventBus);
-                HomeController HomeController = (HomeController) controller;
+                homeController = (HomeController) controller;
             }
             // Setting the title of the stage (optional)
             primaryStage.setTitle("Exel");
