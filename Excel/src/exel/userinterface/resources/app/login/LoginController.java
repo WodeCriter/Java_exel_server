@@ -77,25 +77,12 @@ public class LoginController {
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 if (response.code() == 302)
                 {
-                    Platform.runLater(() -> {
-                        //chatAppMainController.updateUserName(userName);
-                        //chatAppMainController.switchToChatRoom();
-                        displayAcceptMessage(response);
-                        eventBus.publish(new LogInSuccessfulEvent(response.header("Location")));
-                    });
+                    Platform.runLater(() -> eventBus.publish(new LogInSuccessfulEvent(response.header("Location"))));
                 }
-                if (response.code() != 200)
+                else
                 {
                     String responseBody = response.body().string();
                     Platform.runLater(() -> errorMessageProperty.set("Something went wrong: " + responseBody));
-                }
-                else {
-                    Platform.runLater(() -> {
-                        //chatAppMainController.updateUserName(userName);
-                        //chatAppMainController.switchToChatRoom();
-                        displayAcceptMessage(response);
-                        eventBus.publish(new LogInSuccessfulEvent(response.header("Location")));
-                    });
                 }
             }
         });
@@ -112,14 +99,6 @@ public class LoginController {
     }
 
     private void updateHttpStatusLine(String data) {
-        //chatAppMainController.updateHttpLine(data);///////
-    }
-
-    private void displayAcceptMessage(@NotNull Response response) {
-        String message = response.header("X-Possible-Error-Message");
-
-        if (message == null || message.isEmpty())
-            message = "User Added";
-        errorMessageProperty.set(message);
+        //chatAppMainController.updateHttpLine(data);
     }
 }

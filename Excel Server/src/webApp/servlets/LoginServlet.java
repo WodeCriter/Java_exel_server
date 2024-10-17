@@ -44,12 +44,9 @@ public class LoginServlet extends HttpServlet {
             String usernameFromParameter = request.getParameter(USERNAME);
             if (usernameFromParameter == null || usernameFromParameter.isEmpty())
             {
-                //no username in session and no username in parameter -
-                //redirect back to the index page
-                //this return an HTTP code back to the browser telling it to load
-                response.setHeader("X-Possible-Error-Message", "No username provided");
-                //response.sendRedirect(SIGN_UP_URL);
-            } else
+                changeResponseStatusAndMessage(response, 400, "No username provided");
+            }
+            else
             {
                 //normalize the username value
                 usernameFromParameter = usernameFromParameter.trim();
@@ -59,34 +56,22 @@ public class LoginServlet extends HttpServlet {
                     if (userManager.isUserExists(usernameFromParameter))
                     {
                         String errorMessage = "Username \"" + usernameFromParameter + "\" already exists. Please enter a different username.";
-                        // username already exists, forward the request back to index.jsp
-                        // with a parameter that indicates that an error should be displayed
-                        // the request dispatcher obtained from the servlet context is one that MUST get an absolute path (starting with'/')
-                        // and is relative to the web app root
-                        // see this link for more details:
-                        // http://timjansen.github.io/jarfiller/guide/servlet25/requestdispatcher.xhtml
-                        //request.setAttribute(Constants.USER_NAME_ERROR, errorMessage);
-                        response.setHeader("X-Possible-Error-Message", errorMessage);
+                        changeResponseStatusAndMessage(response, 403, errorMessage);
                         //getServletContext().getRequestDispatcher(LOGIN_ERROR_URL).forward(request, response);
                     }
                     else
                     {
-                        //add the new user to the users list
                         userManager.addUser(usernameFromParameter);
-                        //set the username in a session so it will be available on each request
-                        //the true parameter means that if a session object does not exists yet
-                        //create a new one
                         request.getSession(true).setAttribute(USERNAME, usernameFromParameter);
 
-                        //redirect the request to the chat room - in order to actually change the URL
-                        System.out.println("On login, request URI is: " + request.getRequestURI());
+                        System.out.println("On login, request URI is: " + request.getRequestURI()); //for testing
                         response.sendRedirect(HOME_URL);
                     }
                 }
             }
         }
         else
-            response.setHeader("X-Possible-Error-Message", "Already logged in.");
+            changeResponseStatusAndMessage(response, 403, "Already logged in.");
     }
 
 // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -127,4 +112,11 @@ public class LoginServlet extends HttpServlet {
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
+
+    private void changeResponseStatusAndMessage(HttpServletResponse response, int statusCode, String message)
+            throws IOException
+    {
+        response.setStatus(statusCode);
+        response.getWriter().println(message);
+    }
 }
