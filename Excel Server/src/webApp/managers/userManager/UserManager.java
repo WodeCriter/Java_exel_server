@@ -1,4 +1,4 @@
-package webApp.userManager;
+package webApp.managers.userManager;
 import java.util.*;
 public class UserManager
 {

@@ -1,11 +1,12 @@
 package webApp.servlets;
 
-import com.sun.net.httpserver.Headers;
 import jakarta.servlet.annotation.WebServlet;
 import static webApp.utils.Constants.*;
+
+import webApp.managers.userManager.UserManager;
 import webApp.utils.SessionUtils;
 import webApp.utils.ServletUtils;
-import webApp.userManager.*;
+import webApp.managers.userManager.*;
 import java.io.IOException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;

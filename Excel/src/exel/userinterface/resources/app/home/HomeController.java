@@ -18,17 +18,17 @@ import java.util.Map;
 public class HomeController {
     private EventBus eventBus;
     private List<String> activeUsers = new LinkedList<>();
+    private List<String> savedSheets = new LinkedList<>();
 
     public void setEventBus(EventBus eventBus) {
         this.eventBus = eventBus;
     }
 
-    public void updateUsersList(String homeURL){
+    public void updateSavedData(String homeURL){
         HttpClientUtil.runAsync(Constants.FULL_SERVER_PATH + homeURL, new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                Platform.runLater(() -> System.out.println("Something went wrong: " + e.getMessage())
-                );
+                Platform.runLater(() -> System.out.println("Something went wrong: " + e.getMessage()));
             }
 
             @Override
@@ -36,17 +36,18 @@ public class HomeController {
                 String responseBody = response.body().string();
 
                 if (response.code() == 200)
-                    Platform.runLater(() -> updateUsersListFromJson(responseBody));
+                    Platform.runLater(() -> updateListsFromJson(responseBody));
                 else
                     Platform.runLater(() -> System.out.println("Something went wrong: " + responseBody));
             }
         });
     }
 
-    private void updateUsersListFromJson(String json){
+    private void updateListsFromJson(String json){
         Gson gson = new Gson();
         Map<String, List<String>> jsonHeaderToList = gson.fromJson(json, Map.class);
         activeUsers = jsonHeaderToList.get("userNames");
+        savedSheets = jsonHeaderToList.get("sheetNames");
     }
 
 }

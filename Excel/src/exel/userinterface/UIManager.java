@@ -166,7 +166,7 @@ public class UIManager {
 
     private void handleLogInSuccessfulEvent(LogInSuccessfulEvent event){
         showHomePage(this.primaryStage);
-        homeController.updateUsersList(event.getHomeURL());
+        homeController.updateSavedData(event.getHomeURL());
     }
 
 
