@@ -6,7 +6,7 @@ import static webApp.utils.Constants.*;
 import webApp.managers.userManager.UserManager;
 import webApp.utils.SessionUtils;
 import webApp.utils.ServletUtils;
-import webApp.managers.userManager.*;
+
 import java.io.IOException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
@@ -15,7 +15,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 //import static webApp.utils.Constants.USERNAME;
 
-@WebServlet(LOGIN_URL)
+@WebServlet(LOGIN_PATH)
 public class LoginServlet extends HttpServlet {
     // urls that starts with forward slash '/' are considered absolute
     // urls that doesn't start with forward slash '/' are considered relative to the place where this servlet request comes from
@@ -66,7 +66,7 @@ public class LoginServlet extends HttpServlet {
                         request.getSession(true).setAttribute(USERNAME, usernameFromParameter);
 
                         System.out.println("On login, request URI is: " + request.getRequestURI()); //for testing
-                        response.sendRedirect(HOME_URL);
+                        response.sendRedirect(HOME_PATH);
                     }
                 }
             }

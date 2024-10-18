@@ -4,7 +4,7 @@ package exel.userinterface.resources.app;
 import exel.engine.spreadsheet.api.ReadOnlySheet;
 import exel.engine.spreadsheet.cell.api.ReadOnlyCell;
 import exel.eventsys.events.*;
-import exel.userinterface.resources.app.file.FileLoader;
+import exel.userinterface.resources.app.file.FileHelper;
 import exel.userinterface.resources.app.popups.displaySheet.DisplaySheetController;
 import exel.userinterface.resources.app.popups.filter.SetFilterScreenController;
 import exel.userinterface.resources.app.popups.newRange.CreateNewRangeScreenController;
@@ -40,7 +40,6 @@ import javafx.util.Duration;
 import javafx.application.Platform;
 
 import java.io.File;
-import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -211,7 +210,7 @@ public class IndexController {
         Window ownerWindow = sheetContainer.getScene().getWindow();
 
         // Show the open file dialog
-        File selectedFile = FileLoader.selectFileFromPC(ownerWindow);
+        File selectedFile = FileHelper.selectFileFromPC(ownerWindow);
 
         if (selectedFile != null) {
             // Get the absolute path as a String

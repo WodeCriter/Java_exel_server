@@ -17,7 +17,7 @@ import java.io.IOException;
 
 import static webApp.utils.Constants.*;
 
-@WebServlet(HOME_URL)
+@WebServlet(HOME_PATH)
 public class HomeServlet extends HttpServlet
 {
     @Override
@@ -32,10 +32,4 @@ public class HomeServlet extends HttpServlet
         writer.println(gson.toJson(userManager));
         writer.println(gson.toJson(sheetManager));
     }
-
-//    @Override
-//    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-//            throws ServletException, IOException {
-//        //Will later be used to save sheets to the server.
-//    }
 }

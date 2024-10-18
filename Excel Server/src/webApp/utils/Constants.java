@@ -7,8 +7,9 @@ public class Constants {
     public static final String CHAT_PARAMETER = "userstring";
     public static final String CHAT_VERSION_PARAMETER = "chatversion";
 
-    public static final String HOME_URL = "/home";
-    public static final String LOGIN_URL = "/login";
+    public static final String HOME_PATH = "/home";
+    public static final String LOGIN_PATH = "/login";
+    public static final String UPLOAD_PATH = "/upload";
 
     public static final int INT_PARAMETER_ERROR = Integer.MIN_VALUE;
 }

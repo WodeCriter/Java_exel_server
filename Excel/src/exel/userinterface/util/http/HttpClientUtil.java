@@ -28,9 +28,11 @@ public class HttpClientUtil {
         Request request = new Request.Builder()
                 .url(finalUrl)
                 .build();
+        runAsync(request, callback);
+    }
 
+    public static void runAsync(Request request, Callback callback) {
         Call call = HttpClientUtil.HTTP_CLIENT.newCall(request);
-
         call.enqueue(callback);
     }
 

@@ -1,6 +1,5 @@
 package exel.userinterface.resources.app.file;
 
-import exel.userinterface.util.Constants;
 import exel.userinterface.util.http.HttpClientUtil;
 import javafx.application.Platform;
 import javafx.stage.FileChooser;
@@ -11,7 +10,9 @@ import org.jetbrains.annotations.NotNull;
 import java.io.File;
 import java.io.IOException;
 
-public class FileLoader
+import static exel.userinterface.util.Constants.UPLOAD;
+
+public class FileHelper
 {
     public static File selectFileFromPC(Window ownerWindow){
         // Create a new FileChooser instance
@@ -32,17 +33,19 @@ public class FileLoader
         return fileChooser.showOpenDialog(ownerWindow);
     }
 
-    public static void uploadFile(String uploadPath, File file){
+    public static void uploadFile(File file){
         RequestBody body = new MultipartBody.Builder()
-                .addFormDataPart(file.getName(), file.getName(), RequestBody.create(file, MediaType.parse("text/plain")))
+                .setType(MultipartBody.FORM)
+                .addFormDataPart("file", file.getName(),
+                        RequestBody.create(file, MediaType.parse("application/xml")))
                 .build();
 
         Request request = new Request.Builder()
-                .url(Constants.FULL_SERVER_PATH + uploadPath)
+                .url(UPLOAD)
                 .post(body)
                 .build();
 
-        HttpClientUtil.runAsync(request.toString(), new Callback() {
+        HttpClientUtil.runAsync(request, new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 Platform.runLater(() -> System.out.println("Something went wrong: " + e.getMessage()));

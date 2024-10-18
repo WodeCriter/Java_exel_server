@@ -1,23 +1,23 @@
 package webApp.managers.engineManager;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.io.InputStream;
+import java.util.*;
 
 public class SheetManager
 {
-    private List<String> sheetNames = new LinkedList<>();
+    private Map<String, InputStream> nameToFileMap = new HashMap<>();
 
-    public void addSheet(String sheetName){
+    public void addFile(String sheetName, InputStream stream){
         if (isSheetExists(sheetName))
             throw new RuntimeException("Sheet already exists");
-        sheetNames.add(sheetName);
+        nameToFileMap.put(sheetName, stream);
     }
 
     public boolean removeSheet(String sheetName){
-        return sheetNames.remove(sheetName);
+        return nameToFileMap.remove(sheetName) != null;
     }
 
     public boolean isSheetExists(String sheetName) {
-        return sheetNames.contains(sheetName);
+        return nameToFileMap.containsKey(sheetName);
     }
 }
