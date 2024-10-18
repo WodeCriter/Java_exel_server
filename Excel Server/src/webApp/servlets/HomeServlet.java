@@ -25,7 +25,7 @@ public class HomeServlet extends HttpServlet
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         UserManager userManager = ServletUtils.getUserManager(getServletContext());
-        FileManager fileManager = ServletUtils.getSheetManager(getServletContext());
+        FileManager fileManager = ServletUtils.getFileManager(getServletContext());
         Gson gson = new Gson();
         PrintWriter writer = response.getWriter();
 

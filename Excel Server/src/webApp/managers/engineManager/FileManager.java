@@ -8,9 +8,9 @@ public class FileManager
 {
     private Map<String, String> nameToFileContentMap = new HashMap<>();
 
-    public void addFile(String sheetName, String content)
+    private void addFile(String sheetName, String content)
     {
-        if (isSheetExists(sheetName))
+        if (isFileExists(sheetName))
             throw new RuntimeException("Sheet already exists");
         nameToFileContentMap.put(sheetName, content);
     }
@@ -32,13 +32,19 @@ public class FileManager
         return fileContentAsString.toString();
     }
 
-    public boolean removeSheet(String sheetName)
+    public boolean removeFile(String sheetName)
     {
         return nameToFileContentMap.remove(sheetName) != null;
     }
 
-    public boolean isSheetExists(String sheetName)
+    public boolean isFileExists(String sheetName)
     {
         return nameToFileContentMap.containsKey(sheetName);
+    }
+
+    public String getFileContent(String fileName){
+        if (!isFileExists(fileName))
+            throw new RuntimeException("File does not exist");
+        return nameToFileContentMap.get(fileName);
     }
 }

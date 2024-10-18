@@ -22,7 +22,7 @@ public class FilesServlet extends HttpServlet
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
         Part filePart = request.getPart("file");
-        FileManager fileManager = ServletUtils.getSheetManager(getServletContext());
+        FileManager fileManager = ServletUtils.getFileManager(getServletContext());
 
         if (filePart != null)
         {
@@ -50,6 +50,32 @@ public class FilesServlet extends HttpServlet
         else
         {
             // Respond with error if no file part is found
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.getWriter().write("No file provided.");
+        }
+    }
+
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
+        response.setContentType("text/html;charset=UTF-8");
+        FileManager fileManager = ServletUtils.getFileManager(getServletContext());
+        String fileName = request.getParameter("fileName");
+
+        if (fileName != null && !fileName.isEmpty())
+        {
+            if (fileManager.isFileExists(fileName))
+            {
+                response.setStatus(HttpServletResponse.SC_OK);
+                response.getWriter().write(fileManager.getFileContent(fileName));
+            }
+            else
+            {
+                response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+                response.getWriter().write("File not found.");
+            }
+        }
+        else
+        {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             response.getWriter().write("No file provided.");
         }
