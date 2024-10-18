@@ -3,7 +3,7 @@ package webApp.utils;
 //todo: replace with engine imports
 //import engine.chat.ChatManager;
 
-import webApp.managers.engineManager.FileManager;
+import webApp.managers.fileManager.FileManager;
 import webApp.managers.userManager.UserManager;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpServletRequest;

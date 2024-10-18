@@ -7,7 +7,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.Part;
-import webApp.managers.engineManager.FileManager;
+import webApp.managers.fileManager.FileManager;
 import webApp.utils.ServletUtils;
 
 import java.io.IOException;

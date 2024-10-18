@@ -17,7 +17,7 @@
         <Menu mnemonicParsing="false" text="Username">
           <items>
             <MenuItem mnemonicParsing="false" onAction="#uploadFileListener" text="Upload File" />
-            <MenuItem mnemonicParsing="false" text="Open…" />
+            <MenuItem mnemonicParsing="false" onAction="#openFileListener" text="Open…" />
             <Menu mnemonicParsing="false" text="My Sheets" />
             <SeparatorMenuItem mnemonicParsing="false" />
             <MenuItem mnemonicParsing="false" text="Log Out" />

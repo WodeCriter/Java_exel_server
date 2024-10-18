@@ -66,7 +66,7 @@ public class HomeController {
 
     @FXML
     void openFileListener(ActionEvent event) {
-        String chosenFileName = null; //todo: When we'll add files list, need to change.
+        String chosenFileName = null; //todo: Need to get from pressed item in files names list.
         String finalURL = HttpUrl
                 .parse(FILES)
                 .newBuilder()
