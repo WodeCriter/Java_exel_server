@@ -4,6 +4,7 @@ package exel.userinterface.resources.app;
 import exel.engine.spreadsheet.api.ReadOnlySheet;
 import exel.engine.spreadsheet.cell.api.ReadOnlyCell;
 import exel.eventsys.events.*;
+import exel.userinterface.resources.app.file.FileLoader;
 import exel.userinterface.resources.app.popups.displaySheet.DisplaySheetController;
 import exel.userinterface.resources.app.popups.filter.SetFilterScreenController;
 import exel.userinterface.resources.app.popups.newRange.CreateNewRangeScreenController;
@@ -206,25 +207,11 @@ public class IndexController {
 
     @FXML
     void loadFileListener(ActionEvent event) {
-        // Create a new FileChooser instance
-        FileChooser fileChooser = new FileChooser();
-
-        // Set the title of the dialog
-        fileChooser.setTitle("Open Spreadsheet File");
-
-        // (Optional) Set initial directory
-        fileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
-
-        // Add file extension filters
-        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter(
-                "Xml Files (*.xml)", "*.xml");
-        fileChooser.getExtensionFilters().add(extFilter);
-
         // Retrieve the owner window from a node in the scene
         Window ownerWindow = sheetContainer.getScene().getWindow();
 
         // Show the open file dialog
-        File selectedFile = fileChooser.showOpenDialog(ownerWindow);
+        File selectedFile = FileLoader.selectFileFromPC(ownerWindow);
 
         if (selectedFile != null) {
             // Get the absolute path as a String
