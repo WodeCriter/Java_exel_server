@@ -44,6 +44,7 @@ public class UIManager {
         eventBus.subscribe(RangeDeleteEvent.class, this::handleRangeDelete);
         eventBus.subscribe(SortRequestedEvent.class, this::handleSortRequested);
         eventBus.subscribe(LoadSheetEvent.class, this::handleLoadSheet);
+        eventBus.subscribe(FileContentReceivedEvent.class, this::handleLoadSheet);
         eventBus.subscribe(SaveSheetEvent.class, this::handleSaveSheet);
         eventBus.subscribe(VersionSelectedEvent.class, this::handleVersionSelectedEvent);
         eventBus.subscribe(SheetResizeWidthEvent.class, this::handleSheetResizeWidthEvent);
@@ -71,30 +72,46 @@ public class UIManager {
         try
         {
             readOnlySheet = engine.loadSheet(event.getFilePath());
-            indexController.refreshSheetPlane();
-            eventBus.publish(new SheetCreatedEvent(
-                    readOnlySheet.getName(),
-                    readOnlySheet.getCellHeight(),
-                    readOnlySheet.getCellWidth(),
-                    readOnlySheet.getNumOfRows(),
-                    readOnlySheet.getNumOfCols()));
-
-            eventBus.publish(new SheetDisplayEvent(readOnlySheet));
-            for (ReadOnlyRange range : readOnlySheet.getRanges()){
-                eventBus.publish(new RangeCreatedEvent(range.getRangeName(),
-                        range.getTopLeftCord(),
-                        range.getBottomRightCord()));
-            }
-
-
+            loadSheetHelper();
         }
         catch (Exception e)
         {
             e.printStackTrace();
             throw new RuntimeException(e.getMessage());
         }
-
     }
+
+    private void handleLoadSheet(FileContentReceivedEvent event) {
+        try
+        {
+            readOnlySheet = engine.loadSheet(event.getFileContent());
+            loadSheetHelper();
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            throw new RuntimeException(e.getMessage());
+        }
+    }
+
+    private void loadSheetHelper()
+    {
+        indexController.refreshSheetPlane();
+        eventBus.publish(new SheetCreatedEvent(
+                readOnlySheet.getName(),
+                readOnlySheet.getCellHeight(),
+                readOnlySheet.getCellWidth(),
+                readOnlySheet.getNumOfRows(),
+                readOnlySheet.getNumOfCols()));
+
+        eventBus.publish(new SheetDisplayEvent(readOnlySheet));
+        for (ReadOnlyRange range : readOnlySheet.getRanges()){
+            eventBus.publish(new RangeCreatedEvent(range.getRangeName(),
+                    range.getTopLeftCord(),
+                    range.getBottomRightCord()));
+        }
+    }
+
     //added an annotation
     private void handleSaveSheet(SaveSheetEvent event){
         engine.saveXmlFile( event.getAbsolutePath() );
@@ -168,7 +185,6 @@ public class UIManager {
         showHomePage(this.primaryStage);
         homeController.updateSavedData(event.getHomeURL());
     }
-
 
     public void showLogin(Stage primaryStage) {
         try {

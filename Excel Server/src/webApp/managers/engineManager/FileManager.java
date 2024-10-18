@@ -6,19 +6,15 @@ import java.util.*;
 
 public class FileManager
 {
-    private transient Map<String, String> nameToFileContentMap = new HashMap<>();
+    private transient Map<String, InputStream> nameToFileContentMap = new HashMap<>();
     private List<String> fileNames = new LinkedList<>();
 
-    private void addFile(String fileName, String content)
+    public void addFile(String fileName, InputStream content)
     {
         if (isFileExists(fileName))
-            throw new RuntimeException("Sheet already exists");
+            throw new RuntimeException("File already exists");
         nameToFileContentMap.put(fileName, content);
         fileNames.add(fileName);
-    }
-
-    public void addFile(String fileName, InputStream inputStream) throws IOException {
-        addFile(fileName, convertStreamToString(inputStream));
     }
 
     private String convertStreamToString(InputStream inputStream) throws IOException
@@ -45,7 +41,7 @@ public class FileManager
         return nameToFileContentMap.containsKey(fileName);
     }
 
-    public String getFileContent(String fileName){
+    public InputStream getFileContent(String fileName){
         if (!isFileExists(fileName))
             throw new RuntimeException("File does not exist");
         return nameToFileContentMap.get(fileName);

@@ -8,6 +8,9 @@ import jakarta.xml.bind.JAXBException;
 import jakarta.xml.bind.Unmarshaller;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 
 public class xmlFileLoader {
 
@@ -18,6 +21,18 @@ public class xmlFileLoader {
      * @return The loaded object or null if an error occurs.
      */
     public static Sheet loadSpreadsheet(String filePath) {
+        File file = new File(filePath);
+        try
+        {
+            return loadSpreadsheet(new FileInputStream(file));
+        }
+        catch (FileNotFoundException e)
+        {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static Sheet loadSpreadsheet(InputStream fileContent){
         try {
             // Create a JAXB context passing in the class of the generated JAXB classes
             JAXBContext jaxbContext = JAXBContext.newInstance(JAXB_PROJECT_XML_CLASSES);
@@ -26,8 +41,7 @@ public class xmlFileLoader {
             Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
 
             // Unmarshal the XML content to Java object
-            File file = new File(filePath);
-            STLSheet sheetFromFile = (STLSheet) unmarshaller.unmarshal(file);
+            STLSheet sheetFromFile = (STLSheet) unmarshaller.unmarshal(fileContent);
             return STLConverter.fromSTLSheet(sheetFromFile);
         } catch (JAXBException e) {
             return null; // or handle the error as appropriate

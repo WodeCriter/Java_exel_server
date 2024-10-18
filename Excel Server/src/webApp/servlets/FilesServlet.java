@@ -12,6 +12,7 @@ import webApp.utils.ServletUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 
 import static webApp.utils.Constants.FILES_PATH;
 
@@ -65,8 +66,9 @@ public class FilesServlet extends HttpServlet
         {
             if (fileManager.isFileExists(fileName))
             {
+                InputStream fileContent = fileManager.getFileContent(fileName);
                 response.setStatus(HttpServletResponse.SC_OK);
-                response.getWriter().write(fileManager.getFileContent(fileName));
+                writeInputStreamToResponse(response, fileContent);
             }
             else
             {
@@ -80,4 +82,18 @@ public class FilesServlet extends HttpServlet
             response.getWriter().write("No file provided.");
         }
     }
+
+    private void writeInputStreamToResponse(HttpServletResponse response, InputStream inputStream) throws IOException{
+        OutputStream out = response.getOutputStream();
+        byte[] buffer = new byte[1024];
+        int bytesRead;
+
+        // Copy the contents of the InputStream to the OutputStream
+        while ((bytesRead = inputStream.read(buffer)) != -1)
+            out.write(buffer, 0, bytesRead);
+
+        // Ensure all data is written out
+        out.flush();
+    }
+
 }

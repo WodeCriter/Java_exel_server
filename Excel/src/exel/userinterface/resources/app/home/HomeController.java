@@ -2,8 +2,8 @@ package exel.userinterface.resources.app.home;
 
 import com.google.gson.Gson;
 import exel.eventsys.EventBus;
+import exel.eventsys.events.FileContentReceivedEvent;
 import exel.userinterface.resources.app.file.FileHelper;
-import exel.userinterface.util.Constants;
 import exel.userinterface.util.http.HttpClientUtil;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -15,11 +15,9 @@ import okhttp3.HttpUrl;
 import okhttp3.Response;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 import static exel.userinterface.util.Constants.*;
@@ -84,18 +82,13 @@ public class HomeController {
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                String responseBody = response.body().string();
+                InputStream responseBody = response.body().byteStream();
 
                 if (response.code() == 200)
-                    Platform.runLater(() -> openFile(responseBody));
+                    Platform.runLater(() -> eventBus.publish(new FileContentReceivedEvent(responseBody)));
                 else
-                    Platform.runLater(() -> System.out.println("Something went wrong: " + responseBody));
+                    Platform.runLater(() -> System.out.println("Something went wrong: " + response.message()));
             }
         });
-    }
-
-    private void openFile(String fileContent){
-        InputStream stream = new ByteArrayInputStream(fileContent.getBytes(StandardCharsets.UTF_8));
-        //todo: Send stream to UIManager, and use it to open file like before.
     }
 }

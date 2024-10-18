@@ -20,6 +20,7 @@ import exel.engine.util.file_man.save.imp.sysStateSaver;
 import exel.engine.util.file_man.save.imp.xmlFileSaver;
 import exel.eventsys.EventBus;
 
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -81,6 +82,14 @@ public class EngineImp implements Engine {
         this.filePath = filePath;
         // parse the xml and create a sheet and a copy sheet object
         this.currentSheet = xmlFileLoader.loadSpreadsheet(filePath);
+        this.readOnlyCurrentSheet = new ReadOnlySheetImp(currentSheet);
+        return readOnlyCurrentSheet;
+    }
+
+    @Override
+    public ReadOnlySheet loadSheet(InputStream fileContent) throws Exception {
+        // parse the xml and create a sheet and a copy sheet object
+        this.currentSheet = xmlFileLoader.loadSpreadsheet(fileContent);
         this.readOnlyCurrentSheet = new ReadOnlySheetImp(currentSheet);
         return readOnlyCurrentSheet;
     }

@@ -4,6 +4,7 @@ import exel.engine.spreadsheet.api.ReadOnlySheet;
 import exel.engine.spreadsheet.cell.api.ReadOnlyCell;
 import exel.eventsys.events.CreateNewSheetEvent;
 
+import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 
@@ -24,6 +25,8 @@ public interface Engine {
      */
     ReadOnlySheet loadSheet(String filePath) throws Exception;
 
+
+    ReadOnlySheet loadSheet(InputStream fileContent) throws Exception;
 
     void loadSysState(String filePath) throws Exception;
 
