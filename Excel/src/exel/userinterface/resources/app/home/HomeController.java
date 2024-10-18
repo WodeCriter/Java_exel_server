@@ -15,17 +15,14 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 import static exel.userinterface.util.Constants.FULL_SERVER_PATH;
 
 public class HomeController {
     private EventBus eventBus;
     private List<String> activeUsers = new LinkedList<>();
-    private List<String> savedSheets = new LinkedList<>();
+    private Map<String, String> savedFiles = new HashMap<>();
 
     public void setEventBus(EventBus eventBus) {
         this.eventBus = eventBus;
@@ -52,9 +49,9 @@ public class HomeController {
 
     private void updateListsFromJson(String json){
         Gson gson = new Gson();
-        Map<String, List<String>> jsonHeaderToList = gson.fromJson(json, Map.class);
-        activeUsers = jsonHeaderToList.get("userNames");
-        savedSheets = jsonHeaderToList.get("nameToFileMap");
+        Map<String, Object> jsonHeaderToList = gson.fromJson(json, Map.class);
+        activeUsers = (List<String>) jsonHeaderToList.get("userNames");
+        savedFiles = (Map<String, String>) jsonHeaderToList.get("nameToFileContentMap");
     }
 
     @FXML

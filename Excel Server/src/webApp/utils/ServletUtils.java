@@ -3,7 +3,7 @@ package webApp.utils;
 //todo: replace with engine imports
 //import engine.chat.ChatManager;
 
-import webApp.managers.engineManager.SheetManager;
+import webApp.managers.engineManager.FileManager;
 import webApp.managers.userManager.UserManager;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpServletRequest;
@@ -32,13 +32,13 @@ public class ServletUtils {
         return (UserManager) servletContext.getAttribute(USER_MANAGER_ATTRIBUTE_NAME);
     }
 
-    public static SheetManager getSheetManager(ServletContext servletContext) {
+    public static FileManager getSheetManager(ServletContext servletContext) {
         synchronized (engineManagerLock) {
             if (servletContext.getAttribute(SHEET_MANAGER_ATTRIBUTE_NAME) == null) {
-                servletContext.setAttribute(SHEET_MANAGER_ATTRIBUTE_NAME, new SheetManager());
+                servletContext.setAttribute(SHEET_MANAGER_ATTRIBUTE_NAME, new FileManager());
             }
         }
-        return (SheetManager) servletContext.getAttribute(SHEET_MANAGER_ATTRIBUTE_NAME);
+        return (FileManager) servletContext.getAttribute(SHEET_MANAGER_ATTRIBUTE_NAME);
     }
 
     public static int getIntParameter(HttpServletRequest request, String name) {

@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 import java.io.File;
 import java.io.IOException;
 
-import static exel.userinterface.util.Constants.UPLOAD;
+import static exel.userinterface.util.Constants.FILES;
 
 public class FileHelper
 {
@@ -41,7 +41,7 @@ public class FileHelper
                 .build();
 
         Request request = new Request.Builder()
-                .url(UPLOAD)
+                .url(FILES)
                 .post(body)
                 .build();
 

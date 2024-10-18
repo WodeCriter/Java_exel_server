@@ -7,22 +7,22 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.Part;
-import webApp.managers.engineManager.SheetManager;
+import webApp.managers.engineManager.FileManager;
 import webApp.utils.ServletUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
 
-import static webApp.utils.Constants.UPLOAD_PATH;
+import static webApp.utils.Constants.FILES_PATH;
 
-@WebServlet(UPLOAD_PATH)
+@WebServlet(FILES_PATH)
 @MultipartConfig
-public class UploadServlet extends HttpServlet
+public class FilesServlet extends HttpServlet
 {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
         Part filePart = request.getPart("file");
-        SheetManager fileManager = ServletUtils.getSheetManager(getServletContext());
+        FileManager fileManager = ServletUtils.getSheetManager(getServletContext());
 
         if (filePart != null)
         {
