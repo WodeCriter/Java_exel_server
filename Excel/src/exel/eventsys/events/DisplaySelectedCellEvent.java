@@ -1,8 +1,6 @@
 package exel.eventsys.events;
 
-import exel.engine.spreadsheet.cell.api.ReadOnlyCell;
-
-import java.util.List;
+import engine.spreadsheet.cell.api.ReadOnlyCell;
 
 public class DisplaySelectedCellEvent {
     private final ReadOnlyCell cell;

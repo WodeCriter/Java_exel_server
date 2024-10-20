@@ -1,6 +1,6 @@
 package exel.userinterface.resources.app.popups.sort;
 
-import exel.engine.imp.EngineImp;
+import engine.imp.EngineImp;
 import exel.eventsys.EventBus;
 import exel.eventsys.events.SortRequestedEvent;
 import javafx.event.ActionEvent;
@@ -11,7 +11,6 @@ import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class SetSortScreenController
 {

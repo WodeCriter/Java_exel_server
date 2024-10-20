@@ -1,6 +1,6 @@
 package exel.eventsys.events;
 
-import exel.engine.spreadsheet.api.ReadOnlySheet;
+import engine.spreadsheet.api.ReadOnlySheet;
 
 
 public class SheetDisplayEvent {

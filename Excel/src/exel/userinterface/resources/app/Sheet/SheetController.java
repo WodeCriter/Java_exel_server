@@ -1,8 +1,8 @@
 package exel.userinterface.resources.app.Sheet;
 
 
-import exel.engine.spreadsheet.api.ReadOnlySheet;
-import exel.engine.spreadsheet.cell.api.ReadOnlyCell;
+import engine.spreadsheet.api.ReadOnlySheet;
+import engine.spreadsheet.cell.api.ReadOnlyCell;
 import exel.eventsys.EventBus;
 import exel.eventsys.events.*;
 import javafx.application.Platform;
@@ -17,7 +17,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javafx.geometry.Pos;
-import javafx.scene.paint.Color;
 
 public class SheetController {
 

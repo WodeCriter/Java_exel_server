@@ -1,8 +1,8 @@
 package exel.userinterface.resources.app;
 
 
-import exel.engine.spreadsheet.api.ReadOnlySheet;
-import exel.engine.spreadsheet.cell.api.ReadOnlyCell;
+import engine.spreadsheet.api.ReadOnlySheet;
+import engine.spreadsheet.cell.api.ReadOnlyCell;
 import exel.eventsys.events.*;
 import exel.userinterface.resources.app.file.FileHelper;
 import exel.userinterface.resources.app.popups.displaySheet.DisplaySheetController;

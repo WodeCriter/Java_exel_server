@@ -1,10 +1,10 @@
 package exel.userinterface.resources.app.popups.displaySheet;
 
 import exel.eventsys.events.*;
-import exel.engine.spreadsheet.cell.api.ReadOnlyCell;
+import engine.spreadsheet.cell.api.ReadOnlyCell;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
-import exel.engine.spreadsheet.api.ReadOnlySheet;
+import engine.spreadsheet.api.ReadOnlySheet;
 import exel.eventsys.EventBus;
 import exel.userinterface.resources.app.Sheet.SheetController;
 import javafx.fxml.FXMLLoader;

@@ -53,5 +53,6 @@
         <jarDirectory url="file://C:/Program Files/Java/jdk-21/Gson" recursive="false" type="SOURCES" />
       </library>
     </orderEntry>
+    <orderEntry type="module" module-name="Exel Engine" exported="" />
   </component>
 </module>
