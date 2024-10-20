@@ -24,37 +24,14 @@ import static exel.userinterface.util.Constants.*;
 
 public class HomeController {
     private EventBus eventBus;
-    private List<String> activeUsers = new LinkedList<>();
-    private List<String> savedFiles = new LinkedList<>();
+    private List<String> activeUsers;
+    private List<String> savedFiles;
+
+    private TimerTask refresher;
+    private Timer timer;
 
     public void setEventBus(EventBus eventBus) {
         this.eventBus = eventBus;
-    }
-
-    public void updateSavedData(String homeURL){
-        HttpClientUtil.runAsync(FULL_SERVER_PATH + homeURL, new Callback() {
-            @Override
-            public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                Platform.runLater(() -> System.out.println("Something went wrong: " + e.getMessage()));
-            }
-
-            @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                String responseBody = response.body().string();
-
-                if (response.code() == 200)
-                    Platform.runLater(() -> updateListsFromJson(responseBody));
-                else
-                    Platform.runLater(() -> System.out.println("Something went wrong: " + responseBody));
-            }
-        });
-    }
-
-    private void updateListsFromJson(String json){
-        Gson gson = new Gson();
-        Map<String, List<String>> jsonHeaderToList = gson.fromJson(json, Map.class);
-        activeUsers = jsonHeaderToList.get("userNames");
-        savedFiles = jsonHeaderToList.get("fileNames");
     }
 
     @FXML
@@ -90,5 +67,26 @@ public class HomeController {
                     Platform.runLater(() -> System.out.println("Something went wrong: " + response.message()));
             }
         });
+    }
+
+    private void setActiveUsers(List<String> activeUsers) {
+        this.activeUsers = activeUsers;
+    }
+
+    private void setSavedFiles(List<String> savedFiles) {
+        this.savedFiles = savedFiles;
+    }
+
+    public void startDataRefresher(){
+        refresher = new HomeRefresher(this::setActiveUsers, this::setSavedFiles);
+        timer = new Timer();
+        timer.schedule(refresher, 0, 2000);
+    }
+
+    public void stopDataRefresher() {
+        if (refresher != null && timer != null){
+            refresher.cancel();
+            timer.cancel();
+        }
     }
 }

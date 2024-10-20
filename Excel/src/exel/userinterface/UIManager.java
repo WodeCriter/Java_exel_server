@@ -183,7 +183,7 @@ public class UIManager {
 
     private void handleLogInSuccessfulEvent(LogInSuccessfulEvent event){
         showHomePage(this.primaryStage);
-        homeController.updateSavedData(event.getHomeURL());
+        homeController.startDataRefresher();
     }
 
     public void showLogin(Stage primaryStage) {
