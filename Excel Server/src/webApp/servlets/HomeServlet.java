@@ -15,21 +15,42 @@ import com.google.gson.*;
 
 import java.io.IOException;
 
+import static java.lang.Integer.MAX_VALUE;
 import static webApp.utils.Constants.*;
 
 @WebServlet(HOME_PATH)
 public class HomeServlet extends HttpServlet
 {
+    private static final String DATA_UPDATE_HEADER = "X-Data-Update-Available";
+    private static int latestRequestNumber = 0;
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        UserManager userManager = ServletUtils.getUserManager(getServletContext());
-        FileManager fileManager = ServletUtils.getFileManager(getServletContext());
-        Gson gson = new Gson();
-        PrintWriter writer = response.getWriter();
+        int requestNumber = Integer.parseInt(request.getParameter("requestNumber"));
 
-        writer.println(gson.toJson(userManager));
-        writer.println(gson.toJson(fileManager));
+        if (requestNumber != latestRequestNumber)
+        {
+            response.setContentType("text/html;charset=UTF-8");
+
+            UserManager userManager = ServletUtils.getUserManager(getServletContext());
+            FileManager fileManager = ServletUtils.getFileManager(getServletContext());
+            Gson gson = new Gson();
+            PrintWriter writer = response.getWriter();
+
+            writer.println(gson.toJson(userManager));
+            writer.println(gson.toJson(fileManager));
+
+            response.setHeader(DATA_UPDATE_HEADER, "true");
+            response.setHeader("X-Latest-Number", String.valueOf(latestRequestNumber));
+        }
+        else
+            response.setHeader(DATA_UPDATE_HEADER, "false");
+
+        response.setStatus(HttpServletResponse.SC_OK);
+    }
+
+    static void increaseRequestNumber(){
+        latestRequestNumber = (latestRequestNumber + 1) % MAX_VALUE;
     }
 }

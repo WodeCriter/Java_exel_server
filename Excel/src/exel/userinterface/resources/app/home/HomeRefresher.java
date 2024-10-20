@@ -20,20 +20,22 @@ public class HomeRefresher extends TimerTask
 {
     private final Consumer<List<String>> activeUsersConsumer;
     private final Consumer<List<String>> savedFilesConsumer;
+    private int requestNumber;
 
     public HomeRefresher(Consumer<List<String>> activeUsersConsumer, Consumer<List<String>> savedFilesConsumer)
     {
         this.activeUsersConsumer = activeUsersConsumer;
         this.savedFilesConsumer = savedFilesConsumer;
+        requestNumber = 0;
     }
 
     @Override
     public void run() {
-        updateData(HOME_PAGE);
+        updateData();
     }
 
-    private void updateData(String homeURL){
-        HttpClientUtil.runAsync(homeURL, new Callback() {
+    private void updateData(){
+        HttpClientUtil.runAsync(HOME_PAGE, "requestNumber", String.valueOf(requestNumber), new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 Platform.runLater(() -> System.out.println("Something went wrong: " + e.getMessage()));
@@ -41,10 +43,17 @@ public class HomeRefresher extends TimerTask
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                assert response.body() != null;
                 String responseBody = response.body().string();
 
                 if (response.code() == 200)
-                    Platform.runLater(() -> updateListsFromJson(responseBody));
+                {
+                    if ("true".equals(response.header("X-Data-Update-Available")))
+                    {
+                        Platform.runLater(() -> updateListsFromJson(responseBody));
+                        requestNumber = Integer.parseInt(response.header("X-Latest-Number"));
+                    }
+                }
                 else
                     Platform.runLater(() -> System.out.println("Something went wrong: " + responseBody));
             }

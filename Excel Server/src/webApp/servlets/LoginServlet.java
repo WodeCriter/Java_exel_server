@@ -63,10 +63,11 @@ public class LoginServlet extends HttpServlet {
                     else
                     {
                         userManager.addUser(usernameFromParameter);
+                        HomeServlet.increaseRequestNumber();
                         request.getSession(true).setAttribute(USERNAME, usernameFromParameter);
 
                         System.out.println("On login, request URI is: " + request.getRequestURI()); //for testing
-                        response.sendRedirect(HOME_PATH);
+                        //response.sendRedirect(HOME_PATH);
                     }
                 }
             }

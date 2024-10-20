@@ -18,6 +18,8 @@ import exel.userinterface.util.Constants;
 
 import java.io.IOException;
 
+import static exel.userinterface.util.Constants.LOGIN_PAGE;
+
 public class LoginController {
 
     private EventBus eventBus;
@@ -56,7 +58,7 @@ public class LoginController {
 
         //noinspection ConstantConditions
         String finalUrl = HttpUrl
-                .parse(Constants.LOGIN_PAGE)
+                .parse(LOGIN_PAGE)
                 .newBuilder()
                 .addQueryParameter("username", userName)
                 .build()
@@ -75,9 +77,9 @@ public class LoginController {
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                if (response.code() == 302)
+                if (response.code() == 200)
                 {
-                    Platform.runLater(() -> eventBus.publish(new LogInSuccessfulEvent(response.header("Location"))));
+                    Platform.runLater(() -> eventBus.publish(new LogInSuccessfulEvent("hi")));
                 }
                 else
                 {

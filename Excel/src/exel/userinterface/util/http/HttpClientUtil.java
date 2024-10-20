@@ -1,9 +1,6 @@
 package exel.userinterface.util.http;
 
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
+import okhttp3.*;
 
 import java.util.function.Consumer;
 
@@ -22,6 +19,16 @@ public class HttpClientUtil {
 
     public static void removeCookiesOf(String domain) {
         simpleCookieManager.removeCookiesOf(domain);
+    }
+
+    public static void runAsync(String url, String queryName, String queryValue, Callback callback) {
+        String finalURL = HttpUrl
+                .parse(url)
+                .newBuilder()
+                .addQueryParameter(queryName, queryValue)
+                .build()
+                .toString();
+        runAsync(finalURL, callback);
     }
 
     public static void runAsync(String finalUrl, Callback callback) {

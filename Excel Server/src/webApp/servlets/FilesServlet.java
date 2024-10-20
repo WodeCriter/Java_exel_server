@@ -36,6 +36,7 @@ public class FilesServlet extends HttpServlet
                 // Save the file's content in the file manager.
                 InputStream inputStream = filePart.getInputStream();
                 fileManager.addFile(fileName, inputStream);
+                HomeServlet.increaseRequestNumber();
 
                 // Respond with success message
                 response.setStatus(HttpServletResponse.SC_OK);
