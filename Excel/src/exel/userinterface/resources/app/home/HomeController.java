@@ -70,11 +70,13 @@ public class HomeController {
     }
 
     private void setActiveUsers(List<String> activeUsers) {
-        this.activeUsers = activeUsers;
+        if (activeUsers == null || !activeUsers.equals(this.activeUsers))
+            this.activeUsers = activeUsers;
     }
 
     private void setSavedFiles(List<String> savedFiles) {
-        this.savedFiles = savedFiles;
+        if (savedFiles == null || !savedFiles.equals(this.savedFiles))
+            this.savedFiles = savedFiles;
     }
 
     public void startDataRefresher(){
@@ -84,7 +86,8 @@ public class HomeController {
     }
 
     public void stopDataRefresher() {
-        if (refresher != null && timer != null){
+        if (refresher != null && timer != null)
+        {
             refresher.cancel();
             timer.cancel();
         }
