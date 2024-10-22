@@ -7,14 +7,14 @@ import java.util.*;
 public class FileManager
 {
     private transient Map<String, InputStream> nameToFileContentMap = new HashMap<>();
-    private List<String> fileNames = new LinkedList<>();
+    private List<String> fileNames = new ArrayList<>();
 
     public void addFile(String fileName, InputStream content)
     {
         if (isFileExists(fileName))
             throw new RuntimeException("File already exists");
         nameToFileContentMap.put(fileName, content);
-        fileNames.add(fileName);
+        addNameSorted(fileName);
     }
 
     private String convertStreamToString(InputStream inputStream) throws IOException
@@ -49,5 +49,28 @@ public class FileManager
 
     public List<String> getListOfFilesNames(){
         return fileNames;
+    }
+
+    private void addNameSorted(String fileName) {
+        int index = binarySearchInsertionPoint(fileName);
+        fileNames.add(index, fileName);
+    }
+
+    private int binarySearchInsertionPoint(String fileName) {
+        int low = 0;
+        int high = fileNames.size() - 1;
+
+        while (low <= high)
+        {
+            int mid = low + (high - low) / 2;
+            int comparison = fileNames.get(mid).compareTo(fileName);
+
+            if (comparison < 0)
+                low = mid + 1;
+            else
+                high = mid - 1;
+        }
+
+        return low; // Correct insertion point
     }
 }
