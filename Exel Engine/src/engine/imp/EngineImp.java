@@ -77,7 +77,6 @@ public class EngineImp implements Engine
 
     @Override
     public ReadOnlySheet loadSheet(String filePath) throws Exception {
-        // Simulated loading logic
         this.filePath = filePath;
         // parse the xml and create a sheet and a copy sheet object
         this.currentSheet = xmlFileLoader.loadSpreadsheet(filePath);
@@ -95,7 +94,6 @@ public class EngineImp implements Engine
 
     @Override
     public void loadSysState(String filePath) throws Exception {
-        // Simulated loading logic
         this.filePath = filePath;
         // create a sheet object from the binary file
         this.currentSheet = sysStateLoader.loadSysState(filePath);

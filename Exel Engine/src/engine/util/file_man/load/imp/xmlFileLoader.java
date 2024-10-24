@@ -14,7 +14,7 @@ import java.io.InputStream;
 
 public class xmlFileLoader {
 
-    private final static String JAXB_PROJECT_XML_CLASSES = "exel.engine.util.jaxb.classes";
+    private final static String JAXB_PROJECT_XML_CLASSES = "engine.util.jaxb.classes";
     /**
      * Load an XML file into a Java object based on JAXB generated classes.
      * @param filePath The path to the XML file.
