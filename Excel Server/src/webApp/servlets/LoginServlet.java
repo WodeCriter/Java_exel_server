@@ -1,7 +1,7 @@
 package webApp.servlets;
 
 import jakarta.servlet.annotation.WebServlet;
-import static webApp.utils.Constants.*;
+import static utils.Constants.*;
 
 import webApp.managers.userManager.UserManager;
 import webApp.utils.SessionUtils;
@@ -13,7 +13,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-//import static webApp.utils.Constants.USERNAME;
+//import static utils.Constants.USERNAME;
 
 @WebServlet(LOGIN_PATH)
 public class LoginServlet extends HttpServlet {

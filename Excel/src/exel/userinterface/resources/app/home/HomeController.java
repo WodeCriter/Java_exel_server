@@ -1,6 +1,5 @@
 package exel.userinterface.resources.app.home;
 
-import com.google.gson.Gson;
 import exel.eventsys.EventBus;
 import exel.eventsys.events.FileContentReceivedEvent;
 import exel.userinterface.resources.app.file.FileHelper;
@@ -20,7 +19,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
 
-import static exel.userinterface.util.Constants.*;
+import static utils.Constants.*;
 
 public class HomeController {
     private EventBus eventBus;

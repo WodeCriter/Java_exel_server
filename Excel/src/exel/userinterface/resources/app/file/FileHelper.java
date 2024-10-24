@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 import java.io.File;
 import java.io.IOException;
 
-import static exel.userinterface.util.Constants.FILES;
+import static utils.Constants.FILES;
 
 public class FileHelper
 {

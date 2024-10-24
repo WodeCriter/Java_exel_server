@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import static webApp.utils.Constants.FILES_PATH;
+import static utils.Constants.FILES_PATH;
 
 @WebServlet(FILES_PATH)
 @MultipartConfig

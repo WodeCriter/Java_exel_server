@@ -14,11 +14,10 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
 import okhttp3.*;
 import org.jetbrains.annotations.NotNull;
-import exel.userinterface.util.Constants;
 
 import java.io.IOException;
 
-import static exel.userinterface.util.Constants.LOGIN_PAGE;
+import static utils.Constants.LOGIN_PAGE;
 
 public class LoginController {
 
