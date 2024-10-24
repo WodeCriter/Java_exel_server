@@ -1,6 +1,5 @@
 package webApp.servlets;
 
-import gson.CustomGson;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -36,10 +35,11 @@ public class HomeServlet extends HttpServlet
 
             UserManager userManager = ServletUtils.getUserManager(getServletContext());
             FileManager fileManager = ServletUtils.getFileManager(getServletContext());
-            PrintWriter writer = response.getWriter();
+            JsonObject jsonObject = new JsonObject();
 
-            writer.println(CustomGson.toJson(userManager));
-            writer.println(CustomGson.toJson("fileNames", fileManager.getListOfFilesNames()));
+            jsonObject.add("userNames", GSON_INSTANCE.toJsonTree(userManager.getUserNames()));
+            jsonObject.add("fileNames", GSON_INSTANCE.toJsonTree(fileManager.getListOfFilesNames()));
+            response.getWriter().println(GSON_INSTANCE.toJson(jsonObject));
 
             response.setHeader(DATA_UPDATE_HEADER, "true");
             response.setHeader("X-Latest-Number", String.valueOf(latestRequestNumber));

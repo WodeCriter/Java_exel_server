@@ -2,7 +2,6 @@ package exel.userinterface.resources.app.home;
 
 import com.google.gson.Gson;
 import exel.userinterface.util.http.HttpClientUtil;
-import gson.CustomGson;
 import javafx.application.Platform;
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -15,6 +14,7 @@ import java.util.Map;
 import java.util.TimerTask;
 import java.util.function.Consumer;
 
+import static utils.Constants.GSON_INSTANCE;
 import static utils.Constants.HOME_PAGE;
 
 public class HomeRefresher extends TimerTask
@@ -62,7 +62,7 @@ public class HomeRefresher extends TimerTask
     }
 
     private void updateListsFromJson(String json){
-        Map<String, List<String>> jsonHeaderToList = CustomGson.fromJson(json, Map.class);
+        Map<String, List<String>> jsonHeaderToList = GSON_INSTANCE.fromJson(json, Map.class);
         activeUsersConsumer.accept(jsonHeaderToList.get("userNames"));
         savedFilesConsumer.accept(jsonHeaderToList.get("fileNames"));
     }

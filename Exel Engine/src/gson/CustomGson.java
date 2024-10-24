@@ -4,8 +4,6 @@ import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
-import com.sun.istack.NotNull;
-import static utils.Constants.GSON_INSTANCE;
 
 import java.io.Reader;
 import java.lang.reflect.Type;

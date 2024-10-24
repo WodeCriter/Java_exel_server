@@ -6,7 +6,7 @@ import java.util.*;
 
 public class FileManager
 {
-    private transient Map<String, InputStream> nameToFileContentMap = new HashMap<>();
+    private Map<String, InputStream> nameToFileContentMap = new HashMap<>();
     private List<String> fileNames = new ArrayList<>();
 
     public void addFile(String fileName, InputStream content)

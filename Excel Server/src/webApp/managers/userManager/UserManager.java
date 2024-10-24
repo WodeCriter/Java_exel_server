@@ -17,4 +17,8 @@ public class UserManager
     public boolean isUserExists(String userName) {
         return userNames.contains(userName);
     }
+
+    public List<String> getUserNames() {
+        return userNames;
+    }
 }
