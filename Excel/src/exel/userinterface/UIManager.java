@@ -46,7 +46,7 @@ public class UIManager {
         eventBus.subscribe(RangeDeleteEvent.class, this::handleRangeDelete);
         eventBus.subscribe(SortRequestedEvent.class, this::handleSortRequested);
         eventBus.subscribe(LoadSheetEvent.class, this::handleLoadSheet);
-        eventBus.subscribe(FileContentReceivedEvent.class, this::handleLoadSheet);
+        //eventBus.subscribe(FileContentReceivedEvent.class, this::handleLoadSheet);
         eventBus.subscribe(SaveSheetEvent.class, this::handleSaveSheet);
         eventBus.subscribe(VersionSelectedEvent.class, this::handleVersionSelectedEvent);
         eventBus.subscribe(SheetResizeWidthEvent.class, this::handleSheetResizeWidthEvent);
@@ -83,18 +83,18 @@ public class UIManager {
         }
     }
 
-    private void handleLoadSheet(FileContentReceivedEvent event) {
-        try
-        {
-            readOnlySheet = engine.loadSheet(event.getFileContent());
-            loadSheetHelper();
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-            throw new RuntimeException(e.getMessage());
-        }
-    }
+//    private void handleLoadSheet(FileContentReceivedEvent event) {
+//        try
+//        {
+//            readOnlySheet = engine.loadSheet(event.getFileContent());
+//            loadSheetHelper();
+//        }
+//        catch (Exception e)
+//        {
+//            e.printStackTrace();
+//            throw new RuntimeException(e.getMessage());
+//        }
+//    }
 
     private void loadSheetHelper()
     {
