@@ -50,7 +50,7 @@
                <top>
                   <HBox prefHeight="21.0" prefWidth="630.0" BorderPane.alignment="CENTER">
                      <children>
-                        <Button mnemonicParsing="false" text="Upload FIle" />
+                        <Button mnemonicParsing="false" text="Upload File" />
                         <Button mnemonicParsing="false" text="Refresh" />
                      </children>
                   </HBox>
@@ -58,7 +58,11 @@
                <center>
                   <VBox prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
                      <children>
-                        <AnchorPane prefHeight="200.0" prefWidth="200.0" />
+                        <AnchorPane fx:id="filesListContainer" prefHeight="165.0" prefWidth="540.0">
+                           <children>
+<!--                               <fx:include fx:id="filesController" source="items/FilesList.fxml" />-->
+<!--                              <ListView fx:id="filesList" prefHeight="165.0" prefWidth="540.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />-->
+                           </children></AnchorPane>
                         <AnchorPane prefHeight="200.0" prefWidth="200.0" />
                      </children>
                   </VBox>
