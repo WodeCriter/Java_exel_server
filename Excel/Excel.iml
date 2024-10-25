@@ -7,7 +7,7 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module-library" exported="">
+    <orderEntry type="module-library">
       <library>
         <CLASSES>
           <root url="file://C:/Program Files/Java/jdk-21/jaxb-ri-4.0.5/mod" />
@@ -20,7 +20,7 @@
         <jarDirectory url="file://C:/Program Files/Java/jdk-21/jaxb-ri-4.0.5/mod" recursive="false" type="SOURCES" />
       </library>
     </orderEntry>
-    <orderEntry type="module-library" exported="">
+    <orderEntry type="module-library">
       <library>
         <CLASSES>
           <root url="file://C:/Program Files/Java/jdk-21/javafx-sdk-22.0.2/lib" />
@@ -30,7 +30,7 @@
         <jarDirectory url="file://C:/Program Files/Java/jdk-21/javafx-sdk-22.0.2/lib" recursive="false" />
       </library>
     </orderEntry>
-    <orderEntry type="module-library" exported="">
+    <orderEntry type="module-library">
       <library>
         <CLASSES>
           <root url="file://C:/Program Files/Java/jdk-21/OK Http" />
@@ -40,7 +40,7 @@
         <jarDirectory url="file://C:/Program Files/Java/jdk-21/OK Http" recursive="false" />
       </library>
     </orderEntry>
-    <orderEntry type="module-library" exported="">
+    <orderEntry type="module-library">
       <library>
         <CLASSES>
           <root url="file://C:/Program Files/Java/jdk-21/Gson" />
@@ -54,5 +54,9 @@
       </library>
     </orderEntry>
     <orderEntry type="module" module-name="Exel Engine" exported="" />
+    <orderEntry type="library" exported="" name="gson" level="project" />
+    <orderEntry type="library" exported="" name="lib" level="project" />
+    <orderEntry type="library" exported="" name="mod" level="project" />
+    <orderEntry type="library" exported="" name="ok Http" level="project" />
   </component>
 </module>

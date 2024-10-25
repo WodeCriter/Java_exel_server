@@ -9,16 +9,24 @@ import exel.eventsys.events.*;
 import exel.userinterface.resources.app.IndexController;
 import exel.userinterface.resources.app.home.HomeController;
 import exel.userinterface.resources.app.login.LoginController;
+import exel.userinterface.util.http.HttpClientUtil;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.HttpUrl;
+import okhttp3.Response;
+import org.jetbrains.annotations.NotNull;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-import static utils.Constants.MAIN_TITLE;
+import static utils.Constants.*;
 
 public class UIManager {
 
@@ -53,6 +61,7 @@ public class UIManager {
         eventBus.subscribe(SheetResizeHeightEvent.class, this::handleSheetResizeHeightEvent);
         eventBus.subscribe(FilterRequestedEvent.class, this::handleFilterRequested);
         eventBus.subscribe(LogInSuccessfulEvent.class, this::handleLogInSuccessfulEvent);
+        eventBus.subscribe(FileSelectedEvent.class, this::handleFileSelected);
     }
 
     private void handleCreateNewSheet(CreateNewSheetEvent event) {
@@ -122,6 +131,31 @@ public class UIManager {
     private void handleCreateNewRange(CreateNewRangeEvent event) {
         engine.addNewRange(event.getRangeName(), event.getTopLeftCord(), event.getBottomRightCord());
         eventBus.publish(new RangeCreatedEvent(event.getRangeName(), event.getTopLeftCord(), event.getBottomRightCord()));
+    }
+        //sheets/{filename}/{action}
+    private void handleFileSelected(FileSelectedEvent event){
+        String finalURL = HttpUrl
+                .parse(SHEETS_PATH + "/" + event.getFileName() + VIEW_SHEET_PATH)
+                .newBuilder()
+                .build()
+                .toString();
+
+        HttpClientUtil.runAsync(finalURL, new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                Platform.runLater(() -> System.out.println("Something went wrong: " + e.getMessage()));
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                ReadOnlySheet sheet = GSON_INSTANCE.fromJson(response.body().string(), ReadOnlySheet.class);
+
+                if (response.code() == 200)
+                    Platform.runLater(() -> showSheetPage());
+                else
+                    Platform.runLater(() -> System.out.println("Something went wrong: " + response.message()));
+            }
+        });
     }
 
     private void handleCellSelected(CellSelectedEvent event) {
@@ -219,6 +253,26 @@ public class UIManager {
             {
                 homeController = (HomeController) controller;
                 homeController.setEventBus(eventBus);
+            }
+            setPrimaryStage(root);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    public void showSheetPage(){
+        try
+        {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/exel/userinterface/resources/app/Index.fxml"));
+            Parent root = loader.load();
+            Object controller = loader.getController();
+
+            if (controller instanceof IndexController)
+            {
+                indexController = (IndexController) controller;
+                indexController.setEventBus(eventBus);
             }
             setPrimaryStage(root);
         }

@@ -2,6 +2,7 @@ package exel.userinterface.resources.app.home.items;
 
 import exel.eventsys.EventBus;
 import exel.eventsys.events.FileContentReceivedEvent;
+import exel.eventsys.events.FileSelectedEvent;
 import exel.userinterface.util.http.HttpClientUtil;
 import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
@@ -48,29 +49,7 @@ public class FilesListController
 
     // Method to handle file selected
     private void handleFileSelected(String selectedFileName) {
-        String finalURL = HttpUrl
-                .parse(FILES)
-                .newBuilder()
-                .addQueryParameter("fileName", selectedFileName)
-                .build()
-                .toString();
-
-        HttpClientUtil.runAsync(finalURL, new Callback() {
-            @Override
-            public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                Platform.runLater(() -> System.out.println("Something went wrong: " + e.getMessage()));
-            }
-
-            @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                InputStream responseBody = response.body().byteStream();
-
-                if (response.code() == 200)
-                    Platform.runLater(() -> eventBus.publish(new FileContentReceivedEvent(responseBody)));
-                else
-                    Platform.runLater(() -> System.out.println("Something went wrong: " + response.message()));
-            }
-        });
+        eventBus.publish(new FileSelectedEvent(selectedFileName));
     }
 
     public ObjectProperty<String> selectedItemProperty() {

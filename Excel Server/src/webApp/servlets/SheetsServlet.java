@@ -14,12 +14,21 @@ import java.io.IOException;
 
 import static utils.Constants.*;
 
+//Beta Simp Cuck--> Daniel <--Cuck:
+//DELETE sheets/deleteSheet
+//PUT sheets/uploadSheet
+//GET sheets/getSheet
+
+//Chad Itamar:
+//DELETE sheets
+//PUT sheets
+//GET sheets
+
 @WebServlet(SHEETS_PATH + "/*")
 public class SheetsServlet extends HttpServlet {
     FileManager fileManager;
-
     //update sheet - PUT
-    //get Sheet - GET
+    //get Sheet - GET /viewsheet
     //delete sheet - DELETE
     //add Range - PUT
     //get Version - GET
@@ -38,7 +47,7 @@ public class SheetsServlet extends HttpServlet {
         Engine engine = requestData.engine;
 
         switch (requestData.action.toLowerCase()) {
-            case "getsheet":
+            case "viewsheet":
                 handleGetSheet(engine, response);
                 break;
             case "getversion":
@@ -114,19 +123,6 @@ public class SheetsServlet extends HttpServlet {
         return new RequestData(fileName, action, engine);
     }
 
-    //t
-    // Data class to hold parsed request data
-    private static class RequestData {
-        String fileName;
-        String action;
-        Engine engine;
-
-        RequestData(String fileName, String action, Engine engine) {
-            this.fileName = fileName;
-            this.action = action;
-            this.engine = engine;
-        }
-    }
 
     // Handler methods
     private void handleGetSheet(Engine engine, HttpServletResponse response) throws IOException {
@@ -190,4 +186,17 @@ public class SheetsServlet extends HttpServlet {
                 response.getWriter().write("Sheet not found for " + fileName);
         }
     }
+
+    private class RequestData {
+        String fileName;
+        String action;
+        Engine engine;
+
+        RequestData(String fileName, String action, Engine engine) {
+            this.fileName = fileName;
+            this.action = action;
+            this.engine = engine;
+        }
+    }
 }
+

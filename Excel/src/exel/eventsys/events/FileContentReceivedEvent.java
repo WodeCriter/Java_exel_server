@@ -1,16 +1,18 @@
 package exel.eventsys.events;
 
+import engine.spreadsheet.api.ReadOnlySheet;
+
 import java.io.InputStream;
 
 public class FileContentReceivedEvent
 {
-    private InputStream fileContent;
+    private ReadOnlySheet sheet;
 
-    public FileContentReceivedEvent(InputStream fileContent) {
-        this.fileContent = fileContent;
+    public FileContentReceivedEvent(ReadOnlySheet sheet) {
+        this.sheet = sheet;
     }
 
-    public InputStream getFileContent() {
-        return fileContent;
+    public ReadOnlySheet getSheet() {
+        return sheet;
     }
 }
