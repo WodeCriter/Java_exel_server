@@ -1,7 +1,7 @@
 package webApp.servlets;
 
 import engine.api.Engine;
-import jakarta.servlet.ServletContext;
+import engine.spreadsheet.api.ReadOnlySheet;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -11,10 +11,11 @@ import webApp.managers.fileManager.FileManager;
 import webApp.utils.ServletUtils;
 
 import java.io.IOException;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
-@WebServlet("/sheets/*")
+import static utils.Constants.GSON_INSTANCE;
+import static utils.Constants.SHEETS_PATH;
+
+@WebServlet(SHEETS_PATH + "/*")
 public class SheetsServlet extends HttpServlet {
     FileManager fileManager;
 
@@ -24,8 +25,6 @@ public class SheetsServlet extends HttpServlet {
     //add Range - PUT
     //get Version - GET
     //get cell ?? (maybe update the ReadOnlySheet)
-
-
 
     public void init() {
         fileManager = ServletUtils.getFileManager(getServletContext()); //todo: make sure it gives the same file manager
@@ -73,7 +72,6 @@ public class SheetsServlet extends HttpServlet {
 
     @Override
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
         RequestData requestData = parseRequest(request, response);
         if (requestData == null) return;
 
@@ -134,39 +132,63 @@ public class SheetsServlet extends HttpServlet {
     // Handler methods
     private void handleGetSheet(Engine engine, HttpServletResponse response) throws IOException {
         synchronized (engine) {
-            String sheetData = engine.getSheet();
+            ReadOnlySheet sheet = engine.getSheet();
             response.setContentType("application/xml");
-            response.getWriter().write(sheetData);
+            response.getWriter().write(GSON_INSTANCE.toJson(sheet));
         }
     }
 
     private void handleGetVersion(Engine engine, HttpServletResponse response) throws IOException {
         synchronized (engine) {
-            String version = engine.getVersion();
-            response.getWriter().write("Version: " + version);
+            response.getWriter().write(engine.getSheetVersion());
         }
     }
 
     private void handleUpdateSheet(Engine engine, HttpServletRequest request, HttpServletResponse response) throws IOException {
         synchronized (engine) {
             // Read data from request to update the sheet
-            engine.updateSheet(request.getInputStream());
-            response.getWriter().write("Sheet updated successfully for " + engine.getFileName());
+            try
+            {
+                engine.updateCellContents(request.getParameter("coordinate"), request.getParameter("newValue"));
+                response.getWriter().write("Sheet updated successfully");
+            }
+            catch (Exception e)
+            {
+                response.setStatus(422); //422 - The request was syntactically correct but could not be processed.
+            }
         }
     }
 
     private void handleAddRange(Engine engine, HttpServletRequest request, HttpServletResponse response) throws IOException {
         synchronized (engine) {
-            // Read data from request to add range
-            engine.addRange(request.getInputStream());
-            response.getWriter().write("Range added successfully to " + engine.getFileName());
+            String rangeName = request.getParameter("rangeName");
+            String topLeftCord = request.getParameter("topLeftCord");
+            String bottomRightCord = request.getParameter("bottomRightCord");
+
+            try
+            {
+                engine.addNewRange(rangeName, topLeftCord, bottomRightCord);
+                response.getWriter().write("Range added successfully");
+            }
+            catch (IllegalArgumentException e)
+            {
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                response.getWriter().write(e.getMessage());
+            }
+            catch (RuntimeException e)
+            {
+                response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                response.getWriter().write(e.getMessage());
+            }
         }
     }
 
     private void handleDeleteSheet(String fileName, HttpServletResponse response) throws IOException {
         synchronized (fileManager) {
-            fileManager.removeFile(fileName);
-            response.getWriter().write("Sheet deleted for " + fileName);
+            if (fileManager.removeFile(fileName))
+                response.getWriter().write("Sheet deleted for " + fileName);
+            else
+                response.getWriter().write("Sheet not found for " + fileName);
         }
     }
 }

@@ -236,4 +236,9 @@ public class EngineImp implements Engine
         readOnlyCurrentSheet = new ReadOnlySheetImp(currentSheet);
         return readOnlyCurrentSheet;
     }
+
+    @Override
+    public int getSheetVersion(){
+        return currentSheet.getVersion();
+    }
 }

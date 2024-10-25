@@ -82,4 +82,6 @@ public interface Engine {
 
     ReadOnlySheet changeCellWidth(int width);
     public ReadOnlySheet changeCellHeight(int height);
+
+    int getSheetVersion();
 }
