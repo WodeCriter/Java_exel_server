@@ -36,6 +36,7 @@ public interface Engine {
      */
     ReadOnlySheet getSheet();
 
+    ReadOnlySheet getReadOnlySheet();
 
     ReadOnlySheet getSheetOfVersion(int version);
 

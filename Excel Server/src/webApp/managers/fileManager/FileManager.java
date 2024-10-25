@@ -1,33 +1,24 @@
 package webApp.managers.fileManager;
 
-import java.io.IOException;
+import engine.api.Engine;
+import engine.imp.EngineImp;
+
 import java.io.InputStream;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+
 
 public class FileManager
 {
-    private transient Map<String, InputStream> nameToFileContentMap = new HashMap<>();
+    private transient Map<String, Engine> nameToFileContentMap = new ConcurrentHashMap<>();
     private List<String> fileNames = new ArrayList<>();
 
-    public void addFile(String fileName, InputStream content)
+    public void addFile(String fileName, InputStream fileContent)
     {
         if (isFileExists(fileName))
             throw new RuntimeException("File already exists");
-        nameToFileContentMap.put(fileName, content);
+        nameToFileContentMap.put(fileName, new EngineImp(fileContent));
         addNameSorted(fileName);
-    }
-
-    private String convertStreamToString(InputStream inputStream) throws IOException
-    {
-        StringBuilder fileContentAsString = new StringBuilder();
-
-        int ch;
-        while ((ch = inputStream.read()) != -1)
-        {
-            fileContentAsString.append((char) ch);
-        }
-
-        return fileContentAsString.toString();
     }
 
     public boolean removeFile(String fileName)
@@ -41,7 +32,7 @@ public class FileManager
         return nameToFileContentMap.containsKey(fileName);
     }
 
-    public InputStream getFileContent(String fileName){
+    public Engine getEngine(String fileName){
         if (!isFileExists(fileName))
             throw new RuntimeException("File does not exist");
         return nameToFileContentMap.get(fileName);

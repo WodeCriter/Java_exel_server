@@ -34,6 +34,10 @@ public class EngineImp implements Engine
     public EngineImp() {
     }
 
+    public EngineImp(InputStream fileContent){
+        loadSheet(fileContent);
+    }
+
     @Override
     public ReadOnlySheet createSheet(String sheetName, int rowNum , int colNum , int cellWidth , int cellHeight) {
         //Todo: check for validity of size
@@ -85,11 +89,16 @@ public class EngineImp implements Engine
     }
 
     @Override
-    public ReadOnlySheet loadSheet(InputStream fileContent) throws Exception {
+    public ReadOnlySheet loadSheet(InputStream fileContent){
         // parse the xml and create a sheet and a copy sheet object
         this.currentSheet = xmlFileLoader.loadSpreadsheet(fileContent);
         this.readOnlyCurrentSheet = new ReadOnlySheetImp(currentSheet);
         return readOnlyCurrentSheet;
+    }
+
+    @Override
+    public ReadOnlySheet getReadOnlySheet(){
+        return this.readOnlyCurrentSheet;
     }
 
     @Override

@@ -1,5 +1,7 @@
 package webApp.servlets;
 
+import com.google.gson.Gson;
+import engine.api.Engine;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
@@ -12,7 +14,6 @@ import webApp.utils.ServletUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 
 import static webApp.utils.Constants.FILES_PATH;
 
@@ -35,10 +36,17 @@ public class FilesServlet extends HttpServlet
             {
                 // Save the file's content in the file manager.
                 InputStream inputStream = filePart.getInputStream();
-                fileManager.addFile(fileName, inputStream);
-                HomeServlet.increaseRequestNumber();
+                try
+                {
+                    fileManager.addFile(fileName, inputStream);
+                }
+                catch (Exception e)
+                {
+                    response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                    response.getWriter().write("File is Broken."); //todo: write better message
+                }
 
-                // Respond with success message
+                HomeServlet.increaseRequestNumber();
                 response.setStatus(HttpServletResponse.SC_OK);
                 response.getWriter().write("File uploaded successfully.");
             }
@@ -57,6 +65,7 @@ public class FilesServlet extends HttpServlet
         }
     }
 
+    //Will move to sheet servlet later
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
         response.setContentType("text/html;charset=UTF-8");
@@ -67,9 +76,9 @@ public class FilesServlet extends HttpServlet
         {
             if (fileManager.isFileExists(fileName))
             {
-                InputStream fileContent = fileManager.getFileContent(fileName);
+                Engine fileContent = fileManager.getEngine(fileName);
+                response.getWriter().write((new Gson()).toJson(fileContent.getReadOnlySheet()));
                 response.setStatus(HttpServletResponse.SC_OK);
-                writeInputStreamToResponse(response, fileContent);
             }
             else
             {
@@ -84,17 +93,9 @@ public class FilesServlet extends HttpServlet
         }
     }
 
-    private void writeInputStreamToResponse(HttpServletResponse response, InputStream inputStream) throws IOException{
-        OutputStream out = response.getOutputStream();
-        byte[] buffer = new byte[1024];
-        int bytesRead;
+    @Override
+    protected void doDelete(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException{
 
-        // Copy the contents of the InputStream to the OutputStream
-        while ((bytesRead = inputStream.read(buffer)) != -1)
-            out.write(buffer, 0, bytesRead);
-
-        // Ensure all data is written out
-        out.flush();
     }
-
 }
