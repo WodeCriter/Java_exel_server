@@ -17,7 +17,6 @@
         <Menu mnemonicParsing="false" text="Username">
           <items>
             <MenuItem mnemonicParsing="false" onAction="#uploadFileListener" text="Upload File" />
-            <MenuItem mnemonicParsing="false" onAction="#openFileListener" text="Open…" />
             <Menu mnemonicParsing="false" text="My Sheets" />
             <SeparatorMenuItem mnemonicParsing="false" />
             <MenuItem mnemonicParsing="false" text="Log Out" />
@@ -50,7 +49,6 @@
                <top>
                   <HBox prefHeight="21.0" prefWidth="630.0" BorderPane.alignment="CENTER">
                      <children>
-                        <Button mnemonicParsing="false" text="Upload File" />
                         <Button mnemonicParsing="false" text="Refresh" />
                      </children>
                   </HBox>

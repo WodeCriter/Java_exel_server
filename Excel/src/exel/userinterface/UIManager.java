@@ -15,7 +15,10 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.util.List;
+
+import static utils.Constants.MAIN_TITLE;
 
 public class UIManager {
 
@@ -26,8 +29,7 @@ public class UIManager {
     private HomeController homeController;
     private Stage primaryStage;
 
-
-    public UIManager(Engine engine, EventBus eventBus,Stage primaryStage ) {
+    public UIManager(Engine engine, EventBus eventBus, Stage primaryStage) {
         this.engine = engine;
         this.eventBus = eventBus;
         this.primaryStage = primaryStage;
@@ -182,70 +184,63 @@ public class UIManager {
     }
 
     private void handleLogInSuccessfulEvent(LogInSuccessfulEvent event){
-        showHomePage(this.primaryStage);
+        showHomePage();
         homeController.startDataRefresher();
     }
 
-    public void showLogin(Stage primaryStage) {
-        try {
-            // Assuming the FXML file is named "MainScreen.fxml" and is located in the "app" directory under resources
+    public void showLogin() {
+        try
+        {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/exel/userinterface/resources/app/login/login.fxml"));
-
             Parent root = loader.load();
-
             Object controller = loader.getController();
 
             if (controller instanceof LoginController) {
-                ((LoginController) controller).setEventBus(eventBus);
                 LoginController loginController = (LoginController) controller;
+                loginController.setEventBus(eventBus);
             }
-            // Setting the title of the stage (optional)
-            primaryStage.setTitle("Exel");
-            Image icon = new Image(getClass().getResourceAsStream("/exel/userinterface/resources/images/Logo.png"));
-            primaryStage.getIcons().add(icon);
 
-            // Creating a scene object with the loaded layout
-            Scene scene = new Scene(root);
-
-            // Adding the scene to the stage
-            primaryStage.setScene(scene);
-
-            // Displaying the contents of the stage
-            primaryStage.show();
-        } catch (Exception e) {
+            setPrimaryStage(root);
+        }
+        catch (Exception e)
+        {
             e.printStackTrace();
         }
     }
 
-    public void showHomePage(Stage primaryStage) {
-        try {
-            // Assuming the FXML file is named "MainScreen.fxml" and is located in the "app" directory under resources
+    public void showHomePage() {
+        try
+        {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/exel/userinterface/resources/app/home/home.fxml"));
-
             Parent root = loader.load();
-
             Object controller = loader.getController();
 
             if (controller instanceof HomeController)
             {
-                ((HomeController) controller).setEventBus(eventBus);
                 homeController = (HomeController) controller;
+                homeController.setEventBus(eventBus);
             }
-            // Setting the title of the stage (optional)
-            primaryStage.setTitle("Exel");
-            Image icon = new Image(getClass().getResourceAsStream("/exel/userinterface/resources/images/Logo.png"));
-            primaryStage.getIcons().add(icon);
-
-            // Creating a scene object with the loaded layout
-            Scene scene = new Scene(root);
-
-            // Adding the scene to the stage
-            primaryStage.setScene(scene);
-
-            // Displaying the contents of the stage
-            primaryStage.show();
-        } catch (Exception e) {
+            setPrimaryStage(root);
+        }
+        catch (Exception e)
+        {
             e.printStackTrace();
         }
+    }
+
+    private void setPrimaryStage(Parent root) {
+        // Setting the title of the stage (optional)
+        primaryStage.setTitle(MAIN_TITLE);
+        Image icon = new Image(getClass().getResourceAsStream("/exel/userinterface/resources/images/Logo.png"));
+        primaryStage.getIcons().add(icon);
+
+        // Creating a scene object with the loaded layout
+        Scene scene = new Scene(root);
+
+        // Adding the scene to the stage
+        primaryStage.setScene(scene);
+
+        // Displaying the contents of the stage
+        primaryStage.show();
     }
 }

@@ -17,7 +17,7 @@ public class Main extends Application {
 
 
             UIManager ui = new UIManager(engine, eventBus, primaryStage);
-            ui.showLogin(primaryStage);
+            ui.showLogin();
 
         } catch (Exception e) {
             e.printStackTrace();

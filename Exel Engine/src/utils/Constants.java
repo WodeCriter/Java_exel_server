@@ -3,6 +3,8 @@ package utils;
 import com.google.gson.Gson;
 
 public class Constants {
+    public static final String MAIN_TITLE = "Exel";
+
     public static final String USERNAME = "username";
     public static final String USER_NAME_ERROR = "username_error";
 

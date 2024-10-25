@@ -44,7 +44,7 @@ public class HomeController {
         try
         {
             initializeFilesListController();
-            setupFilesControllerListener();
+            //setupFilesControllerListener();
         }
         catch (IOException e)
         {
@@ -58,23 +58,18 @@ public class HomeController {
 
         // Retrieve the controller and set it to filesController
         filesController = loader.getController();
+        filesController.setEventBus(eventBus);
 
         // Now add the files list view to the parent container
         filesListContainer.getChildren().add(filesList);
     }
+
     private void setupFilesControllerListener(){
         //Whenever a file is pressed, handleItemSelected is activated with the item selected
         filesController.selectedItemProperty().addListener((obs, oldItem, newItem) -> {
-            if (newItem != null) {
-                handleFileSelected(newItem);
-            }
+            if (newItem != null)
+                System.out.println("File selected: " + newItem);
         });
-    }
-
-    // Method to handle file selected
-    private void handleFileSelected(String selectedFile) {
-        System.out.println("Selected item: " + selectedFile);
-        // Add code here to do something with the selected item
     }
 
     public void setEventBus(EventBus eventBus) {
@@ -83,37 +78,9 @@ public class HomeController {
 
     @FXML
     void uploadFileListener(ActionEvent event) {
-        Window ownerWindow = null; //todo: Need to get ownerWindow from an item in the fxml.
+        Window ownerWindow = filesListContainer.getScene().getWindow();
         File loadedFile = FileHelper.selectFileFromPC(ownerWindow);
         FileHelper.uploadFile(loadedFile);
-    }
-
-    @FXML
-    void openFileListener(ActionEvent event) {
-        String chosenFileName = null; //todo: Need to get from pressed item in files names list.
-        String finalURL = HttpUrl
-                .parse(FILES)
-                .newBuilder()
-                .addQueryParameter("fileName", chosenFileName)
-                .build()
-                .toString();
-
-        HttpClientUtil.runAsync(finalURL, new Callback() {
-            @Override
-            public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                Platform.runLater(() -> System.out.println("Something went wrong: " + e.getMessage()));
-            }
-
-            @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                InputStream responseBody = response.body().byteStream();
-
-                if (response.code() == 200)
-                    Platform.runLater(() -> eventBus.publish(new FileContentReceivedEvent(responseBody)));
-                else
-                    Platform.runLater(() -> System.out.println("Something went wrong: " + response.message()));
-            }
-        });
     }
 
     private void setActiveUsers(List<String> activeUsers) {
@@ -123,7 +90,10 @@ public class HomeController {
 
     private void setSavedFiles(List<String> savedFiles) {
         if (savedFiles == null || !savedFiles.equals(this.savedFiles))
+        {
             this.savedFiles = savedFiles;
+            filesController.updateFilesList(savedFiles);
+        }
     }
 
     public void startDataRefresher(){
