@@ -2,6 +2,7 @@ package webApp.managers.fileManager;
 
 import engine.api.Engine;
 import engine.imp.EngineImp;
+import jakarta.xml.bind.JAXBException;
 
 import java.io.InputStream;
 import java.util.*;
@@ -13,8 +14,7 @@ public class FileManager
     private transient Map<String, Engine> nameToFileContentMap = new ConcurrentHashMap<>();
     private List<String> fileNames = new ArrayList<>();
 
-    public void addFile(String fileName, InputStream fileContent)
-    {
+    public void addFile(String fileName, InputStream fileContent) throws JAXBException {
         if (isFileExists(fileName))
             throw new RuntimeException("File already exists");
         nameToFileContentMap.put(fileName, new EngineImp(fileContent));

@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.Part;
+import jakarta.xml.bind.JAXBException;
 import webApp.managers.fileManager.FileManager;
 import webApp.utils.ServletUtils;
 
@@ -16,6 +17,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import static utils.Constants.FILES_PATH;
+import static utils.Constants.SC_UNPROCESSABLE_CONTENT;
 
 @WebServlet(FILES_PATH)
 @MultipartConfig
@@ -39,20 +41,22 @@ public class FilesServlet extends HttpServlet
                 try
                 {
                     fileManager.addFile(fileName, inputStream);
+                    HomeServlet.increaseRequestNumber();
+                    response.setStatus(HttpServletResponse.SC_OK);
                 }
-                catch (Exception e)
+                catch (JAXBException e)
                 {
-                    response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                    response.setStatus(SC_UNPROCESSABLE_CONTENT);
                     response.getWriter().write("File is Broken."); //todo: write better message
                 }
-
-                HomeServlet.increaseRequestNumber();
-                response.setStatus(HttpServletResponse.SC_OK);
-                response.getWriter().write("File uploaded successfully.");
+                catch (RuntimeException e)
+                {
+                    response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                    response.getWriter().write(e.getMessage());
+                }
             }
             else
             {
-                // If the file is not XML, return a 415 Unsupported Media Type
                 response.setStatus(HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE);
                 response.getWriter().write("Only XML files are allowed.");
             }

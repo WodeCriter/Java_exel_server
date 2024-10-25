@@ -20,41 +20,21 @@ public class xmlFileLoader {
      * @param filePath The path to the XML file.
      * @return The loaded object or null if an error occurs.
      */
-    public static Sheet loadSpreadsheet(String filePath) {
+
+    public static Sheet loadSpreadsheet(String filePath) throws FileNotFoundException, JAXBException {
         File file = new File(filePath);
-        try
-        {
-            return loadSpreadsheet(new FileInputStream(file));
-        }
-        catch (FileNotFoundException e)
-        {
-            throw new RuntimeException(e);
-        }
+        return loadSpreadsheet(new FileInputStream(file));
     }
 
-    public static Sheet loadSpreadsheet(InputStream fileContent){
-        try {
-            // Create a JAXB context passing in the class of the generated JAXB classes
-            JAXBContext jaxbContext = JAXBContext.newInstance(JAXB_PROJECT_XML_CLASSES);
+    public static Sheet loadSpreadsheet(InputStream fileContent) throws JAXBException {
+        // Create a JAXB context passing in the class of the generated JAXB classes
+        JAXBContext jaxbContext = JAXBContext.newInstance(JAXB_PROJECT_XML_CLASSES);
 
-            // Create an Unmarshaller from the JAXB Context
-            Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+        // Create an Unmarshaller from the JAXB Context
+        Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
 
-            // Unmarshal the XML content to Java object
-            STLSheet sheetFromFile = (STLSheet) unmarshaller.unmarshal(fileContent);
-            return STLConverter.fromSTLSheet(sheetFromFile);
-        } catch (JAXBException e) {
-            return null; // or handle the error as appropriate
-        }
-    }
-
-    // Main method for testing purposes
-    public static void main(String[] args) {
-        xmlFileLoader loader = new xmlFileLoader();
-        Sheet spreadsheet = loader.loadSpreadsheet("path/to/your/spreadsheet.xml");
-
-        if (spreadsheet == null) {
-            throw new RuntimeException("Failed to load the spreadsheet.");
-        }
+        // Unmarshal the XML content to Java object
+        STLSheet sheetFromFile = (STLSheet) unmarshaller.unmarshal(fileContent);
+        return STLConverter.fromSTLSheet(sheetFromFile);
     }
 }

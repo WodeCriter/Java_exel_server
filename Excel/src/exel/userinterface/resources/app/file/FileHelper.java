@@ -56,9 +56,9 @@ public class FileHelper
                 String responseBody = response.body().string();
 
                 if (response.code() == 200)
-                    Platform.runLater(() -> System.out.println("File uploaded successfully."));
+                    System.out.println("File uploaded successfully.");
                 else
-                    Platform.runLater(() -> System.out.println("Something went wrong: " + responseBody));
+                    System.out.println("Something went wrong: " + responseBody);
             }
         });
     }

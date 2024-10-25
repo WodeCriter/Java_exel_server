@@ -18,6 +18,7 @@ import engine.spreadsheet.imp.SheetImp;
 import engine.spreadsheet.range.Range;
 import engine.spreadsheet.rowSorter.RowFilter;
 import engine.spreadsheet.rowSorter.RowSorter;
+import jakarta.xml.bind.JAXBException;
 
 import java.io.InputStream;
 import java.util.HashMap;
@@ -34,7 +35,7 @@ public class EngineImp implements Engine
     public EngineImp() {
     }
 
-    public EngineImp(InputStream fileContent){
+    public EngineImp(InputStream fileContent) throws JAXBException {
         loadSheet(fileContent);
     }
 
@@ -89,7 +90,7 @@ public class EngineImp implements Engine
     }
 
     @Override
-    public ReadOnlySheet loadSheet(InputStream fileContent){
+    public ReadOnlySheet loadSheet(InputStream fileContent) throws JAXBException {
         // parse the xml and create a sheet and a copy sheet object
         this.currentSheet = xmlFileLoader.loadSpreadsheet(fileContent);
         this.readOnlyCurrentSheet = new ReadOnlySheetImp(currentSheet);

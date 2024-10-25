@@ -12,8 +12,7 @@ import webApp.utils.ServletUtils;
 
 import java.io.IOException;
 
-import static utils.Constants.GSON_INSTANCE;
-import static utils.Constants.SHEETS_PATH;
+import static utils.Constants.*;
 
 @WebServlet(SHEETS_PATH + "/*")
 public class SheetsServlet extends HttpServlet {
@@ -154,7 +153,7 @@ public class SheetsServlet extends HttpServlet {
             }
             catch (Exception e)
             {
-                response.setStatus(422); //422 - The request was syntactically correct but could not be processed.
+                response.setStatus(SC_UNPROCESSABLE_CONTENT); //when maham fails
             }
         }
     }

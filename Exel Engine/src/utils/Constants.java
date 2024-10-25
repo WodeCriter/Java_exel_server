@@ -1,6 +1,7 @@
 package utils;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 
 public class Constants {
     public static final String MAIN_TITLE = "Exel";
@@ -36,4 +37,7 @@ public class Constants {
 
     // GSON instance
     public final static Gson GSON_INSTANCE = new Gson();
+
+    // Http Status Code
+    public final static int SC_UNPROCESSABLE_CONTENT = 422;
 }
