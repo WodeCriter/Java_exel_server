@@ -128,7 +128,8 @@ public class SheetsServlet extends HttpServlet {
     private void handleGetSheet(Engine engine, HttpServletResponse response) throws IOException {
         synchronized (engine) {
             ReadOnlySheet sheet = engine.getSheet();
-            response.getWriter().write(GSON_INSTANCE.toJson(sheet));
+            //response.getWriter().write(GSON_INSTANCE.toJson(sheet));
+            addSheetToResponse(sheet, response);
         }
     }
 
@@ -145,7 +146,7 @@ public class SheetsServlet extends HttpServlet {
             {
                 engine.updateCellContents(request.getParameter("coordinate"), request.getParameter("newValue"));
                 response.setStatus(HttpServletResponse.SC_OK);
-                response.getWriter().write(GSON_INSTANCE.toJson(engine.getSheet()));
+                addSheetToResponse(engine.getSheet(), response);
             }
             catch (Exception e)
             {
@@ -163,7 +164,7 @@ public class SheetsServlet extends HttpServlet {
             try
             {
                 engine.addNewRange(rangeName, topLeftCord, bottomRightCord);
-                response.getWriter().write("Range added successfully");
+                addSheetToResponse(engine.getSheet(), response);
             }
             catch (IllegalArgumentException e)
             {
@@ -200,6 +201,10 @@ public class SheetsServlet extends HttpServlet {
             this.action = action;
             this.engine = engine;
         }
+    }
+
+    private void addSheetToResponse(ReadOnlySheet sheet, HttpServletResponse response) throws IOException {
+        response.getWriter().write(GSON_INSTANCE.toJson(sheet));
     }
 }
 

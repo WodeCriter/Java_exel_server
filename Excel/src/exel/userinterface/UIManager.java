@@ -129,8 +129,46 @@ public class UIManager {
 
     //TODO: CHANGE
     private void handleCreateNewRange(CreateNewRangeEvent event) {
-        engine.addNewRange(event.getRangeName(), event.getTopLeftCord(), event.getBottomRightCord());
-        eventBus.publish(new RangeCreatedEvent(event.getRangeName(), event.getTopLeftCord(), event.getBottomRightCord()));
+        //engine.addNewRange(event.getRangeName(), event.getTopLeftCord(), event.getBottomRightCord());
+        try
+        {
+            // Send a request to the server to update the ranges
+            String finalURL = HttpUrl
+                    .parse(ADD_RAGE_REQUEST_PATH(currSheetFileName))
+                    .newBuilder()
+                    .addQueryParameter("rangeName", event.getRangeName())
+                    .addQueryParameter("topLeftCord", event.getTopLeftCord())
+                    .addQueryParameter("bottomRightCord", event.getBottomRightCord())
+                    .build()
+                    .toString();
+
+            Request request = new Request.Builder()
+                    .url(finalURL)
+                    .put(RequestBody.create(null, new byte[0]))
+                    .build();
+
+            HttpClientUtil.runAsync(request, response ->
+            {
+                try {
+                    Gson gson = getGsonForSheet();
+
+                    readOnlySheet = gson.fromJson(response.body().string(), ReadOnlySheetImp.class);
+                    Platform.runLater(() -> eventBus.publish(new RangeCreatedEvent(
+                                event.getRangeName(),
+                                event.getTopLeftCord(),
+                                event.getBottomRightCord())));
+                }
+                catch (IOException e)
+                {
+                    throw new RuntimeException(e);
+                }
+            }
+ );
+        }
+        catch (Exception e)
+        {
+            throw new IllegalArgumentException(e.getMessage());
+        }
     }
 
     private void handleFileSelected(FileSelectedForOpeningEvent event){
@@ -182,19 +220,16 @@ public class UIManager {
         HttpClientUtil.runAsync(request, r -> homeController.updateData());
     }
 
-    //TODO: CHANGE? TO GET CELL FROM READONLYSHEET
     private void handleCellSelected(CellSelectedEvent event) {
-        // Call the engine to create a new sheet based on the event details
-        //ReadOnlyCell cell = engine.getCellContents(event.getCellId());
+        // Read a specific cell from ReadOnlySheet
         ReadOnlyCell cell = readOnlySheet.getCell(event.getCellId());
         eventBus.publish(new DisplaySelectedCellEvent(cell));
     }
 
-    //TODO : CHANGE TO HTTP
     private void handleCellUpdate(CellUpdateEvent event) {
         try
         {
-            //engine.updateCellContents(event.getCoordinate(), event.getOriginalValue());
+            // Send a request to the server to update the sheet
             String finalURL = HttpUrl
                     .parse(UPDATE_CELL_REQUEST_PATH(currSheetFileName))
                     .newBuilder()
@@ -229,8 +264,6 @@ public class UIManager {
         {
             throw new IllegalArgumentException(e.getMessage());
         }
-        //ReadOnlySheet updatedSheet = engine.getSheet();
-        //eventBus.publish(new SheetDisplayEvent(updatedSheet));
     }
 
     //TODO: CHANGE TO GET FROM READONLYSHEET

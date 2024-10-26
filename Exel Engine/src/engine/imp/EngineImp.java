@@ -39,6 +39,7 @@ public class EngineImp implements Engine
         loadSheet(fileContent);
     }
 
+    //?
     @Override
     public ReadOnlySheet createSheet(String sheetName, int rowNum , int colNum , int cellWidth , int cellHeight) {
         //Todo: check for validity of size
@@ -49,6 +50,7 @@ public class EngineImp implements Engine
         return this.readOnlyCurrentSheet;
     }
 
+    //Client
     @Override
     public ReadOnlySheet createSortedSheetFromCords(String cord1, String cord2, List<String> columnsToSortBy)
     {
@@ -57,6 +59,7 @@ public class EngineImp implements Engine
         return sorter.getSheetAfterChange();
     }
 
+    //Client
     @Override
     public ReadOnlySheet createFilteredSheetFromCords(String cord1, String cord2, Map<String, List<String>> columnToValuesToFilterBy)
     {
@@ -80,6 +83,7 @@ public class EngineImp implements Engine
         return filter.getSheetAfterChange();
     }
 
+    //redundent
     @Override
     public ReadOnlySheet loadSheet(String filePath) throws Exception {
         this.filePath = filePath;
@@ -89,6 +93,7 @@ public class EngineImp implements Engine
         return readOnlyCurrentSheet;
     }
 
+    //server
     @Override
     public ReadOnlySheet loadSheet(InputStream fileContent) throws JAXBException {
         // parse the xml and create a sheet and a copy sheet object
@@ -97,11 +102,7 @@ public class EngineImp implements Engine
         return readOnlyCurrentSheet;
     }
 
-    @Override
-    public ReadOnlySheet getReadOnlySheet(){
-        return this.readOnlyCurrentSheet;
-    }
-
+    //redundent
     @Override
     public void loadSysState(String filePath) throws Exception {
         this.filePath = filePath;
@@ -110,17 +111,20 @@ public class EngineImp implements Engine
         this.readOnlyCurrentSheet = new ReadOnlySheetImp(currentSheet);
     }
 
+    //both
     @Override
     public ReadOnlySheet getSheet() {
         return readOnlyCurrentSheet;
     }
 
+    //server
     @Override
     public ReadOnlySheet getSheetOfVersion(int version) {
         Sheet verSheet = currentSheet.getSheetByVersion(version);
         return new ReadOnlySheetImp(verSheet);
     }
 
+    //
     @Override
     public List<Integer> getListOfVersionChanges() {
         return currentSheet.getNumOfChangesInEachVersion();

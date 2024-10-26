@@ -94,7 +94,7 @@ public class FilesServlet extends HttpServlet
             if (fileManager.isFileExists(fileName))
             {
                 Engine fileContent = fileManager.getEngine(fileName);
-                response.getWriter().write((new Gson()).toJson(fileContent.getReadOnlySheet()));
+                response.getWriter().write((new Gson()).toJson(fileContent.getSheet()));
                 response.setStatus(HttpServletResponse.SC_OK);
             }
             else

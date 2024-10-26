@@ -19,6 +19,7 @@ public class Constants {
     public static final String VIEW_SHEET_PATH = "/viewsheet";
     public static final String DELETE_SHEET_PATH = "/deletesheet";
     public static final String UPDATE_CELL_PATH = "/updatecell";
+    public static final String ADD_RANGE_PATH = "/addrange";
 
     public static final int INT_PARAMETER_ERROR = Integer.MIN_VALUE;
 
@@ -45,6 +46,10 @@ public class Constants {
     public static String UPDATE_CELL_REQUEST_PATH(String fileName){
         return FULL_SERVER_PATH + SHEETS_PATH + '/' + fileName + UPDATE_CELL_PATH;
 
+    }
+
+    public static String ADD_RAGE_REQUEST_PATH(String fileName){
+        return FULL_SERVER_PATH + SHEETS_PATH + '/' + fileName + ADD_RANGE_PATH;
     }
 
     public final static String LOGIN_PAGE = FULL_SERVER_PATH + LOGIN_PATH;
