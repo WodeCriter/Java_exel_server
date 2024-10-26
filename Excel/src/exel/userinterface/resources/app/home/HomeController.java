@@ -1,32 +1,22 @@
 package exel.userinterface.resources.app.home;
 
-import com.sun.javafx.collections.ImmutableObservableList;
 import exel.eventsys.EventBus;
-import exel.eventsys.events.FileContentReceivedEvent;
 import exel.userinterface.resources.app.file.FileHelper;
 import exel.userinterface.resources.app.home.items.FilesListController;
-import exel.userinterface.util.http.HttpClientUtil;
-import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
+import javafx.scene.control.ProgressIndicator;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Window;
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.HttpUrl;
-import okhttp3.Response;
-import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.*;
 
-import static utils.Constants.*;
-
-public class HomeController {
+public class HomeController
+{
     private static final String FILES_PATH = "/exel/userinterface/resources/app/home/items/FilesList.fxml";
 
     private EventBus eventBus;
@@ -40,11 +30,14 @@ public class HomeController {
     private FilesListController filesController;
     @FXML
     private AnchorPane filesListContainer;
+    @FXML
+    private ProgressIndicator loadingFileIndicator;
 
     public void initialize() {
         try
         {
             initializeFilesListController();
+            loadingFileIndicator.setVisible(false);
             //setupFilesControllerListener();
         }
         catch (IOException e)
@@ -64,9 +57,10 @@ public class HomeController {
         filesListContainer.getChildren().add(filesList);
     }
 
-    private void setupFilesControllerListener(){
+    private void setupFilesControllerListener() {
         //Whenever a file is pressed, handleItemSelected is activated with the item selected
-        filesController.selectedItemProperty().addListener((obs, oldItem, newItem) -> {
+        filesController.selectedItemProperty().addListener((obs, oldItem, newItem) ->
+        {
             if (newItem != null)
                 System.out.println("File selected: " + newItem);
         });
@@ -74,13 +68,18 @@ public class HomeController {
 
     public void setEventBus(EventBus eventBus) {
         this.eventBus = eventBus;
-        filesController.setEventBus(eventBus); 
+        filesController.setEventBus(eventBus);
     }
 
     @FXML
     void uploadFileListener(ActionEvent event) {
         Window ownerWindow = filesListContainer.getScene().getWindow();
         File loadedFile = FileHelper.selectFileFromPC(ownerWindow);
+        uploadFileAndShowLoadingIndicator(loadedFile);
+    }
+
+    private void uploadFileAndShowLoadingIndicator(File loadedFile) {
+        loadingFileIndicator.setVisible(true);
         FileHelper.uploadFile(loadedFile);
         refresher.run();
     }
@@ -95,10 +94,11 @@ public class HomeController {
         {
             this.savedFiles = savedFiles;
             filesController.updateFilesList(savedFiles);
+            loadingFileIndicator.setVisible(false);
         }
     }
 
-    public void startDataRefresher(){
+    public void startDataRefresher() {
         refresher = new HomeRefresher(this::setActiveUsers, this::setSavedFiles);
         timer = new Timer();
         timer.schedule(refresher, 0, 2000);
