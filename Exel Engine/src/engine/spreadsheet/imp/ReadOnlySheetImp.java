@@ -1,5 +1,6 @@
 package engine.spreadsheet.imp;
 
+import engine.spreadsheet.cell.imp.ReadOnlyCellImp;
 import engine.spreadsheet.range.ReadOnlyRange;
 import engine.spreadsheet.api.Sheet;
 import engine.spreadsheet.cell.api.ReadOnlyCell;
@@ -57,7 +58,7 @@ public class ReadOnlySheetImp implements ReadOnlySheet {
         return cells.stream()
                 .filter(cell -> cell.getCoordinate().equals(coordinate))
                 .findFirst()
-                .orElse(null); // Return null if no cell is found with the coordinate
+                .orElse(new ReadOnlyCellImp(coordinate)); // Return null if no cell is found with the coordinate
     }
 
     @Override

@@ -67,8 +67,8 @@ public class SheetsServlet extends HttpServlet {
         Engine engine = requestData.engine;
 
         switch (requestData.action.toLowerCase()) {
-            case "updatesheet":
-                handleUpdateSheet(engine, request, response);
+            case "updatecell":
+                handleUpdateCell(engine, request, response);
                 break;
             case "addrange":
                 handleAddRange(engine, request, response);
@@ -138,13 +138,14 @@ public class SheetsServlet extends HttpServlet {
         }
     }
 
-    private void handleUpdateSheet(Engine engine, HttpServletRequest request, HttpServletResponse response) throws IOException {
+    private void handleUpdateCell(Engine engine, HttpServletRequest request, HttpServletResponse response) throws IOException {
         synchronized (engine) {
             // Read data from request to update the sheet
             try
             {
                 engine.updateCellContents(request.getParameter("coordinate"), request.getParameter("newValue"));
-                response.getWriter().write("Sheet updated successfully");
+                response.setStatus(HttpServletResponse.SC_OK);
+                response.getWriter().write(GSON_INSTANCE.toJson(engine.getSheet()));
             }
             catch (Exception e)
             {

@@ -49,6 +49,10 @@ public class ReadOnlyCellImp implements ReadOnlyCell {
         this.influencingOn = Collections.emptyList();
     }
 
+    public ReadOnlyCellImp(String coordinate){
+        this(coordinate, "", "", 1, Collections.emptyList(), Collections.emptyList());
+    }
+
     @Override
     public String getCoordinate() {
         return coordinate;

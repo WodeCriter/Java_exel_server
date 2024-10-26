@@ -41,6 +41,7 @@ public class UIManager {
     private Engine engine;
     private EventBus eventBus;
     private ReadOnlySheet readOnlySheet;
+    private String currSheetFileName;
     private IndexController indexController;
     private HomeController homeController;
     private Stage primaryStage;
@@ -73,6 +74,7 @@ public class UIManager {
         eventBus.subscribe(DeleteFileRequestedEvent.class, this::handleFileSelectedForDeletion);
     }
 
+    //TODO: REDUNDANT?
     private void handleCreateNewSheet(CreateNewSheetEvent event) {
         // Call the engine to create a new sheet based on the event details
         readOnlySheet = engine.createSheet(event.getSheetName(), event.getRows(), event.getCols(), event.getWidth(), event.getHeight());
@@ -88,6 +90,7 @@ public class UIManager {
         eventBus.publish(new SheetDisplayEvent(readOnlySheet));
     }
 
+    //TODO: REDUNDANT
     private void handleLoadSheetFromPath(LoadSheetEvent event){
         try
         {
@@ -119,11 +122,12 @@ public class UIManager {
         }
     }
 
-    //added an annotation
+    //TODO:  REDUNDANT?
     private void handleSaveSheet(SaveSheetEvent event){
         engine.saveXmlFile( event.getAbsolutePath() );
     }
 
+    //TODO: CHANGE
     private void handleCreateNewRange(CreateNewRangeEvent event) {
         engine.addNewRange(event.getRangeName(), event.getTopLeftCord(), event.getBottomRightCord());
         eventBus.publish(new RangeCreatedEvent(event.getRangeName(), event.getTopLeftCord(), event.getBottomRightCord()));
@@ -146,12 +150,10 @@ public class UIManager {
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 if (response.code() == 200)
                 {
-                    Gson gson = new GsonBuilder()
-                            .registerTypeAdapter(ReadOnlySheetImp.class, new ReadOnlySheetImpAdapter())
-                            .create();
-
+                    Gson gson = getGsonForSheet();
 
                     readOnlySheet = gson.fromJson(response.body().string(), ReadOnlySheetImp.class);
+                    currSheetFileName = event.getFileName();
                     Platform.runLater(() -> {
                         showSheetPage();
                         loadSheetHelper();
@@ -180,64 +182,104 @@ public class UIManager {
         HttpClientUtil.runAsync(request, r -> homeController.updateData());
     }
 
+    //TODO: CHANGE? TO GET CELL FROM READONLYSHEET
     private void handleCellSelected(CellSelectedEvent event) {
         // Call the engine to create a new sheet based on the event details
-        ReadOnlyCell cell = engine.getCellContents(event.getCellId());
+        //ReadOnlyCell cell = engine.getCellContents(event.getCellId());
+        ReadOnlyCell cell = readOnlySheet.getCell(event.getCellId());
         eventBus.publish(new DisplaySelectedCellEvent(cell));
     }
 
+    //TODO : CHANGE TO HTTP
     private void handleCellUpdate(CellUpdateEvent event) {
         try
         {
-            engine.updateCellContents(event.getCoordinate(), event.getOriginalValue());
+            //engine.updateCellContents(event.getCoordinate(), event.getOriginalValue());
+            String finalURL = HttpUrl
+                    .parse(UPDATE_CELL_REQUEST_PATH(currSheetFileName))
+                    .newBuilder()
+                    .addQueryParameter("coordinate", event.getCoordinate())
+                    .addQueryParameter("newValue", event.getOriginalValue())
+                    .build()
+                    .toString();
+
+            Request request = new Request.Builder()
+                    .url(finalURL)
+                    .put(RequestBody.create(null, new byte[0]))
+                    .build();
+
+            HttpClientUtil.runAsync(request, response ->
+            {
+                try
+                {
+                    Gson gson = getGsonForSheet();
+
+                    readOnlySheet = gson.fromJson(response.body().string(), ReadOnlySheetImp.class);
+                    Platform.runLater(() -> {
+                        eventBus.publish(new SheetDisplayEvent(readOnlySheet));
+                    });
+                }
+                catch (IOException e)
+                {
+                    throw new RuntimeException(e);
+                }
+            });
         }
         catch (Exception e)
         {
             throw new IllegalArgumentException(e.getMessage());
         }
-        ReadOnlySheet updatedSheet = engine.getSheet();
-        eventBus.publish(new SheetDisplayEvent(updatedSheet));
+        //ReadOnlySheet updatedSheet = engine.getSheet();
+        //eventBus.publish(new SheetDisplayEvent(updatedSheet));
     }
 
+    //TODO: CHANGE TO GET FROM READONLYSHEET
     private void handleRangeSelected(RangeSelectedEvent event)
     {
         List<String> cords = engine.getCordsOfCellsInRange(event.getRangeName());
         eventBus.publish(new CellsRequestedToBeMarkedEvent(cords));
     }
 
+    //TODO: CHANGE
     private void handleRangeDelete(RangeDeleteEvent event)
     {
         engine.deleteRange(event.getRangeName());
         eventBus.publish(new DeletedRangeEvent(event.getRangeName()));
     }
 
+    //TODO: CHANGE
     private void handleSortRequested(SortRequestedEvent event)
     {
         ReadOnlySheet sortedSheet = engine.createSortedSheetFromCords(event.getCord1(), event.getCord2(), event.getPickedColumns());
         eventBus.publish(new DisplaySheetPopupEvent(sortedSheet));
     }
 
+    //TODO: CHANGE
     private void handleFilterRequested(FilterRequestedEvent event)
     {
         ReadOnlySheet sortedSheet = engine.createFilteredSheetFromCords(event.getCord1(), event.getCord2(), event.getPickedData());
         eventBus.publish(new DisplaySheetPopupEvent(sortedSheet));
     }
 
+    //TODO: CHANGE TO HTTP
     private void handleVersionSelectedEvent(VersionSelectedEvent event){
         ReadOnlySheet versionSheet = engine.getSheetOfVersion(event.getVersion() - 1);
         eventBus.publish(new DisplaySheetPopupEvent(versionSheet));
     }
 
+    //TODO: CHANGE TO HTTP
     private void handleSheetResizeWidthEvent(SheetResizeWidthEvent event){
         ReadOnlySheet updatedSheet = engine.changeCellWidth(event.getWidth());
         eventBus.publish(new SheetDisplayRefactorEvent(updatedSheet));
 
     }
 
+    //TODO: CHANGE TO HTTP
     private void handleSheetResizeHeightEvent(SheetResizeHeightEvent event){
         ReadOnlySheet updatedSheet = engine.changeCellHeight(event.getHeight());
         eventBus.publish(new SheetDisplayRefactorEvent(updatedSheet));
     }
+
 
     private void handleLogInSuccessfulEvent(LogInSuccessfulEvent event){
         showHomePage();
@@ -318,5 +360,11 @@ public class UIManager {
 
         // Displaying the contents of the stage
         primaryStage.show();
+    }
+
+    private Gson getGsonForSheet(){
+        return new GsonBuilder()
+                .registerTypeAdapter(ReadOnlySheetImp.class, new ReadOnlySheetImpAdapter())
+                .create();
     }
 }
