@@ -156,6 +156,8 @@ public class UIManager {
                         showSheetPage();
                         loadSheetHelper();
                     });
+
+                    homeController.stopDataRefresher();
                 }
                 else
                     Platform.runLater(() -> System.out.println("Something went wrong: " + response.message()));
