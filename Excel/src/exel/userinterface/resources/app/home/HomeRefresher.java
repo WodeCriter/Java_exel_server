@@ -6,6 +6,7 @@ import javafx.application.Platform;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
+import okhttp3.ResponseBody;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -35,35 +36,27 @@ public class HomeRefresher extends TimerTask
         updateData();
     }
 
-    private void updateData(){
-        HttpClientUtil.runAsync(HOME_PAGE, "requestNumber", String.valueOf(requestNumber), new Callback() {
-            @Override
-            public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                Platform.runLater(() -> System.out.println("Something went wrong: " + e.getMessage()));
-            }
-
-            @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                assert response.body() != null;
-                String responseBody = response.body().string();
-
-                if (response.code() == 200)
-                {
-                    if ("true".equals(response.header("X-Data-Update-Available")))
-                    {
-                        Platform.runLater(() -> updateListsFromJson(responseBody));
-                        requestNumber = Integer.parseInt(response.header("X-Latest-Number"));
-                    }
-                }
-                else
-                    Platform.runLater(() -> System.out.println("Something went wrong: " + responseBody));
+    public void updateData(){
+        HttpClientUtil.runAsync(HOME_PAGE, "requestNumber", String.valueOf(requestNumber), response ->
+        {
+            if ("true".equals(response.header("X-Data-Update-Available")))
+            {
+                Platform.runLater(() -> updateListsFromJson(response.body()));
+                requestNumber = Integer.parseInt(response.header("X-Latest-Number"));
             }
         });
     }
 
-    private void updateListsFromJson(String json){
-        Map<String, List<String>> jsonHeaderToList = GSON_INSTANCE.fromJson(json, Map.class);
-        activeUsersConsumer.accept(jsonHeaderToList.get("userNames"));
-        savedFilesConsumer.accept(jsonHeaderToList.get("fileNames"));
+    private void updateListsFromJson(ResponseBody body){
+        try
+        {
+            Map<String, List<String>> jsonHeaderToList = GSON_INSTANCE.fromJson(body.string(), Map.class);
+            activeUsersConsumer.accept(jsonHeaderToList.get("userNames"));
+            savedFilesConsumer.accept(jsonHeaderToList.get("fileNames"));
+        }
+        catch (IOException e)
+        {
+            throw new RuntimeException(e);
+        }
     }
 }

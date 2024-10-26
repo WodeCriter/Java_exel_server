@@ -82,6 +82,7 @@ public class HomeController {
         Window ownerWindow = filesListContainer.getScene().getWindow();
         File loadedFile = FileHelper.selectFileFromPC(ownerWindow);
         FileHelper.uploadFile(loadedFile);
+        refresher.run();
     }
 
     private void setActiveUsers(List<String> activeUsers) {

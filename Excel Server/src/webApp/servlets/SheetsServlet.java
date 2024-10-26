@@ -128,7 +128,6 @@ public class SheetsServlet extends HttpServlet {
     private void handleGetSheet(Engine engine, HttpServletResponse response) throws IOException {
         synchronized (engine) {
             ReadOnlySheet sheet = engine.getSheet();
-            String sheetJson = GSON_INSTANCE.toJson(sheet);
             response.getWriter().write(GSON_INSTANCE.toJson(sheet));
         }
     }

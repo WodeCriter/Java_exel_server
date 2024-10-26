@@ -66,6 +66,10 @@ public class HttpClientUtil {
         call.enqueue(callback);
     }
 
+    public static void runAsync(String url, String queryName, String queryValue, Consumer<Response> activateWhenOk){
+        runAsync(url, queryName, queryValue, getGenericCallback(activateWhenOk));
+    }
+
     public static void runAsync(String finalUrl, Consumer<Response> activateWhenOk){
         runAsync(finalUrl, getGenericCallback(activateWhenOk));
     }

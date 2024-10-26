@@ -40,7 +40,7 @@ public class FilesServlet extends HttpServlet
                 InputStream inputStream = filePart.getInputStream();
                 try
                 {
-                    fileManager.addFile(fileName, inputStream);
+                    fileManager.addFile(fileNameWithoutXML(fileName), inputStream);
                     HomeServlet.increaseRequestNumber();
                     response.setStatus(HttpServletResponse.SC_OK);
                 }
@@ -76,6 +76,10 @@ public class FilesServlet extends HttpServlet
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             response.getWriter().write("No file provided.");
         }
+    }
+
+    private String fileNameWithoutXML(String fileName){
+        return fileName.substring(0, fileName.length() - 4);
     }
 
     //Will move to sheet servlet later
