@@ -1,8 +1,11 @@
 package exel.userinterface;
 
+import com.google.gson.GsonBuilder;
 import engine.api.Engine;
 import engine.spreadsheet.api.ReadOnlySheet;
 import engine.spreadsheet.cell.api.ReadOnlyCell;
+import engine.spreadsheet.imp.ReadOnlySheetImpAdapter;
+import engine.spreadsheet.imp.ReadOnlySheetImp;
 import engine.spreadsheet.range.ReadOnlyRange;
 import exel.eventsys.EventBus;
 import exel.eventsys.events.*;
@@ -21,8 +24,8 @@ import okhttp3.Callback;
 import okhttp3.HttpUrl;
 import okhttp3.Response;
 import org.jetbrains.annotations.NotNull;
+import com.google.gson.Gson;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
@@ -53,7 +56,7 @@ public class UIManager {
         eventBus.subscribe(RangeSelectedEvent.class, this::handleRangeSelected);
         eventBus.subscribe(RangeDeleteEvent.class, this::handleRangeDelete);
         eventBus.subscribe(SortRequestedEvent.class, this::handleSortRequested);
-        eventBus.subscribe(LoadSheetEvent.class, this::handleLoadSheet);
+        eventBus.subscribe(LoadSheetEvent.class, this::handleLoadSheetFromPath);
         //eventBus.subscribe(FileContentReceivedEvent.class, this::handleLoadSheet);
         eventBus.subscribe(SaveSheetEvent.class, this::handleSaveSheet);
         eventBus.subscribe(VersionSelectedEvent.class, this::handleVersionSelectedEvent);
@@ -79,7 +82,7 @@ public class UIManager {
         eventBus.publish(new SheetDisplayEvent(readOnlySheet));
     }
 
-    private void handleLoadSheet(LoadSheetEvent event){
+    private void handleLoadSheetFromPath(LoadSheetEvent event){
         try
         {
             readOnlySheet = engine.loadSheet(event.getFilePath());
@@ -91,19 +94,6 @@ public class UIManager {
             throw new RuntimeException(e.getMessage());
         }
     }
-
-//    private void handleLoadSheet(FileContentReceivedEvent event) {
-//        try
-//        {
-//            readOnlySheet = engine.loadSheet(event.getFileContent());
-//            loadSheetHelper();
-//        }
-//        catch (Exception e)
-//        {
-//            e.printStackTrace();
-//            throw new RuntimeException(e.getMessage());
-//        }
-//    }
 
     private void loadSheetHelper()
     {
@@ -132,10 +122,10 @@ public class UIManager {
         engine.addNewRange(event.getRangeName(), event.getTopLeftCord(), event.getBottomRightCord());
         eventBus.publish(new RangeCreatedEvent(event.getRangeName(), event.getTopLeftCord(), event.getBottomRightCord()));
     }
-        //sheets/{filename}/{action}
+
     private void handleFileSelected(FileSelectedEvent event){
         String finalURL = HttpUrl
-                .parse(SHEETS_PATH + "/" + event.getFileName() + VIEW_SHEET_PATH)
+                .parse(VIEW_SHEET_PAGE(event.getFileName()))
                 .newBuilder()
                 .build()
                 .toString();
@@ -148,10 +138,19 @@ public class UIManager {
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                ReadOnlySheet sheet = GSON_INSTANCE.fromJson(response.body().string(), ReadOnlySheet.class);
-
                 if (response.code() == 200)
-                    Platform.runLater(() -> showSheetPage());
+                {
+                    Gson gson = new GsonBuilder()
+                            .registerTypeAdapter(ReadOnlySheetImp.class, new ReadOnlySheetImpAdapter())
+                            .create();
+
+
+                    readOnlySheet = gson.fromJson(response.body().string(), ReadOnlySheetImp.class);
+                    Platform.runLater(() -> {
+                        showSheetPage();
+                        loadSheetHelper();
+                    });
+                }
                 else
                     Platform.runLater(() -> System.out.println("Something went wrong: " + response.message()));
             }

@@ -1,7 +1,11 @@
 package exel.userinterface.util.http;
 
+import javafx.application.Platform;
 import okhttp3.*;
+import org.jetbrains.annotations.NotNull;
 
+import java.io.IOException;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 public class HttpClientUtil {
@@ -15,6 +19,25 @@ public class HttpClientUtil {
 
     public static void setCookieManagerLoggingFacility(Consumer<String> logConsumer) {
         simpleCookieManager.setLogData(logConsumer);
+    }
+
+    public static Callback getGenericCallback(Consumer<Response> activateWhenOk) {
+
+        return new Callback()
+        {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                System.out.println("Something went wrong: " + e.getMessage());
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                if (response.code() == 200)
+                    activateWhenOk.accept(response);
+                else
+                    System.out.println("Something went wrong: " + response.body());
+            }
+        };
     }
 
     public static void removeCookiesOf(String domain) {
@@ -41,6 +64,14 @@ public class HttpClientUtil {
     public static void runAsync(Request request, Callback callback) {
         Call call = HttpClientUtil.HTTP_CLIENT.newCall(request);
         call.enqueue(callback);
+    }
+
+    public static void runAsync(String finalUrl, Consumer<Response> activateWhenOk){
+        runAsync(finalUrl, getGenericCallback(activateWhenOk));
+    }
+
+    public static void runAsync(Request request, Consumer<Response> activateWhenOk){
+        runAsync(request, getGenericCallback(activateWhenOk));
     }
 
     public static void shutdown() {

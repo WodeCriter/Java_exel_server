@@ -31,6 +31,9 @@ public class Constants {
     private final static String BASE_URL = "http://" + BASE_DOMAIN + ":8080";
     private final static String CONTEXT_PATH = "";
     public final static String FULL_SERVER_PATH = BASE_URL + CONTEXT_PATH;
+    public final static String VIEW_SHEET_PAGE(String fileName){
+        return FULL_SERVER_PATH + SHEETS_PATH + '/' + fileName + VIEW_SHEET_PATH;
+    }
 
     public final static String LOGIN_PAGE = FULL_SERVER_PATH + LOGIN_PATH;
     public final static String HOME_PAGE = FULL_SERVER_PATH + HOME_PATH;

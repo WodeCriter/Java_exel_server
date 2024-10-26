@@ -9,12 +9,12 @@ import java.util.stream.Collectors;
 
 public class ReadOnlyCellImp implements ReadOnlyCell {
 
-    private final String coordinate;
-    private final String originalValue;
-    private final String effectiveValue;
-    private final int version;
-    private final List<String> dependsOn;
-    private final List<String> influencingOn;
+    private String coordinate;
+    private String originalValue;
+    private String effectiveValue;
+    private int version;
+    private List<String> dependsOn;
+    private List<String> influencingOn;
 
     public ReadOnlyCellImp(String coordinate, String originalValue, EffectiveValue effectiveValue,
                            int version, List<CellImp> dependsOn, List<CellImp> influencingOn) {
@@ -28,6 +28,25 @@ public class ReadOnlyCellImp implements ReadOnlyCell {
                 dependsOn.stream().map(CellImp::getCoordinateStr).collect(Collectors.toList());
         this.influencingOn = influencingOn == null ? Collections.emptyList() :
                 influencingOn.stream().map(CellImp::getCoordinateStr).collect(Collectors.toList());
+    }
+
+    public ReadOnlyCellImp(String coordinate, String originalValue, String effectiveValue,
+                           int version, List<String> dependsOn, List<String> influencingOn){
+        this.coordinate = coordinate;
+        this.originalValue = originalValue;
+        this.effectiveValue = effectiveValue;
+        this.version = version;
+        this.dependsOn = dependsOn;
+        this.influencingOn = influencingOn;
+    }
+
+    public ReadOnlyCellImp(){
+        this.coordinate = "";
+        this.originalValue = "";
+        this.effectiveValue = "";
+        this.version = 1;
+        this.dependsOn = Collections.emptyList();
+        this.influencingOn = Collections.emptyList();
     }
 
     @Override

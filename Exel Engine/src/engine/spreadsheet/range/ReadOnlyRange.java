@@ -15,6 +15,8 @@ public class ReadOnlyRange implements Serializable {
         this(range.getTopLeft().toString(), range.getBottomRight().toString(), rangeName);
     }
 
+    public ReadOnlyRange() {}
+
     public String getTopLeftCord() {
         return topLeftCord;
     }

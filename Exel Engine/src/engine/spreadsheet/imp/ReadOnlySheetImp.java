@@ -35,6 +35,18 @@ public class ReadOnlySheetImp implements ReadOnlySheet {
                 sheet.getNumOfCols(), sheet.getNumOfRows(), sheet.getCellWidth(), sheet.getCellHeight(), sheet.getReadOnlyRanges());
     }
 
+    //Need for Gson to work with this class
+    private ReadOnlySheetImp() {
+        this.version = 1;
+        this.cells = Collections.emptyList();
+        this.name = "";
+        this.numOfCols = 0;
+        this.numOfRows = 0;
+        this.cellWidth = 0;
+        this.cellHeight = 0;
+        this.ranges = Collections.emptyList();
+    }
+
     @Override
     public int getVersion() {
         return version;

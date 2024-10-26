@@ -44,16 +44,25 @@ public class FilesServlet extends HttpServlet
                     HomeServlet.increaseRequestNumber();
                     response.setStatus(HttpServletResponse.SC_OK);
                 }
-                catch (JAXBException e)
+                catch (JAXBException e) //When given file is not a sheet file
                 {
                     response.setStatus(SC_UNPROCESSABLE_CONTENT);
                     response.getWriter().write("File is Broken."); //todo: write better message
+                    System.out.println("File is Broken.");
                 }
-                catch (RuntimeException e)
+                catch (RuntimeException e) //When file already exist (probably)
                 {
                     response.setStatus(HttpServletResponse.SC_FORBIDDEN);
                     response.getWriter().write(e.getMessage());
+                    System.out.println(e.getMessage());
                 }
+                catch (Exception e) //Else...
+                {
+                    response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                    response.getWriter().write(e.getMessage());
+                    System.out.println(e.getMessage());
+                }
+
             }
             else
             {

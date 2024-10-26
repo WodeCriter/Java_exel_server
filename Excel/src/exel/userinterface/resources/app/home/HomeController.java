@@ -1,5 +1,6 @@
 package exel.userinterface.resources.app.home;
 
+import com.sun.javafx.collections.ImmutableObservableList;
 import exel.eventsys.EventBus;
 import exel.eventsys.events.FileContentReceivedEvent;
 import exel.userinterface.resources.app.file.FileHelper;
@@ -58,7 +59,6 @@ public class HomeController {
 
         // Retrieve the controller and set it to filesController
         filesController = loader.getController();
-        filesController.setEventBus(eventBus);
 
         // Now add the files list view to the parent container
         filesListContainer.getChildren().add(filesList);
@@ -74,6 +74,7 @@ public class HomeController {
 
     public void setEventBus(EventBus eventBus) {
         this.eventBus = eventBus;
+        filesController.setEventBus(eventBus); 
     }
 
     @FXML

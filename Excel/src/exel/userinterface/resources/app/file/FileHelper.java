@@ -45,21 +45,6 @@ public class FileHelper
                 .post(body)
                 .build();
 
-        HttpClientUtil.runAsync(request, new Callback() {
-            @Override
-            public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                Platform.runLater(() -> System.out.println("Something went wrong: " + e.getMessage()));
-            }
-
-            @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                String responseBody = response.body().string();
-
-                if (response.code() == 200)
-                    System.out.println("File uploaded successfully.");
-                else
-                    System.out.println("Something went wrong: " + responseBody);
-            }
-        });
+        HttpClientUtil.runAsync(request, (r) -> System.out.println("File uploaded successfully."));
     }
 }
