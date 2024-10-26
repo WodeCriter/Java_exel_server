@@ -127,9 +127,8 @@ public class UIManager {
         engine.saveXmlFile( event.getAbsolutePath() );
     }
 
-    //TODO: CHANGE
+
     private void handleCreateNewRange(CreateNewRangeEvent event) {
-        //engine.addNewRange(event.getRangeName(), event.getTopLeftCord(), event.getBottomRightCord());
         try
         {
             // Send a request to the server to update the ranges
@@ -269,7 +268,8 @@ public class UIManager {
     //TODO: CHANGE TO GET FROM READONLYSHEET
     private void handleRangeSelected(RangeSelectedEvent event)
     {
-        List<String> cords = engine.getCordsOfCellsInRange(event.getRangeName());
+        //List<String> cords = engine.getCordsOfCellsInRange(event.getRangeName());
+        List<String> cords = readOnlySheet.getRanges();
         eventBus.publish(new CellsRequestedToBeMarkedEvent(cords));
     }
 
