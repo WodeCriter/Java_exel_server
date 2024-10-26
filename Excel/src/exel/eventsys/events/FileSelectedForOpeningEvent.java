@@ -1,9 +1,10 @@
 package exel.eventsys.events;
 
-public class FileSelectedEvent {
+public class FileSelectedForOpeningEvent
+{
     private String fileName;
 
-    public FileSelectedEvent(String fileName) {
+    public FileSelectedForOpeningEvent(String fileName) {
         this.fileName = fileName;
     }
 

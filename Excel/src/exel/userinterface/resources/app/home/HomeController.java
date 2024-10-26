@@ -37,7 +37,6 @@ public class HomeController
         try
         {
             initializeFilesListController();
-            loadingFileIndicator.setVisible(false);
             //setupFilesControllerListener();
         }
         catch (IOException e)
@@ -50,10 +49,9 @@ public class HomeController
         FXMLLoader loader = new FXMLLoader(getClass().getResource(FILES_PATH));
         Parent filesList = loader.load();
 
-        // Retrieve the controller and set it to filesController
         filesController = loader.getController();
+        filesController.setHomeController(this);
 
-        // Now add the files list view to the parent container
         filesListContainer.getChildren().add(filesList);
     }
 
@@ -75,10 +73,7 @@ public class HomeController
     void uploadFileListener(ActionEvent event) {
         Window ownerWindow = filesListContainer.getScene().getWindow();
         File loadedFile = FileHelper.selectFileFromPC(ownerWindow);
-        uploadFileAndShowLoadingIndicator(loadedFile);
-    }
 
-    private void uploadFileAndShowLoadingIndicator(File loadedFile) {
         loadingFileIndicator.setVisible(true);
         FileHelper.uploadFile(loadedFile);
         refresher.run();
@@ -94,6 +89,7 @@ public class HomeController
         {
             this.savedFiles = savedFiles;
             filesController.updateFilesList(savedFiles);
+
             loadingFileIndicator.setVisible(false);
         }
     }
@@ -110,5 +106,10 @@ public class HomeController
             refresher.cancel();
             timer.cancel();
         }
+    }
+
+    public void handleFileSelectedForLooking(String fileName) {
+        //todo: need to present users with access to file
+        System.out.println("File pressed on Once: " + fileName);
     }
 }

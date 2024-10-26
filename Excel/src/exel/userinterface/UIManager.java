@@ -64,7 +64,7 @@ public class UIManager {
         eventBus.subscribe(SheetResizeHeightEvent.class, this::handleSheetResizeHeightEvent);
         eventBus.subscribe(FilterRequestedEvent.class, this::handleFilterRequested);
         eventBus.subscribe(LogInSuccessfulEvent.class, this::handleLogInSuccessfulEvent);
-        eventBus.subscribe(FileSelectedEvent.class, this::handleFileSelected);
+        eventBus.subscribe(FileSelectedForOpeningEvent.class, this::handleFileSelected);
     }
 
     private void handleCreateNewSheet(CreateNewSheetEvent event) {
@@ -123,7 +123,7 @@ public class UIManager {
         eventBus.publish(new RangeCreatedEvent(event.getRangeName(), event.getTopLeftCord(), event.getBottomRightCord()));
     }
 
-    private void handleFileSelected(FileSelectedEvent event){
+    private void handleFileSelected(FileSelectedForOpeningEvent event){
         String finalURL = HttpUrl
                 .parse(VIEW_SHEET_PAGE(event.getFileName()))
                 .newBuilder()

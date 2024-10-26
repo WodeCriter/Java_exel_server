@@ -51,7 +51,7 @@
                   <HBox prefHeight="21.0" prefWidth="630.0" BorderPane.alignment="CENTER">
                      <children>
                         <Button mnemonicParsing="false" text="Refresh" />
-                        <ProgressIndicator fx:id="loadingFileIndicator" prefHeight="0.0" prefWidth="50.0" />
+                        <ProgressIndicator fx:id="loadingFileIndicator" prefHeight="0.0" prefWidth="50.0" visible="false" />
                      </children>
                   </HBox>
                </top>
