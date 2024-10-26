@@ -1,6 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.control.ContextMenu?>
 <?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.MenuItem?>
 
-
-<ListView fx:id="filesList" onKeyPressed="#handleKeyPress" onMouseClicked="#handleMouseClick" prefHeight="165.0" prefWidth="540.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="exel.userinterface.resources.app.home.items.FilesListController" />
+<ListView fx:id="filesList" onKeyPressed="#handleFileKeyPress" onMouseClicked="#handleFileMouseClicked" prefHeight="165.0" prefWidth="540.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="exel.userinterface.resources.app.home.items.FilesListController">
+   <contextMenu>
+      <ContextMenu fx:id="contextMenu">
+        <items>
+          <MenuItem mnemonicParsing="false" onAction="#handleContextMenuOpenPicked" text="Open" />
+            <MenuItem mnemonicParsing="false" onAction="#handleContextMenuDeletePicked" text="Delete" />
+        </items>
+      </ContextMenu>
+   </contextMenu>
+</ListView>

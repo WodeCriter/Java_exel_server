@@ -19,10 +19,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.HttpUrl;
-import okhttp3.Response;
+import okhttp3.*;
 import org.jetbrains.annotations.NotNull;
 import com.google.gson.Gson;
 
@@ -65,6 +62,7 @@ public class UIManager {
         eventBus.subscribe(FilterRequestedEvent.class, this::handleFilterRequested);
         eventBus.subscribe(LogInSuccessfulEvent.class, this::handleLogInSuccessfulEvent);
         eventBus.subscribe(FileSelectedForOpeningEvent.class, this::handleFileSelected);
+        eventBus.subscribe(DeleteFileRequestedEvent.class, this::handleFileSelectedForDeletion);
     }
 
     private void handleCreateNewSheet(CreateNewSheetEvent event) {
@@ -155,6 +153,21 @@ public class UIManager {
                     Platform.runLater(() -> System.out.println("Something went wrong: " + response.message()));
             }
         });
+    }
+
+    private void handleFileSelectedForDeletion(DeleteFileRequestedEvent event){
+        String finalURL = HttpUrl
+                .parse(DELETE_SHEET_PAGE(event.getFileName()))
+                .newBuilder()
+                .build()
+                .toString();
+
+        Request request = new Request.Builder()
+                .url(finalURL)
+                .delete()
+                .build();
+
+        HttpClientUtil.runAsync(request, r -> homeController.updateData());
     }
 
     private void handleCellSelected(CellSelectedEvent event) {

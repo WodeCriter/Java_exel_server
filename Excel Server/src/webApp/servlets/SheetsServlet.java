@@ -180,9 +180,12 @@ public class SheetsServlet extends HttpServlet {
     private void handleDeleteSheet(String fileName, HttpServletResponse response) throws IOException {
         synchronized (fileManager) {
             if (fileManager.removeFile(fileName))
-                response.getWriter().write("Sheet deleted for " + fileName);
+            {
+                response.setStatus(HttpServletResponse.SC_OK);
+                HomeServlet.increaseRequestNumber();
+            }
             else
-                response.getWriter().write("Sheet not found for " + fileName);
+                response.setStatus(HttpServletResponse.SC_NOT_FOUND);;
         }
     }
 

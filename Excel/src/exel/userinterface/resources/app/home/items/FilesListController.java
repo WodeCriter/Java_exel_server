@@ -1,17 +1,25 @@
 package exel.userinterface.resources.app.home.items;
 
 import exel.eventsys.EventBus;
+import exel.eventsys.events.DeleteFileRequestedEvent;
 import exel.eventsys.events.FileSelectedForOpeningEvent;
 import exel.userinterface.resources.app.home.HomeController;
+import exel.userinterface.util.http.HttpClientUtil;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.ContextMenu;
 import javafx.scene.control.ListView;
-import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import okhttp3.HttpUrl;
+import okhttp3.Request;
 
 import java.util.List;
+
+import static utils.Constants.DELETE_SHEET_PAGE;
 
 public class FilesListController
 {
@@ -19,6 +27,8 @@ public class FilesListController
     private HomeController homeController;
     @FXML
     private ListView<String> filesList;
+    @FXML
+    private ContextMenu contextMenu;
 
 
     // Property to hold the selected item for communication with MainController
@@ -29,34 +39,67 @@ public class FilesListController
     }
 
     @FXML
-    private void handleMouseClick(MouseEvent event){
+    private void handleFileMouseClicked(MouseEvent event){
         String selectedFile = filesList.getSelectionModel().getSelectedItem();
         if (selectedFile == null || homeController == null)
             return;
 
         if (event.getClickCount() == 1)
-            homeController.handleFileSelectedForLooking(selectedFile);
+        {
+            if (event.getButton() == MouseButton.SECONDARY)
+                contextMenu.show(filesList, event.getScreenX(), event.getScreenY());
+            else
+                homeController.handleFileSelectedForLooking(selectedFile);
+        }
         else if (event.getClickCount() == 2)
             handleFileSelectedForOpening(selectedFile);
     }
 
     @FXML
-    private void handleKeyPress(KeyEvent event) {
+    private void handleFileKeyPress(KeyEvent event) {
         String selectedFile = filesList.getSelectionModel().getSelectedItem();
-        if (selectedFile == null || homeController == null)
+        if (selectedFile == null)
             return;
 
-        if (event.getCode() == KeyCode.ENTER)
-            handleFileSelectedForOpening(selectedFile);
+        switch (event.getCode())
+        {
+            case ENTER:
+                handleFileSelectedForOpening(selectedFile);
+                break;
+            case DELETE:
+            case BACK_SPACE:
+                handleFileSelectedForDeletion(selectedFile);
+        }
+    }
+
+    @FXML
+    private void handleContextMenuOpenPicked(ActionEvent event) {
+        String selectedFile = filesList.getSelectionModel().getSelectedItem();
+        if (selectedFile == null)
+            return;
+
+        handleFileSelectedForOpening(selectedFile);
+    }
+
+    @FXML
+    private void handleContextMenuDeletePicked(ActionEvent event){
+        String selectedFile = filesList.getSelectionModel().getSelectedItem();
+        if (selectedFile == null)
+            return;
+
+        handleFileSelectedForDeletion(selectedFile);
     }
 
     public void setEventBus(EventBus eventBus) {
         this.eventBus = eventBus;
     }
 
-    // Method to handle file selected
     private void handleFileSelectedForOpening(String selectedFileName) {
         eventBus.publish(new FileSelectedForOpeningEvent(selectedFileName));
+    }
+
+    private void handleFileSelectedForDeletion(String selectedFileName) {
+        eventBus.publish(new DeleteFileRequestedEvent(selectedFileName));
     }
 
     public ObjectProperty<String> selectedItemProperty() {

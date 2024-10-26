@@ -55,15 +55,6 @@ public class HomeController
         filesListContainer.getChildren().add(filesList);
     }
 
-    private void setupFilesControllerListener() {
-        //Whenever a file is pressed, handleItemSelected is activated with the item selected
-        filesController.selectedItemProperty().addListener((obs, oldItem, newItem) ->
-        {
-            if (newItem != null)
-                System.out.println("File selected: " + newItem);
-        });
-    }
-
     public void setEventBus(EventBus eventBus) {
         this.eventBus = eventBus;
         filesController.setEventBus(eventBus);
@@ -111,5 +102,13 @@ public class HomeController
     public void handleFileSelectedForLooking(String fileName) {
         //todo: need to present users with access to file
         System.out.println("File pressed on Once: " + fileName);
+    }
+
+    public ProgressIndicator getProgressIndicator() {
+        return loadingFileIndicator;
+    }
+
+    public void updateData(){
+        refresher.run();
     }
 }
