@@ -1,10 +1,10 @@
-package exel.eventsys.events;
+package exel.eventsys.events.file;
 
-public class FileSelectedForOpeningEvent
+public class DeleteFileRequestedEvent
 {
     private String fileName;
 
-    public FileSelectedForOpeningEvent(String fileName) {
+    public DeleteFileRequestedEvent(String fileName) {
         this.fileName = fileName;
     }
 

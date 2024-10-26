@@ -1,4 +1,4 @@
-package exel.eventsys.events;
+package exel.eventsys.events.sheet;
 
 import engine.spreadsheet.api.ReadOnlySheet;
 

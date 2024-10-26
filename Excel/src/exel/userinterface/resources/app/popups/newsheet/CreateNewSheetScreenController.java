@@ -2,7 +2,7 @@ package exel.userinterface.resources.app.popups.newsheet;
 
 
 import exel.eventsys.EventBus;
-import exel.eventsys.events.CreateNewSheetEvent;
+import exel.eventsys.events.sheet.CreateNewSheetEvent;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;

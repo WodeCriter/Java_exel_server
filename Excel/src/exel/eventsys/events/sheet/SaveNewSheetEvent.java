@@ -1,9 +1,9 @@
-package exel.eventsys.events;
+package exel.eventsys.events.sheet;
 
-public class SaveSheetEvent {
+public class SaveNewSheetEvent {
     private String absolutePath;
 
-    public SaveSheetEvent(String absolutePath) {
+    public SaveNewSheetEvent(String absolutePath) {
         this.absolutePath = absolutePath;
     }
 

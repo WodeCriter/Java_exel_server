@@ -1,8 +1,7 @@
 package exel.userinterface.resources.app.popups.newRange;
 
 import exel.eventsys.EventBus;
-import exel.eventsys.events.CreateNewRangeEvent;
-import exel.eventsys.events.CreateNewSheetEvent;
+import exel.eventsys.events.range.CreateNewRangeEvent;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;

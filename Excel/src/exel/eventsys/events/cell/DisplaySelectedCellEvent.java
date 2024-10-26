@@ -1,4 +1,4 @@
-package exel.eventsys.events;
+package exel.eventsys.events.cell;
 
 import engine.spreadsheet.cell.api.ReadOnlyCell;
 

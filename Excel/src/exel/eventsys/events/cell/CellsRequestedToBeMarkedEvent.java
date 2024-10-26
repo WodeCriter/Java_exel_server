@@ -1,4 +1,4 @@
-package exel.eventsys.events;
+package exel.eventsys.events.cell;
 
 import java.util.List;
 

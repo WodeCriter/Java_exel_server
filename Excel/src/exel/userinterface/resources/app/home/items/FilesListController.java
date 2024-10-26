@@ -1,10 +1,9 @@
 package exel.userinterface.resources.app.home.items;
 
 import exel.eventsys.EventBus;
-import exel.eventsys.events.DeleteFileRequestedEvent;
-import exel.eventsys.events.FileSelectedForOpeningEvent;
+import exel.eventsys.events.file.DeleteFileRequestedEvent;
+import exel.eventsys.events.file.FileSelectedForOpeningEvent;
 import exel.userinterface.resources.app.home.HomeController;
-import exel.userinterface.util.http.HttpClientUtil;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.event.ActionEvent;
@@ -14,12 +13,8 @@ import javafx.scene.control.ListView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import okhttp3.HttpUrl;
-import okhttp3.Request;
 
 import java.util.List;
-
-import static utils.Constants.DELETE_SHEET_PAGE;
 
 public class FilesListController
 {

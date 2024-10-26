@@ -1,4 +1,4 @@
-package exel.eventsys.events;
+package exel.eventsys.events.cell;
 
 public class CellSelectedEvent {
     private final String cellId;

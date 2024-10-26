@@ -1,10 +1,10 @@
-package exel.eventsys.events;
+package exel.eventsys.events.range;
 
-public class DeletedRangeEvent
+public class RangeDeleteEvent
 {
     private String rangeName;
 
-    public DeletedRangeEvent(String rangeName)
+    public RangeDeleteEvent(String rangeName)
     {
         this.rangeName = rangeName;
     }

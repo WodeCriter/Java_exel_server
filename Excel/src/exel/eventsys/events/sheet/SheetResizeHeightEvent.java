@@ -1,4 +1,4 @@
-package exel.eventsys.events;
+package exel.eventsys.events.sheet;
 
 public class SheetResizeHeightEvent {
     private final int height;

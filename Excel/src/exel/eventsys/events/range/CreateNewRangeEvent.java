@@ -1,4 +1,4 @@
-package exel.eventsys.events;
+package exel.eventsys.events.range;
 
 public class CreateNewRangeEvent
 {

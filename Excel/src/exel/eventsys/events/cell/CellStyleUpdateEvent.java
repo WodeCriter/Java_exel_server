@@ -1,4 +1,4 @@
-package exel.eventsys.events;
+package exel.eventsys.events.cell;
 
 public class CellStyleUpdateEvent {
     private String coordinate;
