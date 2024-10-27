@@ -322,7 +322,6 @@ public class UIManager {
         eventBus.publish(new DisplaySheetPopupEvent(sortedSheet));
     }
 
-    //TODO: CHANGE TO HTTP
     private void handleVersionSelectedEvent(VersionSelectedEvent event){
         //ReadOnlySheet versionSheet = engine.getSheetOfVersion(event.getVersion());
         try
