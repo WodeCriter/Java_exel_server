@@ -57,4 +57,6 @@ public interface ReadOnlySheet {
 
 
     List<ReadOnlyRange> getRanges();
+
+    List<String> getCoordsInRange(String rangeName);
 }

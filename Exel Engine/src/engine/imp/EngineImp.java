@@ -181,6 +181,7 @@ public class EngineImp implements Engine
             throw new IllegalArgumentException("Name must be given to the range.");
 
         currentSheet.addRange(rangeName, new Range(new Coordinate(topLeftCord), new Coordinate(bottomRightCord), currentSheet));
+        readOnlyCurrentSheet = new ReadOnlySheetImp(currentSheet);
     }
 
     @Override

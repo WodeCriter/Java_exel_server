@@ -83,13 +83,16 @@ public class SheetsServlet extends HttpServlet {
         RequestData requestData = parseRequest(request, response);
         if (requestData == null) return;
 
-        // For delete, we may not need the engine if we are deleting the sheet itself
-        if (!"deletesheet".equalsIgnoreCase(requestData.action)) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Unknown action for DELETE: " + requestData.action);
-            return;
+        switch (requestData.action.toLowerCase()) {
+            case "deletesheet":
+                handleDeleteSheet(requestData.fileName, response);
+                break;
+            case "deleterange":
+                handleDeleteRange(requestData.engine, request, response);
+                break;
+            default:
+                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Unknown action for DELETE: " + requestData.action);
         }
-
-        handleDeleteSheet(requestData.fileName, response);
     }
 
     // Separate parse method
@@ -188,6 +191,23 @@ public class SheetsServlet extends HttpServlet {
             }
             else
                 response.setStatus(HttpServletResponse.SC_NOT_FOUND);;
+        }
+    }
+
+    private void handleDeleteRange(Engine engine, HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String rangeName = request.getParameter("rangeName");
+        synchronized (engine) {
+            try {
+                engine.deleteRange(rangeName);
+                response.setStatus(HttpServletResponse.SC_OK);
+                addSheetToResponse(engine.getSheet(), response);
+            } catch (IllegalArgumentException e) {
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                response.getWriter().write(e.getMessage());
+            } catch (RuntimeException e) {
+                response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                response.getWriter().write(e.getMessage());
+            }
         }
     }
 

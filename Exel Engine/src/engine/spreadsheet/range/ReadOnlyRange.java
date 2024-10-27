@@ -21,16 +21,8 @@ public class ReadOnlyRange implements Serializable {
         return topLeftCord;
     }
 
-    public void setTopLeftCord(String topLeftCord) {
-        this.topLeftCord = topLeftCord;
-    }
-
     public String getBottomRightCord() {
         return bottomRightCord;
-    }
-
-    public void setBottomRightCord(String bottomRightCord) {
-        this.bottomRightCord = bottomRightCord;
     }
 
     public String getRangeName() {

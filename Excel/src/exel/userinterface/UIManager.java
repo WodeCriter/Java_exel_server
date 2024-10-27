@@ -162,7 +162,7 @@ public class UIManager {
                     throw new RuntimeException(e);
                 }
             }
- );
+            );
         }
         catch (Exception e)
         {
@@ -265,19 +265,50 @@ public class UIManager {
         }
     }
 
-    //TODO: CHANGE TO GET FROM READONLYSHEET
-    private void handleRangeSelected(RangeSelectedEvent event)
-    {
-        //List<String> cords = engine.getCordsOfCellsInRange(event.getRangeName());
-        List<String> cords = readOnlySheet.getRanges();
+    private void handleRangeSelected(RangeSelectedEvent event) {
+        List<String> cords = readOnlySheet.getCoordsInRange(event.getRangeName());
         eventBus.publish(new CellsRequestedToBeMarkedEvent(cords));
     }
 
     //TODO: CHANGE
     private void handleRangeDelete(RangeDeleteEvent event)
     {
-        engine.deleteRange(event.getRangeName());
-        eventBus.publish(new DeletedRangeEvent(event.getRangeName()));
+        //engine.deleteRange(event.getRangeName());
+        try
+        {
+            // Send a request to the server to update the ranges
+            String finalURL = HttpUrl
+                    .parse(DELETE_RAGE_REQUEST_PATH(currSheetFileName))
+                    .newBuilder()
+                    .addQueryParameter("rangeName", event.getRangeName())
+                    .build()
+                    .toString();
+
+            Request request = new Request.Builder()
+                    .url(finalURL)
+                    .delete()
+                    .build();
+
+            HttpClientUtil.runAsync(request, response ->
+                    {
+                        try {
+                            Gson gson = getGsonForSheet();
+
+                            readOnlySheet = gson.fromJson(response.body().string(), ReadOnlySheetImp.class);
+                            Platform.runLater(() -> eventBus.publish(new DeletedRangeEvent(event.getRangeName())));
+                        }
+                        catch (IOException e)
+                        {
+                            throw new RuntimeException(e);
+                        }
+                    }
+            );
+        }
+        catch (Exception e)
+        {
+            throw new IllegalArgumentException(e.getMessage());
+        }
+        //eventBus.publish(new DeletedRangeEvent(event.getRangeName()));
     }
 
     //TODO: CHANGE

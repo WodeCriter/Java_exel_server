@@ -5,6 +5,7 @@ import engine.spreadsheet.range.ReadOnlyRange;
 import engine.spreadsheet.api.Sheet;
 import engine.spreadsheet.cell.api.ReadOnlyCell;
 import engine.spreadsheet.api.ReadOnlySheet;
+import engine.util.sheet.SheetUtils;
 
 import java.util.Collections;
 import java.util.List;
@@ -94,5 +95,20 @@ public class ReadOnlySheetImp implements ReadOnlySheet {
     @Override
     public List<ReadOnlyRange> getRanges() {
         return ranges;
+    }
+
+    @Override
+    public List<String> getCoordsInRange(String rangeName) {
+        // Find the range with the given rangeName
+        ReadOnlyRange range = ranges.stream()
+                .filter(r -> r.getRangeName().equals(rangeName))
+                .findFirst()
+                .orElse(null);
+        if (range == null) {
+            // If the range is not found, return an empty list
+            return Collections.emptyList();
+        }
+        // Use the SheetUtils method to get the coordinates within the range
+        return SheetUtils.getCoordinatesInRange(range.getTopLeftCord(), range.getBottomRightCord());
     }
 }
