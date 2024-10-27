@@ -28,7 +28,7 @@ import static utils.Constants.*;
 public class SheetsServlet extends HttpServlet {
     FileManager fileManager;
     //update sheet - PUT
-    //get Sheet - GET /viewsheet
+    //get Sheet - GET
     //delete sheet - DELETE
     //add Range - PUT
     //get Version - GET
@@ -50,8 +50,8 @@ public class SheetsServlet extends HttpServlet {
             case "viewsheet":
                 handleGetSheet(engine, response);
                 break;
-            case "getversion":
-                handleGetVersion(engine, response);
+            case "getbyversion":
+                handleGetByVersion(engine, request, response);
                 break;
             default:
                 response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Unknown action for GET: " + requestData.action);
@@ -136,9 +136,19 @@ public class SheetsServlet extends HttpServlet {
         }
     }
 
-    private void handleGetVersion(Engine engine, HttpServletResponse response) throws IOException {
+    private void handleGetByVersion(Engine engine,HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String version = request.getParameter("version");
         synchronized (engine) {
-            response.getWriter().write(engine.getSheetVersion());
+            try {
+                ReadOnlySheet versionSheet = engine.getSheetOfVersion(Integer.parseInt(version));
+                response.setStatus(HttpServletResponse.SC_OK);
+                addSheetToResponse(versionSheet, response);
+            }
+            catch (Exception e) {
+                response.setStatus(SC_UNPROCESSABLE_CONTENT); //when get version fails
+                response.getWriter().write(e.getMessage());
+            }
+
         }
     }
 

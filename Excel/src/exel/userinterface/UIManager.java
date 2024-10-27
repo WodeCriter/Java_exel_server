@@ -133,7 +133,7 @@ public class UIManager {
         {
             // Send a request to the server to update the ranges
             String finalURL = HttpUrl
-                    .parse(ADD_RAGE_REQUEST_PATH(currSheetFileName))
+                    .parse(ADD_RANGE_REQUEST_PATH(currSheetFileName))
                     .newBuilder()
                     .addQueryParameter("rangeName", event.getRangeName())
                     .addQueryParameter("topLeftCord", event.getTopLeftCord())
@@ -270,15 +270,12 @@ public class UIManager {
         eventBus.publish(new CellsRequestedToBeMarkedEvent(cords));
     }
 
-    //TODO: CHANGE
-    private void handleRangeDelete(RangeDeleteEvent event)
-    {
-        //engine.deleteRange(event.getRangeName());
+    private void handleRangeDelete(RangeDeleteEvent event) {
         try
         {
             // Send a request to the server to update the ranges
             String finalURL = HttpUrl
-                    .parse(DELETE_RAGE_REQUEST_PATH(currSheetFileName))
+                    .parse(DELETE_RANGE_REQUEST_PATH(currSheetFileName))
                     .newBuilder()
                     .addQueryParameter("rangeName", event.getRangeName())
                     .build()
@@ -327,8 +324,37 @@ public class UIManager {
 
     //TODO: CHANGE TO HTTP
     private void handleVersionSelectedEvent(VersionSelectedEvent event){
-        ReadOnlySheet versionSheet = engine.getSheetOfVersion(event.getVersion() - 1);
-        eventBus.publish(new DisplaySheetPopupEvent(versionSheet));
+        //ReadOnlySheet versionSheet = engine.getSheetOfVersion(event.getVersion());
+        try
+        {
+            // Send a request to the server to update the ranges
+            String finalURL = HttpUrl
+                    .parse(VIEW_SHEET_BY_VERSION_REQUEST_PATH(currSheetFileName))
+                    .newBuilder()
+                    .addQueryParameter("version", String.valueOf(event.getVersion()))
+                    .build()
+                    .toString();
+
+            HttpClientUtil.runAsync(finalURL, response ->
+                    {
+                        try {
+                            Gson gson = getGsonForSheet();
+
+                            ReadOnlySheet versionSheet = gson.fromJson(response.body().string(), ReadOnlySheetImp.class);
+                            Platform.runLater(() -> eventBus.publish(new DisplaySheetPopupEvent(versionSheet)));
+                        }
+                        catch (IOException e)
+                        {
+                            throw new RuntimeException(e);
+                        }
+                    }
+            );
+        }
+        catch (Exception e)
+        {
+            throw new IllegalArgumentException(e.getMessage());
+        }
+        //eventBus.publish(new DisplaySheetPopupEvent(versionSheet));
     }
 
     //TODO: CHANGE TO HTTP

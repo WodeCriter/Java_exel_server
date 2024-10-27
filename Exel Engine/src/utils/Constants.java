@@ -1,7 +1,6 @@
 package utils;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonParser;
 
 public class Constants {
     public static final String MAIN_TITLE = "Exel";
@@ -21,6 +20,7 @@ public class Constants {
     public static final String UPDATE_CELL_PATH = "/updatecell";
     public static final String ADD_RANGE_PATH = "/addrange";
     public static final String DELETE_RANGE_PATH = "/deleterange";
+    public static final String VIEW_BY_VERSION_PATH = "/getbyversion";
 
     public static final int INT_PARAMETER_ERROR = Integer.MIN_VALUE;
 
@@ -40,6 +40,10 @@ public class Constants {
         return FULL_SERVER_PATH + SHEETS_PATH + '/' + fileName + VIEW_SHEET_PATH;
     }
 
+    public static String VIEW_SHEET_BY_VERSION_REQUEST_PATH(String fileName){
+        return FULL_SERVER_PATH + SHEETS_PATH + '/' + fileName +VIEW_BY_VERSION_PATH;
+    }
+
     public static String DELETE_SHEET_PAGE(String fileName){
         return FULL_SERVER_PATH + SHEETS_PATH + '/' + fileName + DELETE_SHEET_PATH;
     }
@@ -49,13 +53,14 @@ public class Constants {
 
     }
 
-    public static String ADD_RAGE_REQUEST_PATH(String fileName){
+    public static String ADD_RANGE_REQUEST_PATH(String fileName){
         return FULL_SERVER_PATH + SHEETS_PATH + '/' + fileName + ADD_RANGE_PATH;
     }
 
-    public static String DELETE_RAGE_REQUEST_PATH(String fileName){
+    public static String DELETE_RANGE_REQUEST_PATH(String fileName){
         return FULL_SERVER_PATH + SHEETS_PATH + '/' + fileName + DELETE_RANGE_PATH;
     }
+
 
     public final static String LOGIN_PAGE = FULL_SERVER_PATH + LOGIN_PATH;
     public final static String HOME_PAGE = FULL_SERVER_PATH + HOME_PATH;

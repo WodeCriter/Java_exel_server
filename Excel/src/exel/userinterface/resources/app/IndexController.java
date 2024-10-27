@@ -649,7 +649,7 @@ public class IndexController {
     }
 
     private void handleVersionSelected(int versionId) {
-       eventBus.publish(new VersionSelectedEvent(versionId));
+       eventBus.publish(new VersionSelectedEvent(versionId-1));
     }
 
     @FXML
