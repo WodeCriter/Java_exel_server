@@ -13,11 +13,10 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 
+import java.io.IOException;
 import java.util.function.Consumer;
 
 public class DisplaySheetController {
-    private Consumer<EventBus> setUpDisplaySheet;
-
     @FXML
     private Label labelCellId;
 
@@ -48,7 +47,33 @@ public class DisplaySheetController {
             EventBus popupEventBus = new EventBus();
             subscribeToEvents(popupEventBus);
 
-            setUpDisplaySheet.accept(popupEventBus);
+            // Load the sheet FXML
+            //todo: use method from IndexController instead
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/exel/userinterface/resources/app/Sheet/Sheet.fxml"));
+            Pane sheetRoot;
+            try
+            {
+                sheetRoot = loader.load();
+            }
+            catch (IOException e)
+            {
+                throw new RuntimeException(e);
+            }
+
+            SheetController controller = loader.getController();
+            controller.setEventBus(popupEventBus);
+
+            // Remove any existing content
+            sheetContainer.getChildren().clear();
+
+            // Add the sheet to the container
+            sheetContainer.getChildren().add(sheetRoot);
+
+            // Anchor the sheet to all sides
+            AnchorPane.setTopAnchor(sheetRoot, 0.0);
+            AnchorPane.setBottomAnchor(sheetRoot, 0.0);
+            AnchorPane.setLeftAnchor(sheetRoot, 0.0);
+            AnchorPane.setRightAnchor(sheetRoot, 0.0);
 
             // Publish the sheet data to the popup's EventBus
             if (sheetData != null) {
@@ -89,9 +114,5 @@ public class DisplaySheetController {
 
     public void setCellVersionLabel(String version) {
         labalCellVersion.setText("Cell version: " + version);
-    }
-
-    public void setDisplaySheetMethod(Consumer<EventBus> setUpDisplaySheet) {
-        this.setUpDisplaySheet = setUpDisplaySheet;
     }
 }

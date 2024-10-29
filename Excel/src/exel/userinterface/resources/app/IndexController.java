@@ -341,7 +341,6 @@ public class IndexController extends ControllerWithEventBus
 
             // Pass the ReadOnlySheet to the popup controller
             popupController.setSheetData(sheetData);
-            popupController.setDisplaySheetMethod(this::setUpDisplaySheet);
 
             // Create a new stage for the popup
             Stage popupStage = new Stage();

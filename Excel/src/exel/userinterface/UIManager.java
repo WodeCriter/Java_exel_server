@@ -313,7 +313,6 @@ public class UIManager {
         //eventBus.publish(new DisplaySheetPopupEvent(versionSheet));
     }
 
-    //TODO: CHANGE TO HTTP
     private void handleSheetResizeWidthEvent(SheetResizeWidthEvent event){
         //ReadOnlySheet updatedSheet = engine.changeCellWidth(event.getWidth());
         String finalURL = HttpUrl
@@ -335,7 +334,6 @@ public class UIManager {
         });
     }
 
-    //TODO: CHANGE TO HTTP
     private void handleSheetResizeHeightEvent(SheetResizeHeightEvent event){
         String finalURL = HttpUrl
                 .parse(SET_CELL_HEIGHT_REQUEST_PATH(currSheetFileName))
