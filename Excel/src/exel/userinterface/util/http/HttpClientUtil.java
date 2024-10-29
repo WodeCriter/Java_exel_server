@@ -21,7 +21,7 @@ public class HttpClientUtil {
         simpleCookieManager.setLogData(logConsumer);
     }
 
-    public static Callback getGenericCallback(Consumer<Response> activateWhenOk) {
+    public static Callback getGenericCallback(ThrowingConsumer<Response> activateWhenOk) {
 
         return new Callback()
         {
@@ -66,15 +66,15 @@ public class HttpClientUtil {
         call.enqueue(callback);
     }
 
-    public static void runAsync(String url, String queryName, String queryValue, Consumer<Response> activateWhenOk){
+    public static void runAsync(String url, String queryName, String queryValue, ThrowingConsumer<Response> activateWhenOk){
         runAsync(url, queryName, queryValue, getGenericCallback(activateWhenOk));
     }
 
-    public static void runAsync(String finalUrl, Consumer<Response> activateWhenOk){
+    public static void runAsync(String finalUrl, ThrowingConsumer<Response> activateWhenOk){
         runAsync(finalUrl, getGenericCallback(activateWhenOk));
     }
 
-    public static void runAsync(Request request, Consumer<Response> activateWhenOk){
+    public static void runAsync(Request request, ThrowingConsumer<Response> activateWhenOk){
         runAsync(request, getGenericCallback(activateWhenOk));
     }
 

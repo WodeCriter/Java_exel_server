@@ -148,19 +148,11 @@ public class UIManager {
 
             HttpClientUtil.runAsync(request, response ->
             {
-                try {
-                    Gson gson = getGsonForSheet();
-
-                    readOnlySheet = gson.fromJson(response.body().string(), ReadOnlySheetImp.class);
-                    Platform.runLater(() -> eventBus.publish(new RangeCreatedEvent(
-                                event.getRangeName(),
-                                event.getTopLeftCord(),
-                                event.getBottomRightCord())));
-                }
-                catch (IOException e)
-                {
-                    throw new RuntimeException(e);
-                }
+                readOnlySheet = getSheetFromResponse(response);
+                Platform.runLater(() -> eventBus.publish(new RangeCreatedEvent(
+                        event.getRangeName(),
+                        event.getTopLeftCord(),
+                        event.getBottomRightCord())));
             }
             );
         }
@@ -177,30 +169,16 @@ public class UIManager {
                 .build()
                 .toString();
 
-        HttpClientUtil.runAsync(finalURL, new Callback() {
-            @Override
-            public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                Platform.runLater(() -> System.out.println("Something went wrong: " + e.getMessage()));
-            }
+        HttpClientUtil.runAsync(finalURL, response ->
+        {
+            readOnlySheet = getSheetFromResponse(response);
+            currSheetFileName = event.getFileName();
+            Platform.runLater(() -> {
+                showSheetPage();
+                loadSheetHelper();
+            });
 
-            @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                if (response.code() == 200)
-                {
-                    Gson gson = getGsonForSheet();
-
-                    readOnlySheet = gson.fromJson(response.body().string(), ReadOnlySheetImp.class);
-                    currSheetFileName = event.getFileName();
-                    Platform.runLater(() -> {
-                        showSheetPage();
-                        loadSheetHelper();
-                    });
-
-                    homeController.stopDataRefresher();
-                }
-                else
-                    Platform.runLater(() -> System.out.println("Something went wrong: " + response.message()));
-            }
+            homeController.stopDataRefresher();
         });
     }
 
@@ -226,43 +204,26 @@ public class UIManager {
     }
 
     private void handleCellUpdate(CellUpdateEvent event) {
-        try
+        String finalURL = HttpUrl
+                .parse(UPDATE_CELL_REQUEST_PATH(currSheetFileName))
+                .newBuilder()
+                .addQueryParameter("coordinate", event.getCoordinate())
+                .addQueryParameter("newValue", event.getOriginalValue())
+                .build()
+                .toString();
+
+        Request request = new Request.Builder()
+                .url(finalURL)
+                .put(RequestBody.create(null, new byte[0]))
+                .build();
+
+        HttpClientUtil.runAsync(request, response ->
         {
-            // Send a request to the server to update the sheet
-            String finalURL = HttpUrl
-                    .parse(UPDATE_CELL_REQUEST_PATH(currSheetFileName))
-                    .newBuilder()
-                    .addQueryParameter("coordinate", event.getCoordinate())
-                    .addQueryParameter("newValue", event.getOriginalValue())
-                    .build()
-                    .toString();
-
-            Request request = new Request.Builder()
-                    .url(finalURL)
-                    .put(RequestBody.create(null, new byte[0]))
-                    .build();
-
-            HttpClientUtil.runAsync(request, response ->
-            {
-                try
-                {
-                    Gson gson = getGsonForSheet();
-
-                    readOnlySheet = gson.fromJson(response.body().string(), ReadOnlySheetImp.class);
-                    Platform.runLater(() -> {
-                        eventBus.publish(new SheetDisplayEvent(readOnlySheet));
-                    });
-                }
-                catch (IOException e)
-                {
-                    throw new RuntimeException(e);
-                }
+            readOnlySheet = getSheetFromResponse(response);
+            Platform.runLater(() -> {
+                eventBus.publish(new SheetDisplayEvent(readOnlySheet));
             });
-        }
-        catch (Exception e)
-        {
-            throw new IllegalArgumentException(e.getMessage());
-        }
+        });
     }
 
     private void handleRangeSelected(RangeSelectedEvent event) {
@@ -273,7 +234,6 @@ public class UIManager {
     private void handleRangeDelete(RangeDeleteEvent event) {
         try
         {
-            // Send a request to the server to update the ranges
             String finalURL = HttpUrl
                     .parse(DELETE_RANGE_REQUEST_PATH(currSheetFileName))
                     .newBuilder()
@@ -288,16 +248,8 @@ public class UIManager {
 
             HttpClientUtil.runAsync(request, response ->
                     {
-                        try {
-                            Gson gson = getGsonForSheet();
-
-                            readOnlySheet = gson.fromJson(response.body().string(), ReadOnlySheetImp.class);
-                            Platform.runLater(() -> eventBus.publish(new DeletedRangeEvent(event.getRangeName())));
-                        }
-                        catch (IOException e)
-                        {
-                            throw new RuntimeException(e);
-                        }
+                        readOnlySheet = getSheetFromResponse(response);
+                        Platform.runLater(() -> eventBus.publish(new DeletedRangeEvent(event.getRangeName())));
                     }
             );
         }
@@ -305,7 +257,6 @@ public class UIManager {
         {
             throw new IllegalArgumentException(e.getMessage());
         }
-        //eventBus.publish(new DeletedRangeEvent(event.getRangeName()));
     }
 
     //TODO: CHANGE
@@ -326,7 +277,6 @@ public class UIManager {
         //ReadOnlySheet versionSheet = engine.getSheetOfVersion(event.getVersion());
         try
         {
-            // Send a request to the server to update the ranges
             String finalURL = HttpUrl
                     .parse(VIEW_SHEET_BY_VERSION_REQUEST_PATH(currSheetFileName))
                     .newBuilder()
@@ -336,16 +286,8 @@ public class UIManager {
 
             HttpClientUtil.runAsync(finalURL, response ->
                     {
-                        try {
-                            Gson gson = getGsonForSheet();
-
-                            ReadOnlySheet versionSheet = gson.fromJson(response.body().string(), ReadOnlySheetImp.class);
-                            Platform.runLater(() -> eventBus.publish(new DisplaySheetPopupEvent(versionSheet)));
-                        }
-                        catch (IOException e)
-                        {
-                            throw new RuntimeException(e);
-                        }
+                        ReadOnlySheet versionSheet = getSheetFromResponse(response);
+                        Platform.runLater(() -> eventBus.publish(new DisplaySheetPopupEvent(versionSheet)));
                     }
             );
         }
@@ -455,5 +397,9 @@ public class UIManager {
         return new GsonBuilder()
                 .registerTypeAdapter(ReadOnlySheetImp.class, new ReadOnlySheetImpAdapter())
                 .create();
+    }
+
+    private ReadOnlySheet getSheetFromResponse(Response response) throws IOException{
+        return getGsonForSheet().fromJson(response.body().string(), ReadOnlySheetImp.class);
     }
 }
