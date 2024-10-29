@@ -137,33 +137,6 @@ public class IndexController extends ControllerWithEventBus
         eventBus.subscribe(SheetDisplayEvent.class, this::handleSheetDisplayEvent);
     }
 
-//    @FXML
-//    void newFileEventListener(ActionEvent event) {
-//        try {
-//            // Load the FXML file for the new sheet popup
-//            FXMLLoader loader = new FXMLLoader(getClass().getResource("/exel/userinterface/resources/app/popups/newsheet/CreateNewSheetScreen.fxml"));
-//            VBox popupRoot = loader.load();
-//
-//            // Get the controller and set the EventBus
-//            CreateNewSheetScreenController popupController = loader.getController();
-//            popupController.setEventBus(eventBus);
-//
-//            // Create a new stage for the popup
-//            Stage popupStage = new Stage();
-//            popupStage.setTitle("Create New Sheet");
-//            popupStage.initModality(Modality.APPLICATION_MODAL);
-//            popupStage.initOwner(((MenuItem) event.getSource()).getParentPopup().getScene().getWindow());  // Set the owner to the current stage
-//            Scene popupScene = new Scene(popupRoot, 300, 200);
-//
-//            applyCurrentTheme(popupScene);
-//            popupStage.setScene(popupScene);
-//            // Show the popup
-//            popupStage.showAndWait();
-//        } catch (Exception e) {
-//            e.printStackTrace();  // Handle exceptions appropriately
-//        }
-//    }
-
     @FXML
     void homeScreenListener(ActionEvent event) {
         //Todo: Implement

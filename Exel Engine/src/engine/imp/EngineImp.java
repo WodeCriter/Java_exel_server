@@ -19,18 +19,24 @@ import engine.spreadsheet.range.Range;
 import engine.spreadsheet.rowSorter.RowFilter;
 import engine.spreadsheet.rowSorter.RowSorter;
 import jakarta.xml.bind.JAXBException;
+import utils.perms.PermissionRequest;
+import utils.perms.Permission;
+import utils.perms.Status;
 
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class EngineImp implements Engine
 {
     private Sheet currentSheet;
     private ReadOnlySheet readOnlyCurrentSheet;
-    private String filePath;
+
+    private Map<String, Permission> permissions = new ConcurrentHashMap<>();
+    private Map<String, PermissionRequest> allRequestsEverMade = new ConcurrentHashMap<>();
 
     public EngineImp() {
     }
@@ -38,6 +44,11 @@ public class EngineImp implements Engine
     public EngineImp(InputStream fileContent) throws JAXBException {
         loadSheet(fileContent);
     }
+
+    public void requestForPermission(String username, Permission requestedPermission){
+        allRequestsEverMade.computeIfAbsent(username, a -> new PermissionRequest(requestedPermission, Status.PENDING));
+    }
+
 
     //?
     @Override
@@ -86,7 +97,6 @@ public class EngineImp implements Engine
     //redundent
     @Override
     public ReadOnlySheet loadSheet(String filePath) throws Exception {
-        this.filePath = filePath;
         // parse the xml and create a sheet and a copy sheet object
         this.currentSheet = xmlFileLoader.loadSpreadsheet(filePath);
         this.readOnlyCurrentSheet = new ReadOnlySheetImp(currentSheet);
@@ -105,7 +115,6 @@ public class EngineImp implements Engine
     //redundent
     @Override
     public void loadSysState(String filePath) throws Exception {
-        this.filePath = filePath;
         // create a sheet object from the binary file
         this.currentSheet = sysStateLoader.loadSysState(filePath);
         this.readOnlyCurrentSheet = new ReadOnlySheetImp(currentSheet);

@@ -14,6 +14,7 @@ import exel.eventsys.events.cell.CellUpdateEvent;
 import exel.eventsys.events.cell.CellsRequestedToBeMarkedEvent;
 import exel.eventsys.events.cell.DisplaySelectedCellEvent;
 import exel.eventsys.events.file.DeleteFileRequestedEvent;
+import exel.eventsys.events.file.FilePermissionRequestedEvent;
 import exel.eventsys.events.file.FileSelectedForOpeningEvent;
 import exel.eventsys.events.range.*;
 import exel.eventsys.events.sheet.*;
@@ -76,6 +77,7 @@ public class UIManager {
         eventBus.subscribe(LogInSuccessfulEvent.class, this::handleLogInSuccessfulEvent);
         eventBus.subscribe(FileSelectedForOpeningEvent.class, this::handleFileSelected);
         eventBus.subscribe(DeleteFileRequestedEvent.class, this::handleFileSelectedForDeletion);
+        eventBus.subscribe(FilePermissionRequestedEvent.class, this::handleFilePermissionRequestedEvent);
     }
 
     //TODO: REDUNDANT?
@@ -443,5 +445,10 @@ public class UIManager {
 
     private ReadOnlySheet getSheetFromResponse(Response response) throws IOException{
         return getGsonForSheet().fromJson(response.body().string(), ReadOnlySheetImp.class);
+    }
+
+    private void handleFilePermissionRequestedEvent(FilePermissionRequestedEvent event){
+        String fileName = event.getFileName();
+        String permissionRequested = event.getPermission();
     }
 }

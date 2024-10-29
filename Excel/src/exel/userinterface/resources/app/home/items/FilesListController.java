@@ -1,6 +1,7 @@
 package exel.userinterface.resources.app.home.items;
 
 import exel.eventsys.events.file.DeleteFileRequestedEvent;
+import exel.eventsys.events.file.FilePermissionRequestedEvent;
 import exel.eventsys.events.file.FileSelectedForOpeningEvent;
 import exel.userinterface.resources.app.ControllerWithEventBus;
 import exel.userinterface.resources.app.home.HomeController;
@@ -13,6 +14,9 @@ import javafx.scene.control.ListView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+
+import javax.print.DocFlavor;
+import java.io.FilePermission;
 
 import java.util.List;
 
@@ -90,6 +94,14 @@ public class FilesListController extends ControllerWithEventBus
 
     private void handleFileSelectedForDeletion(String selectedFileName) {
         eventBus.publish(new DeleteFileRequestedEvent(selectedFileName));
+    }
+
+    private void handleFileReaderPermRequest(String selectedFileName){
+        eventBus.publish(new FilePermissionRequestedEvent("Reader", selectedFileName));
+    }
+
+    private void handleFileWriterPermRequest(String selectedFileName){
+        eventBus.publish(new FilePermissionRequestedEvent("Writer", selectedFileName));
     }
 
     public ObjectProperty<String> selectedItemProperty() {
