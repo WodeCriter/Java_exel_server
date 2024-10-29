@@ -188,16 +188,12 @@ public class SheetsServlet extends HttpServlet {
         }
     }
 
-    private void handleSetCellWidth(Engine engine, HttpServletRequest request, HttpServletResponse response){
+    private void handleSetCellWidth(Engine engine, HttpServletRequest request, HttpServletResponse response) throws IOException {
         synchronized (engine) {
-
-        }
-    }
-    private void handleSetCellHeight(Engine engine, HttpServletRequest request, HttpServletResponse response){
-        synchronized (engine) {
+            String width = request.getParameter("width");
             try
             {
-                engine.changeCellWidth(event.getWidth());
+                engine.changeCellWidth(Integer.parseInt(width));
                 addSheetToResponse(engine.getSheet(), response);
             }
             catch (Exception e)
@@ -206,6 +202,21 @@ public class SheetsServlet extends HttpServlet {
                 response.getWriter().write(e.getMessage());
             }
 
+        }
+    }
+    private void handleSetCellHeight(Engine engine, HttpServletRequest request, HttpServletResponse response) throws IOException{
+        synchronized (engine) {
+            String height = request.getParameter("height");
+            try
+            {
+                engine.changeCellHeight(Integer.parseInt(height));
+                addSheetToResponse(engine.getSheet(), response);
+            }
+            catch (Exception e)
+            {
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                response.getWriter().write(e.getMessage());
+            }
         }
     }
 

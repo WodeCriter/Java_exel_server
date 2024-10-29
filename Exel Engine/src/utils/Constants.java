@@ -57,6 +57,14 @@ public class Constants {
         return getSheetsPathWithName(fileName) + UPDATE_CELL;
     }
 
+    public static String SET_CELL_WIDTH_REQUEST_PATH(String fileName){
+        return getSheetsPathWithName(fileName) + SET_CELL_WIDTH;
+    }
+
+    public static String SET_CELL_HEIGHT_REQUEST_PATH(String fileName){
+        return getSheetsPathWithName(fileName) + SET_CELL_HEIGHT;
+    }
+
     public static String ADD_RANGE_REQUEST_PATH(String fileName){
         return getSheetsPathWithName(fileName) + ADD_RANGE;
     }
@@ -72,6 +80,8 @@ public class Constants {
     public static String VIEW_FILTERED_SHEET_REQUEST_PATH(String fileName){
         return getSheetsPathWithName(fileName) + VIEW_FILTERED_SHEET;
     }
+
+
 
     private static String getSheetsPathWithName(String fileName){
         return FULL_SERVER_PATH + SHEETS_PATH + '/' + fileName + '/';

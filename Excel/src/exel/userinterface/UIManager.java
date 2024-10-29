@@ -315,15 +315,45 @@ public class UIManager {
 
     //TODO: CHANGE TO HTTP
     private void handleSheetResizeWidthEvent(SheetResizeWidthEvent event){
-        ReadOnlySheet updatedSheet = engine.changeCellWidth(event.getWidth());
-        eventBus.publish(new SheetDisplayRefactorEvent(updatedSheet));
+        //ReadOnlySheet updatedSheet = engine.changeCellWidth(event.getWidth());
+        String finalURL = HttpUrl
+                .parse(SET_CELL_WIDTH_REQUEST_PATH(currSheetFileName))
+                .newBuilder()
+                .addQueryParameter("width", String.valueOf(event.getWidth()))
+                .build()
+                .toString();
 
+        Request request = new Request.Builder()
+                .url(finalURL)
+                .put(RequestBody.create(null, new byte[0]))
+                .build();
+
+        HttpClientUtil.runAsync(request, response ->
+        {
+            readOnlySheet = getSheetFromResponse(response);
+            Platform.runLater(() -> eventBus.publish(new SheetDisplayRefactorEvent(readOnlySheet)));
+        });
     }
 
     //TODO: CHANGE TO HTTP
     private void handleSheetResizeHeightEvent(SheetResizeHeightEvent event){
-        ReadOnlySheet updatedSheet = engine.changeCellHeight(event.getHeight());
-        eventBus.publish(new SheetDisplayRefactorEvent(updatedSheet));
+        String finalURL = HttpUrl
+                .parse(SET_CELL_HEIGHT_REQUEST_PATH(currSheetFileName))
+                .newBuilder()
+                .addQueryParameter("height", String.valueOf(event.getHeight()))
+                .build()
+                .toString();
+
+        Request request = new Request.Builder()
+                .url(finalURL)
+                .put(RequestBody.create(null, new byte[0]))
+                .build();
+
+        HttpClientUtil.runAsync(request, response ->
+        {
+            readOnlySheet = getSheetFromResponse(response);
+            Platform.runLater(() -> eventBus.publish(new SheetDisplayRefactorEvent(readOnlySheet)));
+        });
     }
 
 
