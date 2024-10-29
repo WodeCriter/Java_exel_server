@@ -224,9 +224,7 @@ public class UIManager {
         HttpClientUtil.runAsync(request, response ->
         {
             readOnlySheet = getSheetFromResponse(response);
-            Platform.runLater(() -> {
-                eventBus.publish(new SheetDisplayEvent(readOnlySheet));
-            });
+            Platform.runLater(() -> eventBus.publish(new SheetDisplayEvent(readOnlySheet)));
         });
     }
 
@@ -256,7 +254,6 @@ public class UIManager {
         );
     }
 
-    //TODO: CHANGE
     private void handleSortRequested(SortRequestedEvent event)
     {
         String finalURL = getSortURLFromEvent(event);
@@ -284,8 +281,30 @@ public class UIManager {
     //TODO: CHANGE
     private void handleFilterRequested(FilterRequestedEvent event)
     {
-        ReadOnlySheet sortedSheet = engine.createFilteredSheetFromCords(event.getCord1(), event.getCord2(), event.getPickedData());
-        eventBus.publish(new DisplaySheetPopupEvent(sortedSheet));
+        Request request = getFilterRequestFromEvent(event);
+        HttpClientUtil.runAsync(request, response ->
+        {
+            ReadOnlySheet filteredSheet = getSheetFromResponse(response);
+            Platform.runLater(() -> eventBus.publish(new DisplaySheetPopupEvent(filteredSheet)));
+        });
+    }
+
+    private Request getFilterRequestFromEvent(FilterRequestedEvent event) {
+        String finalURL = HttpUrl
+                .parse(VIEW_FILTERED_SHEET_REQUEST_PATH(currSheetFileName))
+                .newBuilder()
+                .addQueryParameter("cord1", event.getCord1())
+                .addQueryParameter("cord2", event.getCord2())
+                .build()
+                .toString();
+
+        RequestBody body = RequestBody.create(GSON_INSTANCE.toJson(event.getPickedData()),
+                MediaType.parse("application/json; charset=utf-8"));
+
+        return new Request.Builder()
+                .url(finalURL)
+                .post(body)
+                .build();
     }
 
     private void handleVersionSelectedEvent(VersionSelectedEvent event){

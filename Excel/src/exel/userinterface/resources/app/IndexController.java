@@ -137,186 +137,41 @@ public class IndexController extends ControllerWithEventBus
         eventBus.subscribe(SheetDisplayEvent.class, this::handleSheetDisplayEvent);
     }
 
+//    @FXML
+//    void newFileEventListener(ActionEvent event) {
+//        try {
+//            // Load the FXML file for the new sheet popup
+//            FXMLLoader loader = new FXMLLoader(getClass().getResource("/exel/userinterface/resources/app/popups/newsheet/CreateNewSheetScreen.fxml"));
+//            VBox popupRoot = loader.load();
+//
+//            // Get the controller and set the EventBus
+//            CreateNewSheetScreenController popupController = loader.getController();
+//            popupController.setEventBus(eventBus);
+//
+//            // Create a new stage for the popup
+//            Stage popupStage = new Stage();
+//            popupStage.setTitle("Create New Sheet");
+//            popupStage.initModality(Modality.APPLICATION_MODAL);
+//            popupStage.initOwner(((MenuItem) event.getSource()).getParentPopup().getScene().getWindow());  // Set the owner to the current stage
+//            Scene popupScene = new Scene(popupRoot, 300, 200);
+//
+//            applyCurrentTheme(popupScene);
+//            popupStage.setScene(popupScene);
+//            // Show the popup
+//            popupStage.showAndWait();
+//        } catch (Exception e) {
+//            e.printStackTrace();  // Handle exceptions appropriately
+//        }
+//    }
+
     @FXML
-    void newFileEventListener(ActionEvent event) {
-        try {
-            // Load the FXML file for the new sheet popup
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/exel/userinterface/resources/app/popups/newsheet/CreateNewSheetScreen.fxml"));
-            VBox popupRoot = loader.load();
-
-            // Get the controller and set the EventBus
-            CreateNewSheetScreenController popupController = loader.getController();
-            popupController.setEventBus(eventBus);
-
-            // Create a new stage for the popup
-            Stage popupStage = new Stage();
-            popupStage.setTitle("Create New Sheet");
-            popupStage.initModality(Modality.APPLICATION_MODAL);
-            popupStage.initOwner(((MenuItem) event.getSource()).getParentPopup().getScene().getWindow());  // Set the owner to the current stage
-            Scene popupScene = new Scene(popupRoot, 300, 200);
-
-            applyCurrentTheme(popupScene);
-            popupStage.setScene(popupScene);
-            // Show the popup
-            popupStage.showAndWait();
-        } catch (Exception e) {
-            e.printStackTrace();  // Handle exceptions appropriately
-        }
+    void homeScreenListener(ActionEvent event) {
+        //Todo: Implement
     }
 
     @FXML
-    void loadFileListener(ActionEvent event) {
-        // Retrieve the owner window from a node in the scene
-        Window ownerWindow = sheetContainer.getScene().getWindow();
-
-        // Show the open file dialog
-        File selectedFile = FileHelper.selectFileFromPC(ownerWindow);
-
-        if (selectedFile != null) {
-            // Get the absolute path as a String
-            String absolutePath = selectedFile.getAbsolutePath();
-
-            try {
-                // Create a progress bar dialog
-                Stage progressStage = new Stage();
-                progressStage.initModality(Modality.APPLICATION_MODAL);
-                progressStage.initOwner(sheetContainer.getScene().getWindow());
-
-                ProgressBar progressBar = new ProgressBar(0);
-                progressBar.setPrefWidth(300);
-
-                VBox vbox = new VBox(10);
-                vbox.setAlignment(Pos.CENTER);
-                vbox.setPadding(new Insets(20));
-                vbox.getChildren().addAll(new Label("Loading..."), progressBar);
-
-                Scene progressScene = new Scene(vbox);
-
-                applyCurrentTheme(progressScene);
-
-                progressStage.setScene(progressScene);
-                progressStage.setTitle("Loading");
-
-                // Show the progress bar dialog
-                progressStage.show();
-
-                // Use a Timeline to update the progress bar over 3 seconds
-                Timeline timeline = new Timeline(
-                        new KeyFrame(Duration.ZERO, new KeyValue(progressBar.progressProperty(), 0)),
-                        new KeyFrame(Duration.seconds(1), new KeyValue(progressBar.progressProperty(), 1))
-                );
-
-                timeline.setOnFinished(e -> {
-                    progressStage.close();
-                });
-
-                timeline.play();
-
-                // Start the loading process
-                menuButtonSelectVersion.getItems().clear();
-                currentFile = selectedFile;
-                eventBus.publish(new LoadSheetEvent(absolutePath));
-                labelFileLoaded.setText("Current file loaded: " + absolutePath);
-
-            } catch (Exception e) {
-                e.printStackTrace();
-                // Show an error alert to the user
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("File Load Error");
-                alert.setHeaderText("Could not load the file");
-                alert.setContentText("An error occurred while loading the file: " + e.getMessage());
-                alert.showAndWait();
-            }
-        } else {
-            // User canceled the file selection; no action needed
-        }
-    }
-
-
-    @FXML
-    void saveAsFileListener(ActionEvent event) {
-        if (!isSheetLoaded)
-            return;
-
-        // Create a new FileChooser instance
-        FileChooser fileChooser = new FileChooser();
-
-        // Set the title of the dialog
-        fileChooser.setTitle("Save Spreadsheet File As");
-
-        // (Optional) Set initial directory to user's home
-        fileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
-
-        // Add file extension filters
-        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter(
-                "XML Files (*.xml)", "*.xml");
-        fileChooser.getExtensionFilters().add(extFilter);
-
-        // Retrieve the owner window from a node in the scene
-        Window ownerWindow = sheetContainer.getScene().getWindow();
-
-        // Show the save file dialog
-        File fileToSave = fileChooser.showSaveDialog(ownerWindow);
-
-        if (fileToSave != null) {
-            // Ensure the file has the correct extension
-            if (!fileToSave.getPath().toLowerCase().endsWith(".xml")) {
-                fileToSave = new File(fileToSave.getPath() + ".xml");
-            }
-
-            // Update the current file reference
-            currentFile = fileToSave;
-
-            try {
-                // **Pass the file path to your engine or handle the saving process**
-                // Replace 'SaveSheetEvent' with your actual event or method
-                eventBus.publish(new SaveSheetEvent(fileToSave.getAbsolutePath()));
-                labelFileLoaded.setText("Current file loaded: " + fileToSave.getAbsolutePath());
-
-            } catch (Exception e) {
-                e.printStackTrace();
-                // Show an error alert to the user
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("File Save Error");
-                alert.setHeaderText("Could not save the file");
-                alert.setContentText("An error occurred while saving the file: " + e.getMessage());
-                alert.showAndWait();
-            }
-        } else {
-            // User canceled the save dialog; no action needed
-        }
-
-    }
-
-    @FXML
-    void saveFileListener(ActionEvent event) {
-        if (currentFile != null) {
-            try {
-                // **Pass the current file path to your engine or handle the saving process**
-                // Replace 'SaveSheetEvent' with your actual event or method
-                eventBus.publish(new SaveSheetEvent(currentFile.getAbsolutePath()));
-
-                // Optionally, show a confirmation alert
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle("File Saved");
-                alert.setHeaderText(null);
-                alert.setContentText("File has been saved successfully.");
-                alert.showAndWait();
-
-            } catch (Exception e) {
-                e.printStackTrace();
-                // Show an error alert to the user
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("File Save Error");
-                alert.setHeaderText("Could not save the file");
-                alert.setContentText("An error occurred while saving the file: " + e.getMessage());
-                alert.showAndWait();
-            }
-        } else {
-            // No current file, perform "Save As"
-            saveAsFileListener(event);
-        }
-
+    void viewPermChart(ActionEvent event) {
+        //Todo: Implement
     }
 
     private void handleSheetCreated(SheetCreatedEvent event) {

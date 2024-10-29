@@ -9,10 +9,15 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import webApp.managers.fileManager.FileManager;
 import webApp.utils.ServletUtils;
+import java.lang.reflect.Type;
+import com.google.gson.reflect.TypeToken;
 
+import java.io.BufferedReader;
 import java.io.IOException;
-import java.util.Collections;
+import java.io.InputStreamReader;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static utils.Constants.*;
 
@@ -55,7 +60,6 @@ public class SheetsServlet extends HttpServlet {
 
     @Override
     protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
         RequestData requestData = parseRequest(request, response);
         if (requestData == null) return;
 
@@ -96,8 +100,22 @@ public class SheetsServlet extends HttpServlet {
         }
     }
 
-    // Separate parse method
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
+    {
+        RequestData requestData = parseRequest(request, response);
+        if (requestData == null) return;
 
+        switch (requestData.action.toLowerCase()) {
+            case VIEW_FILTERED_SHEET:
+                handleGetFiltered(requestData.engine, request, response);
+                break;
+            default:
+                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Unknown action for POST: " + requestData.action);
+        }
+    }
+
+    // Separate parse method
     private RequestData parseRequest(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String pathInfo = request.getPathInfo(); // e.g., /FileName/action
         if (pathInfo == null || pathInfo.equals("/")) {
@@ -158,7 +176,8 @@ public class SheetsServlet extends HttpServlet {
         String cord2 = request.getParameter("cord2");
         List<String> columnsToSortBy = List.of(request.getParameterValues("columns"));
 
-        synchronized (engine) {
+        synchronized (engine)
+        {
             try
             {
                 ReadOnlySheet sortedSheet = engine.createSortedSheetFromCords(cord1, cord2, columnsToSortBy);
@@ -170,6 +189,43 @@ public class SheetsServlet extends HttpServlet {
                 response.getWriter().write(e.getMessage());
             }
         }
+    }
+
+    private void handleGetFiltered(Engine engine, HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String cord1 = request.getParameter("cord1");
+        String cord2 = request.getParameter("cord2");
+        Map<String, List<String>> data = getFilterData(request);
+
+        synchronized (engine)
+        {
+            try
+            {
+                ReadOnlySheet sortedSheet = engine.createFilteredSheetFromCords(cord1, cord2, data);
+                addSheetToResponse(sortedSheet, response);
+            }
+            catch (Exception e)
+            {
+                response.setStatus(SC_UNPROCESSABLE_CONTENT);
+                response.getWriter().write(e.getMessage());
+            }
+        }
+    }
+
+    private static Map<String, List<String>> getFilterData(HttpServletRequest request) throws IOException {
+        // Read the JSON from the request body
+        StringBuilder jsonBuilder = new StringBuilder();
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(request.getInputStream())))
+        {
+            String line;
+            while ((line = reader.readLine()) != null)
+                jsonBuilder.append(line);
+        }
+
+        String jsonString = jsonBuilder.toString();
+        Type mapType = new TypeToken<Map<String, List<String>>>() {}.getType();
+
+        // Parse JSON into a Java object (replace DataObject with your actual class)
+        return GSON_INSTANCE.fromJson(jsonString, mapType);
     }
 
     private void handleUpdateCell(Engine engine, HttpServletRequest request, HttpServletResponse response) throws IOException {
