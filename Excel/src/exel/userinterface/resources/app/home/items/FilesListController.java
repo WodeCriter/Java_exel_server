@@ -1,8 +1,8 @@
 package exel.userinterface.resources.app.home.items;
 
-import exel.eventsys.EventBus;
 import exel.eventsys.events.file.DeleteFileRequestedEvent;
 import exel.eventsys.events.file.FileSelectedForOpeningEvent;
+import exel.userinterface.resources.app.ControllerWithEventBus;
 import exel.userinterface.resources.app.home.HomeController;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -16,9 +16,8 @@ import javafx.scene.input.MouseEvent;
 
 import java.util.List;
 
-public class FilesListController
+public class FilesListController extends ControllerWithEventBus
 {
-    private EventBus eventBus;
     private HomeController homeController;
     @FXML
     private ListView<String> filesList;
@@ -83,10 +82,6 @@ public class FilesListController
             return;
 
         handleFileSelectedForDeletion(selectedFile);
-    }
-
-    public void setEventBus(EventBus eventBus) {
-        this.eventBus = eventBus;
     }
 
     private void handleFileSelectedForOpening(String selectedFileName) {

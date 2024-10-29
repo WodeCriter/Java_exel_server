@@ -1,8 +1,8 @@
 package exel.userinterface.resources.app.popups.newsheet;
 
 
-import exel.eventsys.EventBus;
 import exel.eventsys.events.sheet.CreateNewSheetEvent;
+import exel.userinterface.resources.app.ControllerWithEventBus;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -10,10 +10,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.Alert;
 import javafx.stage.Stage;
 
-public class CreateNewSheetScreenController {
-
-    private EventBus eventBus;
-
+public class CreateNewSheetScreenController extends ControllerWithEventBus
+{
     @FXML
     private TextField textboxSheetName;
 
@@ -53,10 +51,6 @@ public class CreateNewSheetScreenController {
         alert.setHeaderText(header);
         alert.setContentText(content);
         alert.showAndWait();
-    }
-
-    public void setEventBus(EventBus eventBus) {
-        this.eventBus = eventBus;
     }
 }
 

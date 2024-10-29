@@ -1,7 +1,7 @@
 package exel.userinterface.resources.app.login;
 
-import exel.eventsys.EventBus;
 import exel.eventsys.events.LogInSuccessfulEvent;
+import exel.userinterface.resources.app.ControllerWithEventBus;
 import exel.userinterface.util.http.HttpClientUtil;
 
 import javafx.application.Platform;
@@ -19,17 +19,13 @@ import java.io.IOException;
 
 import static utils.Constants.LOGIN_PAGE;
 
-public class LoginController {
-
-    private EventBus eventBus;
-
+public class LoginController extends ControllerWithEventBus
+{
     @FXML
     public TextField userNameTextField;
 
     @FXML
     public Label errorMessageLabel;
-
-    //private ChatAppMainController chatAppMainController;
 
     private final StringProperty errorMessageProperty = new SimpleStringProperty();
 
@@ -39,10 +35,6 @@ public class LoginController {
         HttpClientUtil.setCookieManagerLoggingFacility(line ->
                 Platform.runLater(() ->
                         updateHttpStatusLine(line)));
-    }
-
-    public void setEventBus(EventBus eventBus) {
-        this.eventBus = eventBus;
     }
 
     @FXML

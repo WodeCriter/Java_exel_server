@@ -51,10 +51,9 @@ import java.io.File;
 import java.util.Objects;
 import java.util.Optional;
 
-public class IndexController {
-
+public class IndexController extends ControllerWithEventBus
+{
     private ReadOnlyCell selectedCell;
-    private EventBus eventBus;
     private boolean isSheetLoaded = false;
     private File currentFile;
     private boolean isDarkMode = false;
@@ -62,46 +61,7 @@ public class IndexController {
     private boolean isAnimationsEnabled = false;
 
     @FXML
-    private MenuItem buttonNewFile;
-
-    @FXML
-    private MenuItem buttonLoadFile;
-
-    @FXML
-    private MenuItem buttonSaveFile;
-
-    @FXML
-    private MenuItem buttonSaveAsFile;
-
-    @FXML
-    private MenuItem menuItemEditWidth;
-
-    @FXML
-    private MenuItem menuItemEditHeight;
-
-    @FXML
-    private MenuItem menuItemUserGuide;
-
-    @FXML
     private AnchorPane sheetContainer;
-
-    @FXML
-    private MenuItem formatLTR;
-
-    @FXML
-    private MenuItem formatCenter;
-
-    @FXML
-    private MenuItem formatRTL;
-
-    @FXML
-    private MenuItem formatBGColor;
-
-    @FXML
-    private MenuItem formatTextColor;
-
-    @FXML
-    private MenuItem formatClearStyle;
 
     @FXML
     private CheckMenuItem cMenItemAnimations;
@@ -129,9 +89,6 @@ public class IndexController {
 
     @FXML
     private MenuButton menuButtonSelectVersion;
-
-    @FXML
-    private Button buttonUpdateCell;
 
     @FXML
     private ListView rangesList;
@@ -164,8 +121,9 @@ public class IndexController {
         });
     }
 
+    @Override
     public void setEventBus(EventBus eventBus) {
-        this.eventBus = eventBus;
+        super.setEventBus(eventBus);
         subscribeToEvents();
     }
 

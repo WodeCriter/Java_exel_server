@@ -1,6 +1,7 @@
 package exel.userinterface.resources.app.home;
 
 import exel.eventsys.EventBus;
+import exel.userinterface.resources.app.ControllerWithEventBus;
 import exel.userinterface.resources.app.file.FileHelper;
 import exel.userinterface.resources.app.home.items.FilesListController;
 import javafx.event.ActionEvent;
@@ -15,11 +16,10 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
-public class HomeController
+public class HomeController extends ControllerWithEventBus
 {
     private static final String FILES_PATH = "/exel/userinterface/resources/app/home/items/FilesList.fxml";
 
-    private EventBus eventBus;
     private List<String> activeUsers;
     private List<String> savedFiles;
 
@@ -55,8 +55,9 @@ public class HomeController
         filesListContainer.getChildren().add(filesList);
     }
 
+    @Override
     public void setEventBus(EventBus eventBus) {
-        this.eventBus = eventBus;
+        super.setEventBus(eventBus);
         filesController.setEventBus(eventBus);
     }
 

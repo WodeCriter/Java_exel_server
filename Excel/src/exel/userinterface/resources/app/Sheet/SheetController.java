@@ -11,6 +11,7 @@ import exel.eventsys.events.cell.DisplaySelectedCellEvent;
 import exel.eventsys.events.sheet.SheetCreatedEvent;
 import exel.eventsys.events.sheet.SheetDisplayEvent;
 import exel.eventsys.events.sheet.SheetDisplayRefactorEvent;
+import exel.userinterface.resources.app.ControllerWithEventBus;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
@@ -24,8 +25,8 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javafx.geometry.Pos;
 
-public class SheetController {
-
+public class SheetController extends ControllerWithEventBus
+{
     private Label currentlySelectedCell = null;
     private List<String> currentlyMarkedCellCords = null;
     private Map<String, Map<String, String>> cellStyles = new HashMap<>();
@@ -36,24 +37,16 @@ public class SheetController {
     @FXML
     private ScrollPane sheetScrollPane; // Reference to ScrollPane (optional)
 
-    private EventBus eventBus;
-
     // Map to store cell labels with their coordinates
     private Map<String, Label> cellLabelMap = new HashMap<>();
 
     @FXML
-    private void initialize()
-    {
-        // Add a global mouse listener to the scene to hide the context menu when clicking elsewhere
-//        spreadsheetGrid.sceneProperty().addListener((obs, oldScene, newScene) -> {
-//            if (newScene != null) {
-//                newScene.addEventFilter(MouseEvent.MOUSE_PRESSED, this::unmarkCellsInList);
-//            }
-//        });
+    private void initialize() {
     }
 
+    @Override
     public void setEventBus(EventBus eventBus) {
-        this.eventBus = eventBus;
+        super.setEventBus(eventBus);
         subscribeToEvents();
     }
 

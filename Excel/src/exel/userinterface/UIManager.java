@@ -17,19 +17,22 @@ import exel.eventsys.events.file.DeleteFileRequestedEvent;
 import exel.eventsys.events.file.FileSelectedForOpeningEvent;
 import exel.eventsys.events.range.*;
 import exel.eventsys.events.sheet.*;
+import exel.userinterface.resources.app.ControllerWithEventBus;
 import exel.userinterface.resources.app.IndexController;
 import exel.userinterface.resources.app.home.HomeController;
 import exel.userinterface.resources.app.login.LoginController;
 import exel.userinterface.util.http.HttpClientUtil;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
+import javafx.util.Pair;
 import okhttp3.*;
-import org.jetbrains.annotations.NotNull;
 import com.google.gson.Gson;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.util.List;
@@ -318,62 +321,42 @@ public class UIManager {
     }
 
     public void showLogin() {
-        try
-        {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/exel/userinterface/resources/app/login/login.fxml"));
-            Parent root = loader.load();
-            Object controller = loader.getController();
-
-            if (controller instanceof LoginController) {
-                LoginController loginController = (LoginController) controller;
-                loginController.setEventBus(eventBus);
-            }
-
-            setPrimaryStage(root);
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
+        Pair<LoginController, Parent> result = loadFXML("/exel/userinterface/resources/app/login/login.fxml");
+        if (result != null)
+            setPrimaryStage(result.getValue());
     }
 
     public void showHomePage() {
-        try
+        Pair<HomeController, Parent> result = loadFXML("/exel/userinterface/resources/app/home/home.fxml");
+        if (result != null)
         {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/exel/userinterface/resources/app/home/home.fxml"));
-            Parent root = loader.load();
-            Object controller = loader.getController();
-
-            if (controller instanceof HomeController)
-            {
-                homeController = (HomeController) controller;
-                homeController.setEventBus(eventBus);
-            }
-            setPrimaryStage(root);
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
+            homeController = result.getKey();
+            setPrimaryStage(result.getValue());
         }
     }
 
     public void showSheetPage(){
+        Pair<IndexController, Parent> result = loadFXML("/exel/userinterface/resources/app/Index.fxml");
+        if (result != null)
+        {
+            indexController = result.getKey();
+            setPrimaryStage(result.getValue());
+        }
+    }
+
+    private <T extends ControllerWithEventBus> Pair<T, Parent> loadFXML(@NotNull String fxmlPath) {
         try
         {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/exel/userinterface/resources/app/Index.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
             Parent root = loader.load();
-            Object controller = loader.getController();
-
-            if (controller instanceof IndexController)
-            {
-                indexController = (IndexController) controller;
-                indexController.setEventBus(eventBus);
-            }
-            setPrimaryStage(root);
+            T controller = loader.getController();
+            controller.setEventBus(eventBus);
+            return new Pair<>(controller, root);
         }
         catch (Exception e)
         {
             e.printStackTrace();
+            return null;
         }
     }
 

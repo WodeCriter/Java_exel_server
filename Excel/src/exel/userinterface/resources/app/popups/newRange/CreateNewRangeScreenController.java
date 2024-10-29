@@ -1,7 +1,7 @@
 package exel.userinterface.resources.app.popups.newRange;
 
-import exel.eventsys.EventBus;
 import exel.eventsys.events.range.CreateNewRangeEvent;
+import exel.userinterface.resources.app.ControllerWithEventBus;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -9,9 +9,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
-public class CreateNewRangeScreenController
+public class CreateNewRangeScreenController extends ControllerWithEventBus
 {
-    private EventBus eventBus;
     @FXML
     private TextField textboxRangeName;
     @FXML
@@ -20,10 +19,6 @@ public class CreateNewRangeScreenController
     private TextField textboxBottomRight;
     @FXML
     private Button buttonCreateRange;
-
-    public void setEventBus(EventBus eventBus) {
-        this.eventBus = eventBus;
-    }
 
     @FXML
     void createNewRangeListener(ActionEvent event) {

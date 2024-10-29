@@ -1,8 +1,8 @@
 package exel.userinterface.resources.app.popups.sort;
 
 import engine.imp.EngineImp;
-import exel.eventsys.EventBus;
 import exel.eventsys.events.sheet.SortRequestedEvent;
+import exel.userinterface.resources.app.ControllerWithEventBus;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
@@ -12,10 +12,8 @@ import javafx.scene.layout.GridPane;
 
 import java.util.*;
 
-public class SetSortScreenController
+public class SetSortScreenController extends ControllerWithEventBus
 {
-    private EventBus eventBus;
-
     @FXML
     private GridPane gridPane;
     @FXML
@@ -42,10 +40,6 @@ public class SetSortScreenController
         cell1TextField.textProperty().addListener((observable, oldValue, newValue) -> handleText1Input(newValue));
 
         cell2TextField.textProperty().addListener((observable, oldValue, newValue) -> handleText2Input(newValue));
-    }
-
-    public void setEventBus(EventBus eventBus) {
-        this.eventBus = eventBus;
     }
 
     @FXML
