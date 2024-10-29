@@ -51,9 +51,7 @@ public class Coordinate implements Serializable
 
         Coordinate that = (Coordinate) o;
 
-        if (!Objects.equals(row, that.row))
-            return false;
-        return Objects.equals(col, that.col);
+        return row == that.row && Objects.equals(col, that.col);
     }
 
     @Override

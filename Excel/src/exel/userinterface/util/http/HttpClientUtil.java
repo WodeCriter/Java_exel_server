@@ -17,6 +17,9 @@ public class HttpClientUtil {
                     .followRedirects(false)
                     .build();
 
+    private static final String YELLOW = "\u001B[33m";
+    private static final String RESET = "\u001B[0m";
+
     public static void setCookieManagerLoggingFacility(Consumer<String> logConsumer) {
         simpleCookieManager.setLogData(logConsumer);
     }
@@ -27,7 +30,7 @@ public class HttpClientUtil {
         {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                System.out.println("Something went wrong: " + e.getMessage());
+                System.out.println(YELLOW + "Something went wrong: " + e.getMessage() + RESET);
             }
 
             @Override
@@ -35,7 +38,7 @@ public class HttpClientUtil {
                 if (response.code() == 200)
                     activateWhenOk.accept(response);
                 else
-                    System.out.println("Something went wrong: " + response.body());
+                    System.out.println(YELLOW + "Something went wrong: " + response.body().string() + RESET);
             }
         };
     }

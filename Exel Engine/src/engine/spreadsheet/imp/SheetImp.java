@@ -13,6 +13,8 @@ import engine.spreadsheet.versionmanager.imp.VersionManager;
 
 import java.io.*;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 public class SheetImp implements Sheet, Serializable
 {
@@ -29,7 +31,7 @@ public class SheetImp implements Sheet, Serializable
 
     public SheetImp(int cellHeight, int cellWidth, int numOfCols, int numOfRows, String sheetName)
     {
-        this.activeCells = new HashMap<>();
+        this.activeCells = new ConcurrentHashMap<>();
         this.sheetName = sheetName;
         this.cellHeight = cellHeight;
         this.cellWidth = cellWidth;
@@ -54,19 +56,12 @@ public class SheetImp implements Sheet, Serializable
 
     @Override
     public List<ReadOnlyCell> getReadOnlyCells() {
-        List<ReadOnlyCell> readOnlyCellsList = new LinkedList<>();
-        for (Cell cell : activeCells.values()) {
-            ReadOnlyCell readOnlyCell = new ReadOnlyCellImp(
-                    cell.getCoordinateStr(),
-                    cell.getOriginalValue(),
-                    cell.getEffectiveValue(),
-                    cell.getVersion(),
-                    cell.getDependsOn(),
-                    cell.getInfluencingOn()
-            );
-            readOnlyCellsList.add(readOnlyCell);
-        }
-        return readOnlyCellsList; // return the list
+        return activeCells.values().stream()
+                .map(this::convertCellToReadOnlyCell).collect(Collectors.toList());
+    }
+
+    private ReadOnlyCell convertCellToReadOnlyCell(Cell cell) {
+        return new ReadOnlyCellImp(cell);
     }
 
     @Override

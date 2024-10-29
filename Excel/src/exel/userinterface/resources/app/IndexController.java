@@ -348,7 +348,7 @@ public class IndexController extends ControllerWithEventBus
             popupStage.setTitle("Display Sheet");
             popupStage.initModality(Modality.WINDOW_MODAL);
             popupStage.initOwner(sheetContainer.getScene().getWindow()); // Set the owner to the current stage
-            
+
             Scene scene = new Scene(popupRoot);
 
             applyCurrentTheme(scene);

@@ -34,9 +34,18 @@ public class RowSorter extends RowSomething
     @Override
     public ReadOnlySheet getSheetAfterChange()
     {
-        changeSheet();
-        ReadOnlySheet toReturn = new ReadOnlySheetImp(getSheet());
-        returnSheetBackToNormal();
-        return toReturn;
+        try
+        {
+            Sheet sheet = getSheet();
+            changeSheet();
+            ReadOnlySheet toReturn = new ReadOnlySheetImp(getSheet());
+            returnSheetBackToNormal();
+            return toReturn;
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            return new ReadOnlySheetImp(getSheet());
+        }
     }
 }

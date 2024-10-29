@@ -29,6 +29,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
+import javafx.util.Builder;
 import javafx.util.Pair;
 import okhttp3.*;
 import com.google.gson.Gson;
@@ -235,38 +236,49 @@ public class UIManager {
     }
 
     private void handleRangeDelete(RangeDeleteEvent event) {
-        try
-        {
-            String finalURL = HttpUrl
-                    .parse(DELETE_RANGE_REQUEST_PATH(currSheetFileName))
-                    .newBuilder()
-                    .addQueryParameter("rangeName", event.getRangeName())
-                    .build()
-                    .toString();
+        String finalURL = HttpUrl
+                .parse(DELETE_RANGE_REQUEST_PATH(currSheetFileName))
+                .newBuilder()
+                .addQueryParameter("rangeName", event.getRangeName())
+                .build()
+                .toString();
 
-            Request request = new Request.Builder()
-                    .url(finalURL)
-                    .delete()
-                    .build();
+        Request request = new Request.Builder()
+                .url(finalURL)
+                .delete()
+                .build();
 
-            HttpClientUtil.runAsync(request, response ->
-                    {
-                        readOnlySheet = getSheetFromResponse(response);
-                        Platform.runLater(() -> eventBus.publish(new DeletedRangeEvent(event.getRangeName())));
-                    }
-            );
-        }
-        catch (Exception e)
-        {
-            throw new IllegalArgumentException(e.getMessage());
-        }
+        HttpClientUtil.runAsync(request, response ->
+                {
+                    readOnlySheet = getSheetFromResponse(response);
+                    Platform.runLater(() -> eventBus.publish(new DeletedRangeEvent(event.getRangeName())));
+                }
+        );
     }
 
     //TODO: CHANGE
     private void handleSortRequested(SortRequestedEvent event)
     {
-        ReadOnlySheet sortedSheet = engine.createSortedSheetFromCords(event.getCord1(), event.getCord2(), event.getPickedColumns());
-        eventBus.publish(new DisplaySheetPopupEvent(sortedSheet));
+        String finalURL = getSortURLFromEvent(event);
+        HttpClientUtil.runAsync(finalURL, response ->
+        {
+            ReadOnlySheet sortedSheet = getSheetFromResponse(response);
+            Platform.runLater(() -> eventBus.publish(new DisplaySheetPopupEvent(sortedSheet)));
+        });
+    }
+
+    private String getSortURLFromEvent(SortRequestedEvent event) {
+        HttpUrl.Builder builder = HttpUrl
+                .parse(VIEW_SORTED_SHEET_REQUEST_PATH(currSheetFileName))
+                .newBuilder();
+
+        builder.addQueryParameter("cord1", event.getCord1())
+               .addQueryParameter("cord2", event.getCord2());
+
+        for (String column : event.getPickedColumns())
+            builder.addQueryParameter("columns", column);
+
+        return builder.build().toString();
     }
 
     //TODO: CHANGE

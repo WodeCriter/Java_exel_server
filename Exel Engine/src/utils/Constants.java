@@ -15,12 +15,15 @@ public class Constants {
     public static final String LOGIN_PATH = "/login";
     public static final String FILES_PATH = "/files";
     public static final String SHEETS_PATH = "/sheets";
-    public static final String VIEW_SHEET_PATH = "/viewsheet";
-    public static final String DELETE_SHEET_PATH = "/deletesheet";
-    public static final String UPDATE_CELL_PATH = "/updatecell";
-    public static final String ADD_RANGE_PATH = "/addrange";
-    public static final String DELETE_RANGE_PATH = "/deleterange";
-    public static final String VIEW_BY_VERSION_PATH = "/getbyversion";
+
+    public static final String VIEW_SHEET = "viewsheet";
+    public static final String DELETE_SHEET = "deletesheet";
+    public static final String UPDATE_CELL = "updatecell";
+    public static final String ADD_RANGE = "addrange";
+    public static final String DELETE_RANGE = "deleterange";
+    public static final String VIEW_BY_VERSION = "getbyversion";
+    public static final String VIEW_SORTED_SHEET = "viewsorted";
+    public static final String VIEW_FILTERED_SHEET = "viewfiltered";
 
     public static final int INT_PARAMETER_ERROR = Integer.MIN_VALUE;
 
@@ -37,28 +40,39 @@ public class Constants {
     public final static String FULL_SERVER_PATH = BASE_URL + CONTEXT_PATH;
 
     public static String VIEW_SHEET_PAGE(String fileName){
-        return FULL_SERVER_PATH + SHEETS_PATH + '/' + fileName + VIEW_SHEET_PATH;
+        return getSheetsPathWithName(fileName) + VIEW_SHEET;
     }
 
     public static String VIEW_SHEET_BY_VERSION_REQUEST_PATH(String fileName){
-        return FULL_SERVER_PATH + SHEETS_PATH + '/' + fileName +VIEW_BY_VERSION_PATH;
+        return getSheetsPathWithName(fileName) + VIEW_BY_VERSION;
     }
 
     public static String DELETE_SHEET_PAGE(String fileName){
-        return FULL_SERVER_PATH + SHEETS_PATH + '/' + fileName + DELETE_SHEET_PATH;
+        return getSheetsPathWithName(fileName) + DELETE_SHEET;
     }
 
     public static String UPDATE_CELL_REQUEST_PATH(String fileName){
-        return FULL_SERVER_PATH + SHEETS_PATH + '/' + fileName + UPDATE_CELL_PATH;
-
+        return getSheetsPathWithName(fileName) + UPDATE_CELL;
     }
 
     public static String ADD_RANGE_REQUEST_PATH(String fileName){
-        return FULL_SERVER_PATH + SHEETS_PATH + '/' + fileName + ADD_RANGE_PATH;
+        return getSheetsPathWithName(fileName) + ADD_RANGE;
     }
 
     public static String DELETE_RANGE_REQUEST_PATH(String fileName){
-        return FULL_SERVER_PATH + SHEETS_PATH + '/' + fileName + DELETE_RANGE_PATH;
+        return getSheetsPathWithName(fileName) + DELETE_RANGE;
+    }
+
+    public static String VIEW_SORTED_SHEET_REQUEST_PATH(String fileName){
+        return getSheetsPathWithName(fileName) + VIEW_SORTED_SHEET;
+    }
+
+    public static String VIEW_FILTERED_SHEET_REQUEST_PATH(String fileName){
+        return getSheetsPathWithName(fileName) + VIEW_FILTERED_SHEET;
+    }
+
+    private static String getSheetsPathWithName(String fileName){
+        return FULL_SERVER_PATH + SHEETS_PATH + '/' + fileName + '/';
     }
 
 

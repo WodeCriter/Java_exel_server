@@ -11,6 +11,8 @@ import webApp.managers.fileManager.FileManager;
 import webApp.utils.ServletUtils;
 
 import java.io.IOException;
+import java.util.Collections;
+import java.util.List;
 
 import static utils.Constants.*;
 
@@ -47,11 +49,14 @@ public class SheetsServlet extends HttpServlet {
         Engine engine = requestData.engine;
 
         switch (requestData.action.toLowerCase()) {
-            case "viewsheet":
+            case VIEW_SHEET:
                 handleGetSheet(engine, response);
                 break;
-            case "getbyversion":
+            case VIEW_BY_VERSION:
                 handleGetByVersion(engine, request, response);
+                break;
+            case VIEW_SORTED_SHEET:
+                handleGetSorted(engine, request, response);
                 break;
             default:
                 response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Unknown action for GET: " + requestData.action);
@@ -67,10 +72,10 @@ public class SheetsServlet extends HttpServlet {
         Engine engine = requestData.engine;
 
         switch (requestData.action.toLowerCase()) {
-            case "updatecell":
+            case UPDATE_CELL:
                 handleUpdateCell(engine, request, response);
                 break;
-            case "addrange":
+            case ADD_RANGE:
                 handleAddRange(engine, request, response);
                 break;
             default:
@@ -84,10 +89,10 @@ public class SheetsServlet extends HttpServlet {
         if (requestData == null) return;
 
         switch (requestData.action.toLowerCase()) {
-            case "deletesheet":
+            case DELETE_SHEET:
                 handleDeleteSheet(requestData.fileName, response);
                 break;
-            case "deleterange":
+            case DELETE_RANGE:
                 handleDeleteRange(requestData.engine, request, response);
                 break;
             default:
@@ -96,6 +101,7 @@ public class SheetsServlet extends HttpServlet {
     }
 
     // Separate parse method
+
     private RequestData parseRequest(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String pathInfo = request.getPathInfo(); // e.g., /FileName/action
         if (pathInfo == null || pathInfo.equals("/")) {
@@ -126,8 +132,8 @@ public class SheetsServlet extends HttpServlet {
         return new RequestData(fileName, action, engine);
     }
 
-
     // Handler methods
+
     private void handleGetSheet(Engine engine, HttpServletResponse response) throws IOException {
         synchronized (engine) {
             ReadOnlySheet sheet = engine.getSheet();
@@ -135,7 +141,6 @@ public class SheetsServlet extends HttpServlet {
             addSheetToResponse(sheet, response);
         }
     }
-
     private void handleGetByVersion(Engine engine,HttpServletRequest request, HttpServletResponse response) throws IOException {
         String version = request.getParameter("version");
         synchronized (engine) {
@@ -149,6 +154,25 @@ public class SheetsServlet extends HttpServlet {
                 response.getWriter().write(e.getMessage());
             }
 
+        }
+    }
+
+    private void handleGetSorted(Engine engine, HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String cord1 = request.getParameter("cord1");
+        String cord2 = request.getParameter("cord2");
+        List<String> columnsToSortBy = List.of(request.getParameterValues("columns"));
+
+        synchronized (engine) {
+            try
+            {
+                ReadOnlySheet sortedSheet = engine.createSortedSheetFromCords(cord1, cord2, columnsToSortBy);
+                addSheetToResponse(sortedSheet, response);
+            }
+            catch (Exception e)
+            {
+                response.setStatus(SC_UNPROCESSABLE_CONTENT);
+                response.getWriter().write(e.getMessage());
+            }
         }
     }
 

@@ -1,6 +1,7 @@
 package engine.spreadsheet.cell.imp;
 
 import engine.effectivevalue.api.EffectiveValue;
+import engine.spreadsheet.cell.api.Cell;
 import engine.spreadsheet.cell.api.ReadOnlyCell;
 
 import java.util.Collections;
@@ -38,6 +39,11 @@ public class ReadOnlyCellImp implements ReadOnlyCell {
         this.version = version;
         this.dependsOn = dependsOn;
         this.influencingOn = influencingOn;
+    }
+
+    public ReadOnlyCellImp(Cell cell){
+        this(cell.getCoordinateStr(), cell.getOriginalValue(), cell.getEffectiveValue(), cell.getVersion(),
+                cell.getDependsOn(), cell.getInfluencingOn());
     }
 
     public ReadOnlyCellImp(){
