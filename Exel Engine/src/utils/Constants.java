@@ -24,6 +24,8 @@ public class Constants {
     public static final String VIEW_BY_VERSION = "getbyversion";
     public static final String VIEW_SORTED_SHEET = "viewsorted";
     public static final String VIEW_FILTERED_SHEET = "viewfiltered";
+    public static final String SET_CELL_WIDTH = "setcellwidth";
+    public static final String SET_CELL_HEIGHT = "setcellheight";
 
     public static final int INT_PARAMETER_ERROR = Integer.MIN_VALUE;
 

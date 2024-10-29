@@ -16,25 +16,15 @@ import java.util.List;
 
 import static utils.Constants.*;
 
-//Beta Simp Cuck--> Daniel <--Cuck:
-//DELETE sheets/deleteSheet
-//PUT sheets/uploadSheet
-//GET sheets/getSheet
-
-//Chad Itamar:
-//DELETE sheets
-//PUT sheets
-//GET sheets
-
 @WebServlet(SHEETS_PATH + "/*")
 public class SheetsServlet extends HttpServlet {
     FileManager fileManager;
-    //update sheet - PUT
-    //get Sheet - GET
-    //delete sheet - DELETE
-    //add Range - PUT
-    //get Version - GET
-    //get cell ?? (maybe update the ReadOnlySheet)
+    //update sheet - PUT (done)
+    //get Sheet - GET (done)
+    //delete sheet - DELETE (done)
+    //add Range - PUT (done)
+    //get Version - GET (done)
+    //set width/height - PUT
 
     public void init() {
         fileManager = ServletUtils.getFileManager(getServletContext()); //todo: make sure it gives the same file manager
@@ -77,6 +67,12 @@ public class SheetsServlet extends HttpServlet {
                 break;
             case ADD_RANGE:
                 handleAddRange(engine, request, response);
+                break;
+            case SET_CELL_WIDTH:
+                handleSetCellWidth(engine, request, response);
+                break;
+            case SET_CELL_HEIGHT:
+                handleSetCellHeight(engine, request, response);
                 break;
             default:
                 response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Unknown action for PUT: " + requestData.action);
@@ -189,6 +185,27 @@ public class SheetsServlet extends HttpServlet {
             {
                 response.setStatus(SC_UNPROCESSABLE_CONTENT); //when maham fails
             }
+        }
+    }
+
+    private void handleSetCellWidth(Engine engine, HttpServletRequest request, HttpServletResponse response){
+        synchronized (engine) {
+
+        }
+    }
+    private void handleSetCellHeight(Engine engine, HttpServletRequest request, HttpServletResponse response){
+        synchronized (engine) {
+            try
+            {
+                engine.changeCellWidth(event.getWidth());
+                addSheetToResponse(engine.getSheet(), response);
+            }
+            catch (Exception e)
+            {
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                response.getWriter().write(e.getMessage());
+            }
+
         }
     }
 
