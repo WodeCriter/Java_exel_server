@@ -48,6 +48,7 @@ import javafx.util.Duration;
 import javafx.application.Platform;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -143,15 +144,9 @@ public class IndexController extends ControllerWithEventBus
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/exel/userinterface/resources/app/popups/newsheet/CreateNewSheetScreen.fxml"));
             VBox popupRoot = loader.load();
 
-            Object controller = loader.getController();
-
-            if (controller instanceof CreateNewSheetScreenController) {
-                ((CreateNewSheetScreenController) controller).setEventBus(eventBus);
-            }
-
             // Get the controller and set the EventBus
             CreateNewSheetScreenController popupController = loader.getController();
-            //popupController.setEventBus(eventBus);
+            popupController.setEventBus(eventBus);
 
             // Create a new stage for the popup
             Stage popupStage = new Stage();
@@ -161,7 +156,6 @@ public class IndexController extends ControllerWithEventBus
             Scene popupScene = new Scene(popupRoot, 300, 200);
 
             applyCurrentTheme(popupScene);
-
             popupStage.setScene(popupScene);
             // Show the popup
             popupStage.showAndWait();
@@ -347,20 +341,17 @@ public class IndexController extends ControllerWithEventBus
 
             // Pass the ReadOnlySheet to the popup controller
             popupController.setSheetData(sheetData);
+            popupController.setDisplaySheetMethod(this::setUpDisplaySheet);
 
             // Create a new stage for the popup
             Stage popupStage = new Stage();
             popupStage.setTitle("Display Sheet");
             popupStage.initModality(Modality.WINDOW_MODAL);
             popupStage.initOwner(sheetContainer.getScene().getWindow()); // Set the owner to the current stage
-
-            // Set the scene
+            
             Scene scene = new Scene(popupRoot);
 
-
             applyCurrentTheme(scene);
-
-
             popupStage.setScene(scene);
 
             // Show the popup
@@ -374,33 +365,41 @@ public class IndexController extends ControllerWithEventBus
 
     public void refreshSheetPlane() {
         try {
-            // Load the sheet FXML
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/exel/userinterface/resources/app/Sheet/Sheet.fxml"));
-            Pane sheetRoot = loader.load();
-
-            Object controller = loader.getController();
-
-            if (controller instanceof SheetController) {
-                ((SheetController) controller).setEventBus(eventBus);
-            }
-
-            // Remove any existing content
-            sheetContainer.getChildren().clear();
-
-            // Add the sheet to the container
-            sheetContainer.getChildren().add(sheetRoot);
-
-            // Anchor the sheet to all sides
-            AnchorPane.setTopAnchor(sheetRoot, 0.0);
-            AnchorPane.setBottomAnchor(sheetRoot, 0.0);
-            AnchorPane.setLeftAnchor(sheetRoot, 0.0);
-            AnchorPane.setRightAnchor(sheetRoot, 0.0);
-
+            setUpDisplaySheet(eventBus);
             applyCurrentTheme(sheetContainer.getScene());
 
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private void setUpDisplaySheet(EventBus eventBus){
+        // Load the sheet FXML
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/exel/userinterface/resources/app/Sheet/Sheet.fxml"));
+        Pane sheetRoot;
+        try
+        {
+            sheetRoot = loader.load();
+        }
+        catch (IOException e)
+        {
+            throw new RuntimeException(e);
+        }
+
+        SheetController controller = loader.getController();
+        controller.setEventBus(eventBus);
+
+        // Remove any existing content
+        sheetContainer.getChildren().clear();
+
+        // Add the sheet to the container
+        sheetContainer.getChildren().add(sheetRoot);
+
+        // Anchor the sheet to all sides
+        AnchorPane.setTopAnchor(sheetRoot, 0.0);
+        AnchorPane.setBottomAnchor(sheetRoot, 0.0);
+        AnchorPane.setLeftAnchor(sheetRoot, 0.0);
+        AnchorPane.setRightAnchor(sheetRoot, 0.0);
     }
 
     private void handleDisplaySelectedCell(DisplaySelectedCellEvent event){
@@ -451,10 +450,8 @@ public class IndexController extends ControllerWithEventBus
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/exel/userinterface/resources/app/popups/newRange/AddNewRangeScreen.fxml"));
             VBox popupRoot = loader.load();
 
-            Object controller = loader.getController();
-
-            if (controller instanceof CreateNewRangeScreenController)
-                ((CreateNewRangeScreenController) controller).setEventBus(eventBus);
+            CreateNewRangeScreenController controller = loader.getController();
+            controller.setEventBus(eventBus);
 
             // Create a new stage for the popup
             Stage popupStage = new Stage();
@@ -530,10 +527,8 @@ public class IndexController extends ControllerWithEventBus
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/exel/userinterface/resources/app/popups/sort/SetSortScreen.fxml"));
             VBox popupRoot = loader.load();
 
-            Object controller = loader.getController();
-
-            if (controller instanceof SetSortScreenController)
-                ((SetSortScreenController) controller).setEventBus(eventBus);
+            SetSortScreenController controller = loader.getController();
+            controller.setEventBus(eventBus);
 
             // Create a new stage for the popup
             Stage popupStage = new Stage();
@@ -568,10 +563,8 @@ public class IndexController extends ControllerWithEventBus
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/exel/userinterface/resources/app/popups/filter/SetFilterScreen.fxml"));
             VBox popupRoot = loader.load();
 
-            Object controller = loader.getController();
-
-            if (controller instanceof SetFilterScreenController)
-                ((SetFilterScreenController) controller).setEventBus(eventBus);
+            SetFilterScreenController controller = loader.getController();
+            controller.setEventBus(eventBus);
 
             // Create a new stage for the popup
             Stage popupStage = new Stage();
