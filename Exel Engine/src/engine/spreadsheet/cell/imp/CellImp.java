@@ -82,7 +82,8 @@ public class CellImp implements Cell, Serializable {
 
     @Override
     public void setCoordinateRowNum(int row){
-        coordinate.setRow(row);
+        coordinate = new Coordinate(coordinate.getCol(), row);
+        //coordinate.setRow(row);
     }
 
     @Override
