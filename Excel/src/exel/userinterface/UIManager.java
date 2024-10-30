@@ -42,13 +42,13 @@ import java.util.List;
 import static utils.Constants.*;
 
 public class UIManager {
-    //private Engine engine;
     private EventBus eventBus;
     private ReadOnlySheet readOnlySheet;
     private String currSheetFileName;
     private IndexController indexController;
     private HomeController homeController;
     private Stage primaryStage;
+    private String username;
 
     public UIManager(Engine engine, EventBus eventBus, Stage primaryStage) {
         //this.engine = engine;
@@ -322,7 +322,9 @@ public class UIManager {
 
 
     private void handleLogInSuccessfulEvent(LogInSuccessfulEvent event){
+        username = event.getUsername();
         showHomePage();
+        homeController.setUsernameButtonText(username);
         homeController.startDataRefresher();
     }
 
@@ -395,6 +397,20 @@ public class UIManager {
     private void handleFilePermissionRequestedEvent(FilePermissionRequestedEvent event){
         String fileName = event.getFileName();
         String permissionRequested = event.getPermission();
+        String finalURL = HttpUrl
+                .parse(FILES)
+                .newBuilder()
+                .addQueryParameter("fileName", fileName)
+                .addQueryParameter("permission", permissionRequested)
+                .build()
+                .toString();
+
+        Request request = new Request.Builder()
+                .url(finalURL)
+                .put(RequestBody.create(null, new byte[0]))
+                .build();
+
+        HttpClientUtil.runAsync(request, response -> {});
     }
 
     //    //TODO: REDUNDANT?

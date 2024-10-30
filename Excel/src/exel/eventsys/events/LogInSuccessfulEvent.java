@@ -1,13 +1,13 @@
 package exel.eventsys.events;
 
 public class LogInSuccessfulEvent {
-    String homeURL;
+    String username;
 
     public LogInSuccessfulEvent(String homeURL) {
-        this.homeURL = homeURL;
+        this.username = homeURL;
     }
 
-    public String getHomeURL() {
-        return homeURL;
+    public String getUsername() {
+        return username;
     }
 }

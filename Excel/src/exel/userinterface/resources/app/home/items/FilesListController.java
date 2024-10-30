@@ -96,12 +96,16 @@ public class FilesListController extends ControllerWithEventBus
         eventBus.publish(new DeleteFileRequestedEvent(selectedFileName));
     }
 
-    private void handleFileReaderPermRequest(String selectedFileName){
-        eventBus.publish(new FilePermissionRequestedEvent("Reader", selectedFileName));
+    @FXML
+    private void handleFileReaderPermRequest(ActionEvent event){
+        String selectedFile = filesList.getSelectionModel().getSelectedItem();
+        eventBus.publish(new FilePermissionRequestedEvent("READER", selectedFile));
     }
 
-    private void handleFileWriterPermRequest(String selectedFileName){
-        eventBus.publish(new FilePermissionRequestedEvent("Writer", selectedFileName));
+    @FXML
+    private void handleFileWriterPermRequest(ActionEvent event){
+        String selectedFile = filesList.getSelectionModel().getSelectedItem();
+        eventBus.publish(new FilePermissionRequestedEvent("WRITER", selectedFile));
     }
 
     public ObjectProperty<String> selectedItemProperty() {

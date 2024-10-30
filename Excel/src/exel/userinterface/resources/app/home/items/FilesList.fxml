@@ -12,8 +12,8 @@
           <MenuItem mnemonicParsing="false" onAction="#handleContextMenuOpenPicked" text="Open" />
             <Menu mnemonicParsing="false" text="Request permissions">
               <items>
-                <MenuItem mnemonicParsing="false" text="Reader" />
-                  <MenuItem mnemonicParsing="false" text="Writer" />
+                <MenuItem mnemonicParsing="false" onAction="#handleFileReaderPermRequest" text="Reader" />
+                  <MenuItem mnemonicParsing="false" onAction="#handleFileWriterPermRequest" text="Writer" />
               </items>
             </Menu>
             <MenuItem mnemonicParsing="false" onAction="#handleContextMenuDeletePicked" text="Delete" />

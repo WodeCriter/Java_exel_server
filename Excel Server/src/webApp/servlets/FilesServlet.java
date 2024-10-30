@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.Part;
 import jakarta.xml.bind.JAXBException;
+import utils.perms.Permission;
 import webApp.managers.fileManager.FileManager;
 import webApp.utils.ServletUtils;
 import webApp.utils.SessionUtils;
@@ -48,8 +49,7 @@ public class FilesServlet extends HttpServlet
                 catch (JAXBException e) //When given file is not a sheet file
                 {
                     response.setStatus(SC_UNPROCESSABLE_CONTENT);
-                    response.getWriter().write("File is Broken."); //todo: write better message
-                    System.out.println("File is Broken.");
+                    response.getWriter().write("UNPROCESSABLE File.");
                 }
                 catch (RuntimeException e) //When file already exist (probably)
                 {
@@ -79,41 +79,33 @@ public class FilesServlet extends HttpServlet
         }
     }
 
+    @Override
+    protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
+        String requestSender = SessionUtils.getUsername(request);
+        String fileName = request.getParameter("fileName");
+        Permission requestedPermission = getPermissionFromRequest(request, response);
+
+        if (requestedPermission != null)
+        {
+            Engine engine = ServletUtils.getFileManager(getServletContext()).getEngine(fileName);
+            engine.requestForPermission(requestSender, requestedPermission);
+        }
+    }
+
+    private static Permission getPermissionFromRequest(HttpServletRequest request, HttpServletResponse response)
+            throws IOException {
+        try
+        {
+            return Permission.valueOf(request.getParameter("permission"));
+        }
+        catch (IllegalArgumentException e)
+        {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid permission was received");
+            return null;
+        }
+    }
+
     private String fileNameWithoutXML(String fileName){
         return fileName.substring(0, fileName.length() - 4);
-    }
-
-    //Will move to sheet servlet later
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
-        response.setContentType("text/html;charset=UTF-8");
-        FileManager fileManager = ServletUtils.getFileManager(getServletContext());
-        String fileName = request.getParameter("fileName");
-
-        if (fileName != null && !fileName.isEmpty())
-        {
-            if (fileManager.isFileExists(fileName))
-            {
-                Engine fileContent = fileManager.getEngine(fileName);
-                response.getWriter().write((new Gson()).toJson(fileContent.getSheet()));
-                response.setStatus(HttpServletResponse.SC_OK);
-            }
-            else
-            {
-                response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-                response.getWriter().write("File not found.");
-            }
-        }
-        else
-        {
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            response.getWriter().write("No file provided.");
-        }
-    }
-
-    @Override
-    protected void doDelete(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException{
-
     }
 }

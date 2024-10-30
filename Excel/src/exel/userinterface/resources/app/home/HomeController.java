@@ -8,6 +8,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
+import javafx.scene.control.Menu;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Window;
@@ -26,6 +27,10 @@ public class HomeController extends ControllerWithEventBus
     private TimerTask refresher;
     private Timer timer;
 
+
+
+    @FXML
+    private Menu userNameButton;
     @FXML
     private FilesListController filesController;
     @FXML
@@ -111,5 +116,9 @@ public class HomeController extends ControllerWithEventBus
 
     public void updateData(){
         refresher.run();
+    }
+
+    public void setUsernameButtonText(String username) {
+        userNameButton.setText("User: " + username);
     }
 }

@@ -57,28 +57,7 @@ public class LoginController extends ControllerWithEventBus
 
         updateHttpStatusLine("New request is launched for: " + finalUrl);
 
-        HttpClientUtil.runAsync(finalUrl, new Callback() {
-
-            @Override
-            public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                Platform.runLater(() ->
-                        errorMessageProperty.set("Something went wrong: " + e.getMessage())
-                );
-            }
-
-            @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                if (response.code() == 200)
-                {
-                    Platform.runLater(() -> eventBus.publish(new LogInSuccessfulEvent("hi")));
-                }
-                else
-                {
-                    String responseBody = response.body().string();
-                    Platform.runLater(() -> errorMessageProperty.set("Something went wrong: " + responseBody));
-                }
-            }
-        });
+        HttpClientUtil.runAsync(finalUrl, r -> Platform.runLater(() -> eventBus.publish(new LogInSuccessfulEvent(userName))));
     }
 
     @FXML

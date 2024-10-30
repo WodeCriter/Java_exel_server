@@ -112,20 +112,23 @@ public class SheetsServlet extends HttpServlet {
 
         String sender = requestData.sender;
 
-        if (requestData.engine.getUserPermission(sender).compareTo(Permission.WRITER) >= 0)
-            switch (requestData.action.toLowerCase())
-            {
-                case DELETE_SHEET:
+        switch (requestData.action.toLowerCase())
+        {
+            case DELETE_SHEET:
+                if (requestData.engine.getUserPermission(sender).compareTo(Permission.OWNER) >= 0)
                     handleDeleteSheet(requestData.fileName, response);
-                    break;
-                case DELETE_RANGE:
+                else
+                    response.sendError(HttpServletResponse.SC_FORBIDDEN, "\"" + sender + "\" is not allowed to " + requestData.action);
+                break;
+            case DELETE_RANGE:
+                if (requestData.engine.getUserPermission(sender).compareTo(Permission.WRITER) >= 0)
                     handleDeleteRange(requestData.engine, request, response);
-                    break;
-                default:
-                    response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Unknown action for DELETE: " + requestData.action);
-            }
-        else
-            response.sendError(HttpServletResponse.SC_FORBIDDEN, "\"" + sender + "\" is not allowed to " + requestData.action);
+                else
+                    response.sendError(HttpServletResponse.SC_FORBIDDEN, "\"" + sender + "\" is not allowed to " + requestData.action);
+                break;
+            default:
+                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Unknown action for DELETE: " + requestData.action);
+        }
     }
 
     // Separate parse method
