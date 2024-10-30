@@ -2,12 +2,14 @@ package engine.api;
 
 import engine.spreadsheet.api.ReadOnlySheet;
 import engine.spreadsheet.cell.api.ReadOnlyCell;
+import utils.perms.PermissionHelper;
 
 import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 
-public interface Engine {
+public interface Engine extends PermissionHelper
+{
     /**
      * Creates a new spreadsheet.
      */

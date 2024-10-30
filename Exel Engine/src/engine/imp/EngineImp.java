@@ -19,23 +19,72 @@ import engine.spreadsheet.range.Range;
 import engine.spreadsheet.rowSorter.RowFilter;
 import engine.spreadsheet.rowSorter.RowSorter;
 import jakarta.xml.bind.JAXBException;
+import utils.perms.Permission;
 import utils.perms.PermissionHelper;
+import utils.perms.PermissionRequest;
+import utils.perms.Status;
 
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
-public class EngineImp extends PermissionHelper implements Engine
+public class EngineImp implements Engine
 {
     private Sheet currentSheet;
     private ReadOnlySheet readOnlyCurrentSheet;
 
+    private Map<String, Permission> permissions;
+    private Map<String, PermissionRequest> allRequestsEverMade;
+
     public EngineImp(InputStream fileContent, String ownerName) throws JAXBException {
-        super(ownerName);
+        permissions = new ConcurrentHashMap<>();
+        allRequestsEverMade = new ConcurrentHashMap<>();
+        permissions.put(ownerName, Permission.OWNER);
         loadSheet(fileContent);
     }
+
+    public PermissionRequest getUserRequest(String username) {
+        return allRequestsEverMade.get(username);
+    }
+
+    public Boolean requestForPermission(String username, Permission requestedPermission){
+        if (!allRequestsEverMade.containsKey(username) ||
+                getUserRequest(username).status() == Status.DENIED ||
+                getUserRequest(username).permission().compareTo(requestedPermission) < 0)
+        {
+            allRequestsEverMade.put(username, new PermissionRequest(requestedPermission, Status.PENDING));
+            return true;
+        }
+        else
+            return false;
+    }
+
+    public void acceptPendingRequest(String username){
+        PermissionRequest userRequest = getPendingUserRequest(username);
+        userRequest.setStatus(Status.ACCEPTED);
+        permissions.put(username, userRequest.permission());
+    }
+
+    public void denyPendingRequest(String username){
+        PermissionRequest userRequest = getPendingUserRequest(username);
+        userRequest.setStatus(Status.DENIED);
+    }
+
+    public Boolean removePermission(String username){
+        return permissions.remove(username) != null;
+    }
+
+    private PermissionRequest getPendingUserRequest(String username) {
+        PermissionRequest userRequest = getUserRequest(username);
+
+        if (!allRequestsEverMade.containsKey(username) || userRequest.status() != Status.PENDING)
+            throw new IllegalArgumentException("\""+ username +"\" has no pending request");
+        return userRequest;
+    }
+
 
     //?
     @Override
