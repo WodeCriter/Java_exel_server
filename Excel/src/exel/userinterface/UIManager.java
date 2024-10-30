@@ -59,16 +59,16 @@ public class UIManager {
 
     private void subscribeToEvents() {
         // Subscribe to the CreateNewSheetEvent
-        eventBus.subscribe(CreateNewSheetEvent.class, this::handleCreateNewSheet);
+        //eventBus.subscribe(CreateNewSheetEvent.class, this::handleCreateNewSheet);
         eventBus.subscribe(CellSelectedEvent.class, this::handleCellSelected);
         eventBus.subscribe(CellUpdateEvent.class, this::handleCellUpdate);
         eventBus.subscribe(CreateNewRangeEvent.class, this::handleCreateNewRange);
         eventBus.subscribe(RangeSelectedEvent.class, this::handleRangeSelected);
         eventBus.subscribe(RangeDeleteEvent.class, this::handleRangeDelete);
         eventBus.subscribe(SortRequestedEvent.class, this::handleSortRequested);
-        eventBus.subscribe(LoadSheetEvent.class, this::handleLoadSheetFromPath);
+        //eventBus.subscribe(LoadSheetEvent.class, this::handleLoadSheetFromPath);
         //eventBus.subscribe(FileContentReceivedEvent.class, this::handleLoadSheet);
-        eventBus.subscribe(SaveSheetEvent.class, this::handleSaveSheet);
+        //eventBus.subscribe(SaveSheetEvent.class, this::handleSaveSheet);
         eventBus.subscribe(VersionSelectedEvent.class, this::handleVersionSelectedEvent);
         eventBus.subscribe(SheetResizeWidthEvent.class, this::handleSheetResizeWidthEvent);
         eventBus.subscribe(SheetResizeHeightEvent.class, this::handleSheetResizeHeightEvent);
@@ -78,8 +78,6 @@ public class UIManager {
         eventBus.subscribe(DeleteFileRequestedEvent.class, this::handleFileSelectedForDeletion);
         eventBus.subscribe(FilePermissionRequestedEvent.class, this::handleFilePermissionRequestedEvent);
     }
-
-
 
     private void handleCreateNewRange(CreateNewRangeEvent event) {
         try

@@ -7,15 +7,16 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import utils.perms.Permission;
 import webApp.managers.fileManager.FileManager;
 import webApp.utils.ServletUtils;
 import java.lang.reflect.Type;
 import com.google.gson.reflect.TypeToken;
+import webApp.utils.SessionUtils;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -37,25 +38,41 @@ public class SheetsServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        doGetAndPost(request, response);
+    }
 
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        doGetAndPost(request, response);
+    }
+
+    private void doGetAndPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         RequestData requestData = parseRequest(request, response);
         if (requestData == null) return;
 
         Engine engine = requestData.engine;
+        String sender = requestData.sender;
 
-        switch (requestData.action.toLowerCase()) {
-            case VIEW_SHEET:
-                handleGetSheet(engine, response);
-                break;
-            case VIEW_BY_VERSION:
-                handleGetByVersion(engine, request, response);
-                break;
-            case VIEW_SORTED_SHEET:
-                handleGetSorted(engine, request, response);
-                break;
-            default:
-                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Unknown action for GET: " + requestData.action);
-        }
+        if (engine.getUserPermission(sender).compareTo(Permission.READER) >= 0)
+            switch (requestData.action.toLowerCase())
+            {
+                case VIEW_SHEET:
+                    handleGetSheet(engine, response);
+                    break;
+                case VIEW_BY_VERSION:
+                    handleGetByVersion(engine, request, response);
+                    break;
+                case VIEW_SORTED_SHEET:
+                    handleGetSorted(engine, request, response);
+                    break;
+                case VIEW_FILTERED_SHEET:
+                    handleGetFiltered(engine, request, response);
+                    break;
+                default:
+                    response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Unknown action for GET: " + requestData.action);
+            }
+        else
+            response.sendError(HttpServletResponse.SC_FORBIDDEN, "\"" + sender + "\" is not allowed to " + requestData.action);
     }
 
     @Override
@@ -64,23 +81,28 @@ public class SheetsServlet extends HttpServlet {
         if (requestData == null) return;
 
         Engine engine = requestData.engine;
+        String sender = requestData.sender;
 
-        switch (requestData.action.toLowerCase()) {
-            case UPDATE_CELL:
-                handleUpdateCell(engine, request, response);
-                break;
-            case ADD_RANGE:
-                handleAddRange(engine, request, response);
-                break;
-            case SET_CELL_WIDTH:
-                handleSetCellWidth(engine, request, response);
-                break;
-            case SET_CELL_HEIGHT:
-                handleSetCellHeight(engine, request, response);
-                break;
-            default:
-                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Unknown action for PUT: " + requestData.action);
-        }
+        if (engine.getUserPermission(sender).compareTo(Permission.WRITER) >= 0)
+            switch (requestData.action.toLowerCase())
+            {
+                case UPDATE_CELL:
+                    handleUpdateCell(engine, request, response);
+                    break;
+                case ADD_RANGE:
+                    handleAddRange(engine, request, response);
+                    break;
+                case SET_CELL_WIDTH:
+                    handleSetCellWidth(engine, request, response);
+                    break;
+                case SET_CELL_HEIGHT:
+                    handleSetCellHeight(engine, request, response);
+                    break;
+                default:
+                    response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Unknown action for PUT: " + requestData.action);
+            }
+        else
+            response.sendError(HttpServletResponse.SC_FORBIDDEN, "\"" + sender + "\" is not allowed to " + requestData.action);
     }
 
     @Override
@@ -88,31 +110,22 @@ public class SheetsServlet extends HttpServlet {
         RequestData requestData = parseRequest(request, response);
         if (requestData == null) return;
 
-        switch (requestData.action.toLowerCase()) {
-            case DELETE_SHEET:
-                handleDeleteSheet(requestData.fileName, response);
-                break;
-            case DELETE_RANGE:
-                handleDeleteRange(requestData.engine, request, response);
-                break;
-            default:
-                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Unknown action for DELETE: " + requestData.action);
-        }
-    }
+        String sender = requestData.sender;
 
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
-    {
-        RequestData requestData = parseRequest(request, response);
-        if (requestData == null) return;
-
-        switch (requestData.action.toLowerCase()) {
-            case VIEW_FILTERED_SHEET:
-                handleGetFiltered(requestData.engine, request, response);
-                break;
-            default:
-                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Unknown action for POST: " + requestData.action);
-        }
+        if (requestData.engine.getUserPermission(sender).compareTo(Permission.WRITER) >= 0)
+            switch (requestData.action.toLowerCase())
+            {
+                case DELETE_SHEET:
+                    handleDeleteSheet(requestData.fileName, response);
+                    break;
+                case DELETE_RANGE:
+                    handleDeleteRange(requestData.engine, request, response);
+                    break;
+                default:
+                    response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Unknown action for DELETE: " + requestData.action);
+            }
+        else
+            response.sendError(HttpServletResponse.SC_FORBIDDEN, "\"" + sender + "\" is not allowed to " + requestData.action);
     }
 
     // Separate parse method
@@ -131,6 +144,7 @@ public class SheetsServlet extends HttpServlet {
 
         String fileName = pathParts[0];
         String action = pathParts[1];
+        String sender = SessionUtils.getUsername(request);
 
         //todo: think
         // For DELETE, the engine may not exist
@@ -143,7 +157,7 @@ public class SheetsServlet extends HttpServlet {
             }
         }
 
-        return new RequestData(fileName, action, engine);
+        return new RequestData(fileName, action, engine, sender);
     }
 
     // Handler methods
@@ -151,7 +165,6 @@ public class SheetsServlet extends HttpServlet {
     private void handleGetSheet(Engine engine, HttpServletResponse response) throws IOException {
         synchronized (engine) {
             ReadOnlySheet sheet = engine.getSheet();
-            //response.getWriter().write(GSON_INSTANCE.toJson(sheet));
             addSheetToResponse(sheet, response);
         }
     }
@@ -333,11 +346,13 @@ public class SheetsServlet extends HttpServlet {
         String fileName;
         String action;
         Engine engine;
+        String sender;
 
-        RequestData(String fileName, String action, Engine engine) {
+        RequestData(String fileName, String action, Engine engine, String sender) {
             this.fileName = fileName;
             this.action = action;
             this.engine = engine;
+            this.sender = sender;
         }
     }
 

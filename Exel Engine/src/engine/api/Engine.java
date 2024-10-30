@@ -2,6 +2,7 @@ package engine.api;
 
 import engine.spreadsheet.api.ReadOnlySheet;
 import engine.spreadsheet.cell.api.ReadOnlyCell;
+import utils.perms.Permission;
 import utils.perms.PermissionHelper;
 
 import java.io.InputStream;
@@ -10,6 +11,8 @@ import java.util.Map;
 
 public interface Engine extends PermissionHelper
 {
+    Permission getUserPermission(String userName);
+
     /**
      * Creates a new spreadsheet.
      */

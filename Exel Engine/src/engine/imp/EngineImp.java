@@ -20,7 +20,6 @@ import engine.spreadsheet.rowSorter.RowFilter;
 import engine.spreadsheet.rowSorter.RowSorter;
 import jakarta.xml.bind.JAXBException;
 import utils.perms.Permission;
-import utils.perms.PermissionHelper;
 import utils.perms.PermissionRequest;
 import utils.perms.Status;
 
@@ -44,6 +43,10 @@ public class EngineImp implements Engine
         allRequestsEverMade = new ConcurrentHashMap<>();
         permissions.put(ownerName, Permission.OWNER);
         loadSheet(fileContent);
+    }
+
+    public Permission getUserPermission(String userName) {
+        return permissions.getOrDefault(userName, Permission.NONE);
     }
 
     public PermissionRequest getUserRequest(String username) {
