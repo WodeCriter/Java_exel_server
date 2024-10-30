@@ -19,36 +19,23 @@ import engine.spreadsheet.range.Range;
 import engine.spreadsheet.rowSorter.RowFilter;
 import engine.spreadsheet.rowSorter.RowSorter;
 import jakarta.xml.bind.JAXBException;
-import utils.perms.PermissionRequest;
-import utils.perms.Permission;
-import utils.perms.Status;
+import utils.perms.PermissionHelper;
 
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
-public class EngineImp implements Engine
+public class EngineImp extends PermissionHelper implements Engine
 {
     private Sheet currentSheet;
     private ReadOnlySheet readOnlyCurrentSheet;
 
-    private Map<String, Permission> permissions = new ConcurrentHashMap<>();
-    private Map<String, PermissionRequest> allRequestsEverMade = new ConcurrentHashMap<>();
-
-    public EngineImp() {
-    }
-
-    public EngineImp(InputStream fileContent) throws JAXBException {
+    public EngineImp(InputStream fileContent, String ownerName) throws JAXBException {
+        super(ownerName);
         loadSheet(fileContent);
     }
-
-    public void requestForPermission(String username, Permission requestedPermission){
-        allRequestsEverMade.computeIfAbsent(username, a -> new PermissionRequest(requestedPermission, Status.PENDING));
-    }
-
 
     //?
     @Override

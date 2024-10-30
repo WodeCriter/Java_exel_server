@@ -45,6 +45,6 @@ public class FileHelper
                 .post(body)
                 .build();
 
-        HttpClientUtil.runAsync(request, (r) -> System.out.println("File uploaded successfully."));
+        HttpClientUtil.runAsync(request, r -> System.out.println("File uploaded successfully."));
     }
 }

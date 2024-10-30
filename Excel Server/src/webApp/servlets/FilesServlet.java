@@ -12,6 +12,7 @@ import jakarta.servlet.http.Part;
 import jakarta.xml.bind.JAXBException;
 import webApp.managers.fileManager.FileManager;
 import webApp.utils.ServletUtils;
+import webApp.utils.SessionUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -40,7 +41,7 @@ public class FilesServlet extends HttpServlet
                 InputStream inputStream = filePart.getInputStream();
                 try
                 {
-                    fileManager.addFile(fileNameWithoutXML(fileName), inputStream);
+                    fileManager.addFile(fileNameWithoutXML(fileName), inputStream, SessionUtils.getUsername(request));
                     HomeServlet.increaseRequestNumber();
                     response.setStatus(HttpServletResponse.SC_OK);
                 }

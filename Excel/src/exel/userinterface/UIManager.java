@@ -42,8 +42,7 @@ import java.util.List;
 import static utils.Constants.*;
 
 public class UIManager {
-
-    private Engine engine;
+    //private Engine engine;
     private EventBus eventBus;
     private ReadOnlySheet readOnlySheet;
     private String currSheetFileName;
@@ -52,7 +51,7 @@ public class UIManager {
     private Stage primaryStage;
 
     public UIManager(Engine engine, EventBus eventBus, Stage primaryStage) {
-        this.engine = engine;
+        //this.engine = engine;
         this.eventBus = eventBus;
         this.primaryStage = primaryStage;
         subscribeToEvents();
@@ -80,58 +79,6 @@ public class UIManager {
         eventBus.subscribe(FilePermissionRequestedEvent.class, this::handleFilePermissionRequestedEvent);
     }
 
-    //TODO: REDUNDANT?
-    private void handleCreateNewSheet(CreateNewSheetEvent event) {
-        // Call the engine to create a new sheet based on the event details
-        readOnlySheet = engine.createSheet(event.getSheetName(), event.getRows(), event.getCols(), event.getWidth(), event.getHeight());
-        indexController.refreshSheetPlane();
-        eventBus.publish(new SheetCreatedEvent(
-                readOnlySheet.getName(),
-                readOnlySheet.getCellHeight(),
-                readOnlySheet.getCellWidth(),
-                readOnlySheet.getNumOfRows(),
-                readOnlySheet.getNumOfCols()));
-
-
-        eventBus.publish(new SheetDisplayEvent(readOnlySheet));
-    }
-
-    //TODO: REDUNDANT
-    private void handleLoadSheetFromPath(LoadSheetEvent event){
-        try
-        {
-            readOnlySheet = engine.loadSheet(event.getFilePath());
-            loadSheetHelper();
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-            throw new RuntimeException(e.getMessage());
-        }
-    }
-
-    private void loadSheetHelper()
-    {
-        indexController.refreshSheetPlane();
-        eventBus.publish(new SheetCreatedEvent(
-                readOnlySheet.getName(),
-                readOnlySheet.getCellHeight(),
-                readOnlySheet.getCellWidth(),
-                readOnlySheet.getNumOfRows(),
-                readOnlySheet.getNumOfCols()));
-
-        eventBus.publish(new SheetDisplayEvent(readOnlySheet));
-        for (ReadOnlyRange range : readOnlySheet.getRanges()){
-            eventBus.publish(new RangeCreatedEvent(range.getRangeName(),
-                    range.getTopLeftCord(),
-                    range.getBottomRightCord()));
-        }
-    }
-
-    //TODO:  REDUNDANT?
-    private void handleSaveSheet(SaveSheetEvent event){
-        engine.saveXmlFile( event.getAbsolutePath() );
-    }
 
 
     private void handleCreateNewRange(CreateNewRangeEvent event) {
@@ -281,6 +228,7 @@ public class UIManager {
     }
 
     //TODO: CHANGE
+
     private void handleFilterRequested(FilterRequestedEvent event)
     {
         Request request = getFilterRequestFromEvent(event);
@@ -290,7 +238,6 @@ public class UIManager {
             Platform.runLater(() -> eventBus.publish(new DisplaySheetPopupEvent(filteredSheet)));
         });
     }
-
     private Request getFilterRequestFromEvent(FilterRequestedEvent event) {
         String finalURL = HttpUrl
                 .parse(VIEW_FILTERED_SHEET_REQUEST_PATH(currSheetFileName))
@@ -450,5 +397,57 @@ public class UIManager {
     private void handleFilePermissionRequestedEvent(FilePermissionRequestedEvent event){
         String fileName = event.getFileName();
         String permissionRequested = event.getPermission();
+    }
+
+    //    //TODO: REDUNDANT?
+//    private void handleCreateNewSheet(CreateNewSheetEvent event) {
+//        // Call the engine to create a new sheet based on the event details
+//        readOnlySheet = engine.createSheet(event.getSheetName(), event.getRows(), event.getCols(), event.getWidth(), event.getHeight());
+//        indexController.refreshSheetPlane();
+//        eventBus.publish(new SheetCreatedEvent(
+//                readOnlySheet.getName(),
+//                readOnlySheet.getCellHeight(),
+//                readOnlySheet.getCellWidth(),
+//                readOnlySheet.getNumOfRows(),
+//                readOnlySheet.getNumOfCols()));
+//
+//
+//        eventBus.publish(new SheetDisplayEvent(readOnlySheet));
+//    }
+//
+//    //TODO: REDUNDANT
+//    private void handleLoadSheetFromPath(LoadSheetEvent event){
+//        try
+//        {
+//            readOnlySheet = engine.loadSheet(event.getFilePath());
+//            loadSheetHelper();
+//        }
+//        catch (Exception e)
+//        {
+//            e.printStackTrace();
+//            throw new RuntimeException(e.getMessage());
+//        }
+//    }
+//
+//    //TODO:  REDUNDANT?
+//    private void handleSaveSheet(SaveSheetEvent event){
+//        engine.saveXmlFile( event.getAbsolutePath() );
+//    }
+    private void loadSheetHelper()
+    {
+        indexController.refreshSheetPlane();
+        eventBus.publish(new SheetCreatedEvent(
+                readOnlySheet.getName(),
+                readOnlySheet.getCellHeight(),
+                readOnlySheet.getCellWidth(),
+                readOnlySheet.getNumOfRows(),
+                readOnlySheet.getNumOfCols()));
+
+        eventBus.publish(new SheetDisplayEvent(readOnlySheet));
+        for (ReadOnlyRange range : readOnlySheet.getRanges()){
+            eventBus.publish(new RangeCreatedEvent(range.getRangeName(),
+                    range.getTopLeftCord(),
+                    range.getBottomRightCord()));
+        }
     }
 }

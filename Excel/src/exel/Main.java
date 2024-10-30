@@ -13,10 +13,8 @@ public class Main extends Application {
     public void start(Stage primaryStage) {
         try {
             EventBus eventBus = new EventBus();
-            Engine engine = new EngineImp();
-
-
-            UIManager ui = new UIManager(engine, eventBus, primaryStage);
+            //Engine engine = new EngineImp();
+            UIManager ui = new UIManager(null, eventBus, primaryStage); //todo: delete null
             ui.showLogin();
 
         } catch (Exception e) {
