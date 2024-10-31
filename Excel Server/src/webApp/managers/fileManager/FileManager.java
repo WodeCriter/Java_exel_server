@@ -3,44 +3,65 @@ package webApp.managers.fileManager;
 import engine.api.Engine;
 import engine.imp.EngineImp;
 import jakarta.xml.bind.JAXBException;
-import webApp.utils.SessionUtils;
+import utils.perms.PermissionHelper;
+import utils.perms.PermissionRequest;
 
 import java.io.InputStream;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 
 public class FileManager
 {
-    private transient Map<String, Engine> nameToFileContentMap = new ConcurrentHashMap<>();
+    private Map<String, Engine> fileNameToEngineMap = new ConcurrentHashMap<>();
     private List<String> fileNames = new ArrayList<>();
+    private Map<String, Set<Engine>> usernameToUserEnginesMap = new ConcurrentHashMap<>();
 
     public void addFile(String fileName, InputStream fileContent, String ownerName) throws JAXBException {
         if (isFileExists(fileName))
             throw new RuntimeException("File already exists");
-        nameToFileContentMap.put(fileName, new EngineImp(fileContent, ownerName));
+        Engine newEngine = new EngineImp(fileContent, ownerName);
+        fileNameToEngineMap.put(fileName, newEngine);
+        usernameToUserEnginesMap.computeIfAbsent(ownerName, k->new LinkedHashSet<>())
+                .add(newEngine);
         addNameSorted(fileName);
     }
 
     public boolean removeFile(String fileName)
     {
         fileNames.remove(fileName);
-        return nameToFileContentMap.remove(fileName) != null;
+        Engine engineToRemove = fileNameToEngineMap.remove(fileName);
+        if (engineToRemove != null)
+        {
+            String engineOwner = engineToRemove.getOwnerName();
+            usernameToUserEnginesMap.get(engineOwner).remove(engineToRemove);
+        }
+
+        return engineToRemove != null;
     }
 
     public boolean isFileExists(String fileName)
     {
-        return nameToFileContentMap.containsKey(fileName);
+        return fileNameToEngineMap.containsKey(fileName);
     }
 
     public Engine getEngine(String fileName){
         if (!isFileExists(fileName))
             throw new RuntimeException("File does not exist");
-        return nameToFileContentMap.get(fileName);
+        return fileNameToEngineMap.get(fileName);
     }
 
     public List<String> getListOfFilesNames(){
         return fileNames;
+    }
+
+    public Set<PermissionRequest> getAllUserPendingRequests(String username){
+        return usernameToUserEnginesMap.get(username)
+                .stream()
+                .map(PermissionHelper::getAllPendingRequests)
+                .flatMap(Set::stream)
+                .collect(Collectors.toSet());
     }
 
     private void addNameSorted(String fileName) {

@@ -24,10 +24,7 @@ import utils.perms.PermissionRequest;
 import utils.perms.Status;
 
 import java.io.InputStream;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class EngineImp implements Engine
@@ -35,13 +32,19 @@ public class EngineImp implements Engine
     private Sheet currentSheet;
     private ReadOnlySheet readOnlyCurrentSheet;
 
+    private final String ownerName;
     private Map<String, Permission> permissions;
-    private Map<String, PermissionRequest> allRequestsEverMade;
+    private Set<PermissionRequest> allRequestsEverMade;
+    private Set<PermissionRequest> allPendingRequests;
 
     public EngineImp(InputStream fileContent, String ownerName) throws JAXBException {
         permissions = new ConcurrentHashMap<>();
-        allRequestsEverMade = new ConcurrentHashMap<>();
+        allRequestsEverMade = new LinkedHashSet<>();
+        allPendingRequests = new LinkedHashSet<>();
+
         permissions.put(ownerName, Permission.OWNER);
+        this.ownerName = ownerName;
+
         loadSheet(fileContent);
     }
 
@@ -49,47 +52,59 @@ public class EngineImp implements Engine
         return permissions.getOrDefault(userName, Permission.NONE);
     }
 
-    public PermissionRequest getUserRequest(String username) {
-        return allRequestsEverMade.get(username);
+    public Boolean requestForPermission(String username, Permission requestedPermission){
+        if (getUserPermission(username) == Permission.OWNER || getUserPermission(username) == requestedPermission)
+            return false;
+        else
+        {
+            PermissionRequest newRequest = new PermissionRequest(username, requestedPermission);
+            allPendingRequests.add(newRequest);
+            return allRequestsEverMade.add(newRequest);
+        }
     }
 
-    public Boolean requestForPermission(String username, Permission requestedPermission){
-        if (!allRequestsEverMade.containsKey(username) ||
-                getUserRequest(username).status() == Status.DENIED ||
-                getUserRequest(username).permission().compareTo(requestedPermission) < 0)
+    public void acceptPendingRequest(PermissionRequest request) {
+        processRequest(request, true);
+    }
+
+    public void denyPendingRequest(PermissionRequest request) {
+        processRequest(request, false);
+    }
+
+    private void processRequest(PermissionRequest request, boolean isApproved) {
+        if (request.status() != Status.PENDING)
+            throw new IllegalArgumentException("The given request is not pending.");
+
+        if (allRequestsEverMade.remove(request))
         {
-            allRequestsEverMade.put(username, new PermissionRequest(requestedPermission, Status.PENDING));
-            return true;
+            allPendingRequests.remove(request);
+            if (isApproved)
+            {
+                request.approveRequest();
+                permissions.put(request.getSender(), request.permission());
+            }
+            else
+                request.denyRequest();
+            allRequestsEverMade.add(request);
         }
         else
-            return false;
+            throw new IllegalArgumentException("There's no such request");
     }
 
-    public void acceptPendingRequest(String username){
-        PermissionRequest userRequest = getPendingUserRequest(username);
-        userRequest.setStatus(Status.ACCEPTED);
-        permissions.put(username, userRequest.permission());
-    }
-
-    public void denyPendingRequest(String username){
-        PermissionRequest userRequest = getPendingUserRequest(username);
-        userRequest.setStatus(Status.DENIED);
+    public String getOwnerName() {
+        return ownerName;
     }
 
     public Boolean removePermission(String username){
         return permissions.remove(username) != null;
     }
 
-    private PermissionRequest getPendingUserRequest(String username) {
-        PermissionRequest userRequest = getUserRequest(username);
-
-        if (!allRequestsEverMade.containsKey(username) || userRequest.status() != Status.PENDING)
-            throw new IllegalArgumentException("\""+ username +"\" has no pending request");
-        return userRequest;
+    @Override
+    public Set<PermissionRequest> getAllPendingRequests(){
+        return allPendingRequests;
     }
-
-
     //?
+
     @Override
     public ReadOnlySheet createSheet(String sheetName, int rowNum , int colNum , int cellWidth , int cellHeight) {
         //Todo: check for validity of size
@@ -99,8 +114,8 @@ public class EngineImp implements Engine
         this.readOnlyCurrentSheet = new ReadOnlySheetImp(currentSheet);
         return this.readOnlyCurrentSheet;
     }
-
     //Client
+
     @Override
     public ReadOnlySheet createSortedSheetFromCords(String cord1, String cord2, List<String> columnsToSortBy)
     {
@@ -108,8 +123,8 @@ public class EngineImp implements Engine
         RowSorter sorter = new RowSorter(range, currentSheet, columnsToSortBy.stream().map(Coordinate::calculateColIndex).toList());
         return sorter.getSheetAfterChange();
     }
-
     //Client
+
     @Override
     public ReadOnlySheet createFilteredSheetFromCords(String cord1, String cord2, Map<String, List<String>> columnToValuesToFilterBy)
     {
@@ -132,8 +147,8 @@ public class EngineImp implements Engine
         RowFilter filter = new RowFilter(range, currentSheet, colNumToValueToFilerByMap);
         return filter.getSheetAfterChange();
     }
-
     //redundent
+
     @Override
     public ReadOnlySheet loadSheet(String filePath) throws Exception {
         // parse the xml and create a sheet and a copy sheet object
@@ -141,8 +156,8 @@ public class EngineImp implements Engine
         this.readOnlyCurrentSheet = new ReadOnlySheetImp(currentSheet);
         return readOnlyCurrentSheet;
     }
-
     //server
+
     @Override
     public ReadOnlySheet loadSheet(InputStream fileContent) throws JAXBException {
         // parse the xml and create a sheet and a copy sheet object
@@ -150,29 +165,29 @@ public class EngineImp implements Engine
         this.readOnlyCurrentSheet = new ReadOnlySheetImp(currentSheet);
         return readOnlyCurrentSheet;
     }
-
     //redundent
+
     @Override
     public void loadSysState(String filePath) throws Exception {
         // create a sheet object from the binary file
         this.currentSheet = sysStateLoader.loadSysState(filePath);
         this.readOnlyCurrentSheet = new ReadOnlySheetImp(currentSheet);
     }
-
     //both
+
     @Override
     public ReadOnlySheet getSheet() {
         return readOnlyCurrentSheet;
     }
-
     //server
+
     @Override
     public ReadOnlySheet getSheetOfVersion(int version) {
         Sheet verSheet = currentSheet.getSheetByVersion(version);
         return new ReadOnlySheetImp(verSheet);
     }
-
     //
+
     @Override
     public List<Integer> getListOfVersionChanges() {
         return currentSheet.getNumOfChangesInEachVersion();

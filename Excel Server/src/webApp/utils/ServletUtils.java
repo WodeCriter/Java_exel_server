@@ -34,6 +34,7 @@ public class ServletUtils {
 
     public static FileManager getFileManager(ServletContext servletContext) {
         synchronized (fileManagerLock) {
+
             if (servletContext.getAttribute(FILE_MANAGER_ATTRIBUTE_NAME) == null) {
                 servletContext.setAttribute(FILE_MANAGER_ATTRIBUTE_NAME, new FileManager());
             }
