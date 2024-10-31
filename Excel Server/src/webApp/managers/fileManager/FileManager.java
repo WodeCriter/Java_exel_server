@@ -21,7 +21,7 @@ public class FileManager
     public void addFile(String fileName, InputStream fileContent, String ownerName) throws JAXBException {
         if (isFileExists(fileName))
             throw new RuntimeException("File already exists");
-        Engine newEngine = new EngineImp(fileContent, ownerName);
+        Engine newEngine = new EngineImp(fileName, ownerName, fileContent);
         fileNameToEngineMap.put(fileName, newEngine);
         usernameToUserEnginesMap.computeIfAbsent(ownerName, k->new LinkedHashSet<>())
                 .add(newEngine);
@@ -60,7 +60,7 @@ public class FileManager
         return usernameToUserEnginesMap.get(username)
                 .stream()
                 .map(PermissionHelper::getAllPendingRequests)
-                .flatMap(Set::stream)
+                .flatMap(Collection::stream)
                 .collect(Collectors.toSet());
     }
 

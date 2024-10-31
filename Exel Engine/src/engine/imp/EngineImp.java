@@ -32,17 +32,19 @@ public class EngineImp implements Engine
     private Sheet currentSheet;
     private ReadOnlySheet readOnlyCurrentSheet;
 
+    private final String name;
     private final String ownerName;
     private Map<String, Permission> permissions;
     private Set<PermissionRequest> allRequestsEverMade;
     private Set<PermissionRequest> allPendingRequests;
 
-    public EngineImp(InputStream fileContent, String ownerName) throws JAXBException {
+    public EngineImp(String name, String ownerName, InputStream fileContent) throws JAXBException {
         permissions = new ConcurrentHashMap<>();
         allRequestsEverMade = new LinkedHashSet<>();
         allPendingRequests = new LinkedHashSet<>();
 
         permissions.put(ownerName, Permission.OWNER);
+        this.name = name;
         this.ownerName = ownerName;
 
         loadSheet(fileContent);
@@ -57,7 +59,7 @@ public class EngineImp implements Engine
             return false;
         else
         {
-            PermissionRequest newRequest = new PermissionRequest(username, requestedPermission);
+            PermissionRequest newRequest = new PermissionRequest(username, requestedPermission, name);
             allPendingRequests.add(newRequest);
             return allRequestsEverMade.add(newRequest);
         }
