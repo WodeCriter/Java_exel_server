@@ -4,6 +4,7 @@ import exel.eventsys.EventBus;
 import exel.userinterface.resources.app.ControllerWithEventBus;
 import exel.userinterface.resources.app.file.FileHelper;
 import exel.userinterface.resources.app.home.items.FilesListController;
+import exel.userinterface.resources.app.home.items.RequestsListController;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -20,6 +21,7 @@ import java.util.*;
 public class HomeController extends ControllerWithEventBus
 {
     private static final String FILES_PATH = "/exel/userinterface/resources/app/home/items/FilesList.fxml";
+    private static final String REQUESTS_PATH = "/exel/userinterface/resources/app/home/items/RequestsList.fxml";
 
     private List<String> activeUsers;
     private List<String> savedFiles;
@@ -27,14 +29,15 @@ public class HomeController extends ControllerWithEventBus
     private TimerTask refresher;
     private Timer timer;
 
-
+    private FilesListController filesController;
+    private RequestsListController requestsController;
 
     @FXML
     private Menu userNameButton;
     @FXML
-    private FilesListController filesController;
-    @FXML
     private AnchorPane filesListContainer;
+    @FXML
+    private AnchorPane requestsListContainer;
     @FXML
     private ProgressIndicator loadingFileIndicator;
 
@@ -42,7 +45,7 @@ public class HomeController extends ControllerWithEventBus
         try
         {
             initializeFilesListController();
-            //setupFilesControllerListener();
+            initializeRequestsListController();
         }
         catch (IOException e)
         {
@@ -60,10 +63,21 @@ public class HomeController extends ControllerWithEventBus
         filesListContainer.getChildren().add(filesList);
     }
 
+    private void initializeRequestsListController() throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource(REQUESTS_PATH));
+        Parent requestsList = loader.load();
+
+        requestsController = loader.getController();
+        requestsController.setHomeController(this);
+
+        requestsListContainer.getChildren().add(requestsList);
+    }
+
     @Override
     public void setEventBus(EventBus eventBus) {
         super.setEventBus(eventBus);
         filesController.setEventBus(eventBus);
+        requestsController.setEventBus(eventBus);
     }
 
     @FXML

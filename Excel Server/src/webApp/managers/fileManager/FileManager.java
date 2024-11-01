@@ -56,12 +56,12 @@ public class FileManager
         return fileNames;
     }
 
-    public Set<PermissionRequest> getAllUserPendingRequests(String username){
+    public List<PermissionRequest> getAllUserPendingRequests(String username){
         return usernameToUserEnginesMap.get(username)
                 .stream()
                 .map(PermissionHelper::getAllPendingRequests)
-                .flatMap(Collection::stream)
-                .collect(Collectors.toSet());
+                .flatMap(Set::stream)
+                .collect(Collectors.toList());
     }
 
     private void addNameSorted(String fileName) {

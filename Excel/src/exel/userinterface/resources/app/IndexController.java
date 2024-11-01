@@ -99,23 +99,27 @@ public class IndexController extends ControllerWithEventBus
 
 
     @FXML
-    private void initialize()
-    {
+    private void initialize() {
         setUpRangeDeleteMenu();
 
         themeToggleGroup = new ToggleGroup();
         radMenItemLightMode.setToggleGroup(themeToggleGroup);
         radMenItemDarkMode.setToggleGroup(themeToggleGroup);
         // Add a global mouse listener to the scene to hide the context menu when clicking elsewhere
-        rangesList.sceneProperty().addListener((obs, oldScene, newScene) -> {
-            if (newScene != null) {
+        rangesList.sceneProperty().addListener((obs, oldScene, newScene) ->
+        {
+            if (newScene != null)
+            {
                 newScene.addEventFilter(MouseEvent.MOUSE_PRESSED, this::hideContextMenu);
             }
         });
 
-        menuButtonSelectVersion.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-            if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 1) {
-                if (isAnimationsEnabled) {
+        menuButtonSelectVersion.addEventHandler(MouseEvent.MOUSE_CLICKED, event ->
+        {
+            if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 1)
+            {
+                if (isAnimationsEnabled)
+                {
                     triggerCarAnimation();
                 }
             }
@@ -137,6 +141,33 @@ public class IndexController extends ControllerWithEventBus
         eventBus.subscribe(SheetDisplayEvent.class, this::handleSheetDisplayEvent);
     }
 
+//    @FXML
+//    void newFileEventListener(ActionEvent event) {
+//        try {
+//            // Load the FXML file for the new sheet popup
+//            FXMLLoader loader = new FXMLLoader(getClass().getResource("/exel/userinterface/resources/app/popups/newsheet/CreateNewSheetScreen.fxml"));
+//            VBox popupRoot = loader.load();
+//
+//            // Get the controller and set the EventBus
+//            CreateNewSheetScreenController popupController = loader.getController();
+//            popupController.setEventBus(eventBus);
+//
+//            // Create a new stage for the popup
+//            Stage popupStage = new Stage();
+//            popupStage.setTitle("Create New Sheet");
+//            popupStage.initModality(Modality.APPLICATION_MODAL);
+//            popupStage.initOwner(((MenuItem) event.getSource()).getParentPopup().getScene().getWindow());  // Set the owner to the current stage
+//            Scene popupScene = new Scene(popupRoot, 300, 200);
+//
+//            applyCurrentTheme(popupScene);
+//            popupStage.setScene(popupScene);
+//            // Show the popup
+//            popupStage.showAndWait();
+//        } catch (Exception e) {
+//            e.printStackTrace();  // Handle exceptions appropriately
+//        }
+//    }
+
     @FXML
     void homeScreenListener(ActionEvent event) {
         //Todo: Implement
@@ -155,8 +186,9 @@ public class IndexController extends ControllerWithEventBus
         rangesList.getItems().clear();
     }
 
-    private void handleDisplaySheetPopup(DisplaySheetPopupEvent event){
-        try {
+    private void handleDisplaySheetPopup(DisplaySheetPopupEvent event) {
+        try
+        {
             // Load the FXML file for the display sheet popup
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/exel/userinterface/resources/app/popups/displaySheet/DisplaySheet.fxml"));
             VBox popupRoot = loader.load();
@@ -184,23 +216,28 @@ public class IndexController extends ControllerWithEventBus
             // Show the popup
             popupStage.showAndWait();
 
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             e.printStackTrace();  // Handle exceptions appropriately
         }
 
     }
 
     public void refreshSheetPlane() {
-        try {
+        try
+        {
             setUpDisplaySheet(eventBus);
             applyCurrentTheme(sheetContainer.getScene());
 
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             e.printStackTrace();
         }
     }
 
-    private void setUpDisplaySheet(EventBus eventBus){
+    private void setUpDisplaySheet(EventBus eventBus) {
         // Load the sheet FXML
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/exel/userinterface/resources/app/Sheet/Sheet.fxml"));
         Pane sheetRoot;
@@ -229,7 +266,7 @@ public class IndexController extends ControllerWithEventBus
         AnchorPane.setRightAnchor(sheetRoot, 0.0);
     }
 
-    private void handleDisplaySelectedCell(DisplaySelectedCellEvent event){
+    private void handleDisplaySelectedCell(DisplaySelectedCellEvent event) {
         this.selectedCell = event.getCell();
         labelCoordinate.setText("Cell: " + selectedCell.getCoordinate());
         labelOriginalVal.setText("original value:" + selectedCell.getOriginalValue());
@@ -245,15 +282,16 @@ public class IndexController extends ControllerWithEventBus
         try
         {
             String NewCellValue = textFiledOriginalVal.getText();
-            if(!Objects.equals(NewCellValue, selectedCell.getOriginalValue()))
+            if (!Objects.equals(NewCellValue, selectedCell.getOriginalValue()))
                 eventBus.publish(new CellUpdateEvent(selectedCell.getCoordinate(), NewCellValue));
 
             // Trigger mushroom animation if animations are enabled
-            if (isAnimationsEnabled) {
+            if (isAnimationsEnabled)
+            {
                 triggerMushroomAnimation();
             }
         }
-        catch(Exception e)
+        catch (Exception e)
         {
             showAlert("Failed to update cell", e.getMessage());
         }
@@ -308,7 +346,7 @@ public class IndexController extends ControllerWithEventBus
 
     @FXML
     void rangeSelectedListener(MouseEvent event) {
-        String selectedRange = (String)rangesList.getSelectionModel().getSelectedItem();
+        String selectedRange = (String) rangesList.getSelectionModel().getSelectedItem();
         if (selectedRange == null)
             return;
 
@@ -322,13 +360,14 @@ public class IndexController extends ControllerWithEventBus
         rangeDeleteMenu = new ContextMenu();
         MenuItem deleteRange = new MenuItem("Delete Range");
 
-        deleteRange.setOnAction(event -> {
-            String selectedRange = (String)rangesList.getSelectionModel().getSelectedItem();
+        deleteRange.setOnAction(event ->
+        {
+            String selectedRange = (String) rangesList.getSelectionModel().getSelectedItem();
             try
             {
                 eventBus.publish(new RangeDeleteEvent(selectedRange));
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 showAlert("Failed to delete range", e.getMessage());
             }
@@ -339,7 +378,8 @@ public class IndexController extends ControllerWithEventBus
 
     private void hideContextMenu(MouseEvent event) {
         // If the context menu is open and the click happens outside the context menu, hide it
-        if (rangeDeleteMenu.isShowing()) {
+        if (rangeDeleteMenu.isShowing())
+        {
             rangeDeleteMenu.hide();
         }
     }
@@ -349,7 +389,8 @@ public class IndexController extends ControllerWithEventBus
         if (!isSheetLoaded)
             return;
 
-        try {
+        try
+        {
             // Load the FXML file for the new sheet popup
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/exel/userinterface/resources/app/popups/sort/SetSortScreen.fxml"));
             VBox popupRoot = loader.load();
@@ -383,9 +424,10 @@ public class IndexController extends ControllerWithEventBus
     @FXML
     void filterListener(ActionEvent event) {
         if (!isSheetLoaded)
-          return;
+            return;
 
-        try {
+        try
+        {
             // Load the FXML file for the new sheet popup
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/exel/userinterface/resources/app/popups/filter/SetFilterScreen.fxml"));
             VBox popupRoot = loader.load();
@@ -416,25 +458,26 @@ public class IndexController extends ControllerWithEventBus
         }
     }
 
-    private void handleSheetDisplayEvent (SheetDisplayEvent sheetEvent){
+    private void handleSheetDisplayEvent(SheetDisplayEvent sheetEvent) {
         addVersionMenuButton(sheetEvent.getSheet().getVersion());
     }
 
-    private void addVersionMenuButton(int versionNum){
+    private void addVersionMenuButton(int versionNum) {
         MenuItem versionItem = new MenuItem("Version " + versionNum);
         versionItem.setOnAction(event -> handleVersionSelected(versionNum));
         menuButtonSelectVersion.getItems().add(versionItem);
     }
 
     private void handleVersionSelected(int versionId) {
-       eventBus.publish(new VersionSelectedEvent(versionId-1));
+        eventBus.publish(new VersionSelectedEvent(versionId - 1));
     }
 
     @FXML
     void setHeightListener(ActionEvent event) {
         int newHeight = promptForNumber("Set Height", "Enter new height", "Please enter the new height in pixels:");
 
-        if (newHeight > 0) {
+        if (newHeight > 0)
+        {
             // Apply the new height to relevant cells/labels
             eventBus.publish(new SheetResizeHeightEvent(newHeight));
             // Your logic to set the height goes here
@@ -446,7 +489,8 @@ public class IndexController extends ControllerWithEventBus
     void setWidthListener(ActionEvent event) {
         int newWidth = promptForNumber("Set Width", "Enter new width", "Please enter the new width in pixels:");
 
-        if (newWidth > 0) {
+        if (newWidth > 0)
+        {
             // Apply the new width to relevant cells/labels
             eventBus.publish(new SheetResizeWidthEvent(newWidth));
             // Your logic to set the width goes here
@@ -462,10 +506,14 @@ public class IndexController extends ControllerWithEventBus
 
         // Traditional way to get the response value.
         Optional<String> result = dialog.showAndWait();
-        if (result.isPresent()) {
-            try {
+        if (result.isPresent())
+        {
+            try
+            {
                 return Integer.parseInt(result.get()); // Convert the string to an integer
-            } catch (NumberFormatException e) {
+            }
+            catch (NumberFormatException e)
+            {
                 // Show error alert if the input is not a valid number
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("Invalid Input");
@@ -480,15 +528,16 @@ public class IndexController extends ControllerWithEventBus
 
     private String toHexString(Color color) {
         return String.format("#%02X%02X%02X",
-                (int)(color.getRed() * 255),
-                (int)(color.getGreen() * 255),
-                (int)(color.getBlue() * 255));
+                (int) (color.getRed() * 255),
+                (int) (color.getGreen() * 255),
+                (int) (color.getBlue() * 255));
     }
 
 
     @FXML
     void formatBGColorListener(ActionEvent event) {
-        if (selectedCell == null) {
+        if (selectedCell == null)
+        {
             showAlert("No Cell Selected", "Please select a cell to format.");
             return;
         }
@@ -500,7 +549,8 @@ public class IndexController extends ControllerWithEventBus
         dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
 
         Optional<ButtonType> result = dialog.showAndWait();
-        if (result.isPresent() && result.get() == ButtonType.OK) {
+        if (result.isPresent() && result.get() == ButtonType.OK)
+        {
             String colorCode = toHexString(colorPicker.getValue());
             CellStyleUpdateEvent styleEvent = new CellStyleUpdateEvent(selectedCell.getCoordinate(), colorCode, null, null, false);
             eventBus.publish(styleEvent);
@@ -509,7 +559,8 @@ public class IndexController extends ControllerWithEventBus
 
     @FXML
     void formatTextColorListener(ActionEvent event) {
-        if (selectedCell == null) {
+        if (selectedCell == null)
+        {
             showAlert("No Cell Selected", "Please select a cell to format.");
             return;
         }
@@ -521,7 +572,8 @@ public class IndexController extends ControllerWithEventBus
         dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
 
         Optional<ButtonType> result = dialog.showAndWait();
-        if (result.isPresent() && result.get() == ButtonType.OK) {
+        if (result.isPresent() && result.get() == ButtonType.OK)
+        {
             String colorCode = toHexString(colorPicker.getValue());
             CellStyleUpdateEvent styleEvent = new CellStyleUpdateEvent(selectedCell.getCoordinate(), null, colorCode, null, false);
             eventBus.publish(styleEvent);
@@ -530,7 +582,8 @@ public class IndexController extends ControllerWithEventBus
 
     @FXML
     void formatClearStyleListener(ActionEvent event) {
-        if (selectedCell == null) {
+        if (selectedCell == null)
+        {
             showAlert("No Cell Selected", "Please select a cell to clear style.");
             return;
         }
@@ -541,7 +594,8 @@ public class IndexController extends ControllerWithEventBus
 
     @FXML
     void formatCenterListener(ActionEvent event) {
-        if (selectedCell == null) {
+        if (selectedCell == null)
+        {
             showAlert("No Cell Selected", "Please select a cell to format.");
             return;
         }
@@ -551,10 +605,10 @@ public class IndexController extends ControllerWithEventBus
     }
 
 
-
     @FXML
     void formatLTRListener(ActionEvent event) {
-        if (selectedCell == null) {
+        if (selectedCell == null)
+        {
             showAlert("No Cell Selected", "Please select a cell to format.");
             return;
         }
@@ -565,7 +619,8 @@ public class IndexController extends ControllerWithEventBus
 
     @FXML
     void formatRTLListener(ActionEvent event) {
-        if (selectedCell == null) {
+        if (selectedCell == null)
+        {
             showAlert("No Cell Selected", "Please select a cell to format.");
             return;
         }
@@ -597,14 +652,16 @@ public class IndexController extends ControllerWithEventBus
         String darkTheme = getClass().getResource("/exel/userinterface/resources/app/dark-theme.css").toExternalForm();
 
         // Ensure Sheet.css is always in the stylesheets list
-        if (!scene.getStylesheets().contains(sheetCss)) {
+        if (!scene.getStylesheets().contains(sheetCss))
+        {
             scene.getStylesheets().add(sheetCss);
         }
 
         // Remove dark theme if it's applied
         scene.getStylesheets().remove(darkTheme);
 
-        if (isDarkMode) {
+        if (isDarkMode)
+        {
             // Add the dark theme stylesheet
             scene.getStylesheets().add(darkTheme);
         }
@@ -629,7 +686,8 @@ public class IndexController extends ControllerWithEventBus
         sheetContainer.getChildren().add(carImageView);
 
         // Wait for the layout to be calculated
-        Platform.runLater(() -> {
+        Platform.runLater(() ->
+        {
             // Set initial position (off-screen to the left)
             carImageView.setLayoutX(-carImageView.getImage().getWidth());
             carImageView.setLayoutY(sheetContainer.getHeight() / 2 - carImageView.getImage().getHeight() / 2);
@@ -642,7 +700,8 @@ public class IndexController extends ControllerWithEventBus
             translateTransition.setToX(endX + carImageView.getImage().getWidth());
 
             // Remove the car image after animation is finished
-            translateTransition.setOnFinished(event -> {
+            translateTransition.setOnFinished(event ->
+            {
                 sheetContainer.getChildren().remove(carImageView);
             });
 
@@ -668,9 +727,10 @@ public class IndexController extends ControllerWithEventBus
         sheetContainer.getChildren().add(mushroomImageView);
 
         // Wait for the layout to be calculated
-        Platform.runLater(() -> {
+        Platform.runLater(() ->
+        {
             // Retrieve the layout position and size of labelOriginalVal
-            double labelLayoutX = labelOriginalVal.getLayoutX()-150;
+            double labelLayoutX = labelOriginalVal.getLayoutX() - 150;
             double labelLayoutY = labelOriginalVal.getLayoutY();
             double labelWidth = labelOriginalVal.getWidth();
             double labelHeight = labelOriginalVal.getHeight();
@@ -695,7 +755,8 @@ public class IndexController extends ControllerWithEventBus
             translateTransition.setInterpolator(javafx.animation.Interpolator.EASE_BOTH);
 
             // Remove the mushroom image after animation is finished
-            translateTransition.setOnFinished(event -> {
+            translateTransition.setOnFinished(event ->
+            {
                 sheetContainer.getChildren().remove(mushroomImageView);
             });
 
@@ -705,7 +766,8 @@ public class IndexController extends ControllerWithEventBus
 
     @FXML
     void userGuideListener(ActionEvent event) {
-        try{
+        try
+        {
             // Load the FXML file for the about popup
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/exel/userinterface/resources/app/popups/about/About.fxml"));
             VBox popupRoot = loader.load();
@@ -727,9 +789,222 @@ public class IndexController extends ControllerWithEventBus
             // Show the popup
             popupStage.showAndWait();
 
-        }catch(Exception e) {
+        }
+        catch (Exception e)
+        {
             e.printStackTrace();  // Handle exceptions appropriately
         }
+    }
 
+
+
+
+
+
+
+
+
+
+    @FXML
+    public void newFileEventListener(ActionEvent event) {
+        try
+        {
+            // Load the FXML file for the new sheet popup
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/exel/userinterface/resources/app/popups/newsheet/CreateNewSheetScreen.fxml"));
+            VBox popupRoot = loader.load();
+
+            // Get the controller and set the EventBus
+            CreateNewSheetScreenController popupController = loader.getController();
+            popupController.setEventBus(eventBus);
+
+            // Create a new stage for the popup
+            Stage popupStage = new Stage();
+            popupStage.setTitle("Create New Sheet");
+            popupStage.initModality(Modality.APPLICATION_MODAL);
+            popupStage.initOwner(((MenuItem) event.getSource()).getParentPopup().getScene().getWindow());  // Set the owner to the current stage
+            Scene popupScene = new Scene(popupRoot, 300, 200);
+
+            applyCurrentTheme(popupScene);
+            popupStage.setScene(popupScene);
+            // Show the popup
+            popupStage.showAndWait();
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();  // Handle exceptions appropriately
+        }
+    }
+
+    @FXML
+    public void loadFileListener(ActionEvent event) {
+        // Retrieve the owner window from a node in the scene
+        Window ownerWindow = sheetContainer.getScene().getWindow();
+
+        // Show the open file dialog
+        File selectedFile = FileHelper.selectFileFromPC(ownerWindow);
+
+        if (selectedFile != null)
+        {
+            // Get the absolute path as a String
+            String absolutePath = selectedFile.getAbsolutePath();
+
+            try
+            {
+                // Create a progress bar dialog
+                Stage progressStage = new Stage();
+                progressStage.initModality(Modality.APPLICATION_MODAL);
+                progressStage.initOwner(sheetContainer.getScene().getWindow());
+
+                ProgressBar progressBar = new ProgressBar(0);
+                progressBar.setPrefWidth(300);
+
+                VBox vbox = new VBox(10);
+                vbox.setAlignment(Pos.CENTER);
+                vbox.setPadding(new Insets(20));
+                vbox.getChildren().addAll(new Label("Loading..."), progressBar);
+
+                Scene progressScene = new Scene(vbox);
+
+                applyCurrentTheme(progressScene);
+
+                progressStage.setScene(progressScene);
+                progressStage.setTitle("Loading");
+
+                // Show the progress bar dialog
+                progressStage.show();
+
+                // Use a Timeline to update the progress bar over 3 seconds
+                Timeline timeline = new Timeline(
+                        new KeyFrame(Duration.ZERO, new KeyValue(progressBar.progressProperty(), 0)),
+                        new KeyFrame(Duration.seconds(1), new KeyValue(progressBar.progressProperty(), 1))
+                );
+
+                timeline.setOnFinished(e ->
+                {
+                    progressStage.close();
+                });
+
+                timeline.play();
+
+                // Start the loading process
+                menuButtonSelectVersion.getItems().clear();
+                currentFile = selectedFile;
+                eventBus.publish(new LoadSheetEvent(absolutePath));
+                labelFileLoaded.setText("Current file loaded: " + absolutePath);
+
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+                // Show an error alert to the user
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("File Load Error");
+                alert.setHeaderText("Could not load the file");
+                alert.setContentText("An error occurred while loading the file: " + e.getMessage());
+                alert.showAndWait();
+            }
+        }
+        else
+        {
+            // User canceled the file selection; no action needed
+        }
+    }
+
+    @FXML
+    public void saveAsFileListener(ActionEvent event) {
+        if (!isSheetLoaded)
+            return;
+
+        // Create a new FileChooser instance
+        FileChooser fileChooser = new FileChooser();
+
+        // Set the title of the dialog
+        fileChooser.setTitle("Save Spreadsheet File As");
+
+        // (Optional) Set initial directory to user's home
+        fileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
+
+        // Add file extension filters
+        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter(
+                "XML Files (*.xml)", "*.xml");
+        fileChooser.getExtensionFilters().add(extFilter);
+
+        // Retrieve the owner window from a node in the scene
+        Window ownerWindow = sheetContainer.getScene().getWindow();
+
+        // Show the save file dialog
+        File fileToSave = fileChooser.showSaveDialog(ownerWindow);
+
+        if (fileToSave != null)
+        {
+            // Ensure the file has the correct extension
+            if (!fileToSave.getPath().toLowerCase().endsWith(".xml"))
+            {
+                fileToSave = new File(fileToSave.getPath() + ".xml");
+            }
+
+            // Update the current file reference
+            currentFile = fileToSave;
+
+            try
+            {
+                // **Pass the file path to your engine or handle the saving process**
+                // Replace 'SaveSheetEvent' with your actual event or method
+                eventBus.publish(new SaveSheetEvent(fileToSave.getAbsolutePath()));
+                labelFileLoaded.setText("Current file loaded: " + fileToSave.getAbsolutePath());
+
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+                // Show an error alert to the user
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("File Save Error");
+                alert.setHeaderText("Could not save the file");
+                alert.setContentText("An error occurred while saving the file: " + e.getMessage());
+                alert.showAndWait();
+            }
+        }
+        else
+        {
+            // User canceled the save dialog; no action needed
+        }
+
+    }
+
+    @FXML
+    public void saveFileListener(ActionEvent event) {
+        if (currentFile != null)
+        {
+            try
+            {
+                // **Pass the current file path to your engine or handle the saving process**
+                // Replace 'SaveSheetEvent' with your actual event or method
+                eventBus.publish(new SaveSheetEvent(currentFile.getAbsolutePath()));
+
+                // Optionally, show a confirmation alert
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("File Saved");
+                alert.setHeaderText(null);
+                alert.setContentText("File has been saved successfully.");
+                alert.showAndWait();
+
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+                // Show an error alert to the user
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("File Save Error");
+                alert.setHeaderText("Could not save the file");
+                alert.setContentText("An error occurred while saving the file: " + e.getMessage());
+                alert.showAndWait();
+            }
+        }
+        else
+        {
+            // No current file, perform "Save As"
+            saveAsFileListener(event);
+        }
     }
 }

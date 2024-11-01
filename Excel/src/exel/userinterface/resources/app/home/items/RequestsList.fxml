@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.ContextMenu?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.MenuItem?>
+
+<ListView fx:id="requestsList" onMouseClicked="#handleRequestMouseClicked" prefHeight="334.0" prefWidth="120.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="exel.userinterface.resources.app.home.items.RequestsListController">
+    <contextMenu>
+        <ContextMenu fx:id="contextMenu">
+            <items>
+                <MenuItem mnemonicParsing="false" onAction="#handleContextMenuApprovePicked" text="Approve" />
+                <MenuItem mnemonicParsing="false" onAction="#handleContextMenuDenyPicked" text="Deny" />
+            </items>
+        </ContextMenu>
+    </contextMenu>
+</ListView>

@@ -33,7 +33,6 @@ public class FilesListController extends ControllerWithEventBus
     private final ObjectProperty<String> selectedItemProperty = new SimpleObjectProperty<>();
 
     public void initialize() {
-
     }
 
     @FXML

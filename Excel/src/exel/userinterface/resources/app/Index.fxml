@@ -20,13 +20,17 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="exel.userinterface.resources.app.IndexController">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="exel.userinterface.resources.app.IndexController">
   <children>
     <MenuBar maxWidth="-Infinity" prefHeight="25.0" prefWidth="640.0" VBox.vgrow="NEVER">
       <menus>
         <Menu mnemonicParsing="false" text="User">
           <items>
-            <MenuItem fx:id="homeScreenButtoon" mnemonicParsing="false" onAction="#homeScreenListener" text="Home Screen" />
+            <MenuItem fx:id="homeScreenButtoon" mnemonicParsing="false" onAction="#homeScreenListener" text="Go Back To Home Screen" />
+              <MenuItem fx:id="buttonNewFile" mnemonicParsing="false" onAction="#newFileEventListener" text="Create New Sheet" visible="false" />
+              <MenuItem fx:id="buttonLoadFile" mnemonicParsing="false" onAction="#loadFileListener" text="Open Sheet" visible="false" />
+              <MenuItem fx:id="buttonSaveFile" mnemonicParsing="false" onAction="#saveFileListener" text="Save" visible="false" />
+              <MenuItem fx:id="buttonSaveAsFile" mnemonicParsing="false" onAction="#saveAsFileListener" text="Save As…" visible="false" />
           </items>
         </Menu>
         <Menu mnemonicParsing="false" text="Cell">
