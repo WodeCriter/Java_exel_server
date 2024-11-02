@@ -18,6 +18,10 @@ public class PermissionRequest implements Comparable<PermissionRequest>
         this(requestSender, permission, Status.PENDING, fileName);
     }
 
+    public PermissionRequest getCopy(){
+        return new PermissionRequest(this.requestSender, this.permission, this.status, this.fileName);
+    }
+
     //For Gson
     private PermissionRequest() {}
 
@@ -73,8 +77,8 @@ public class PermissionRequest implements Comparable<PermissionRequest>
         return requestSender.hashCode() + permission.hashCode() + status.hashCode() + fileName.hashCode();
     }
 
-    @Override
-    public String toString() {
-        return requestSender;
-    }
+//    @Override
+//    public String toString() {
+//        return requestSender;
+//    }
 }

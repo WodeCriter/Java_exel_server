@@ -78,6 +78,7 @@ public class UIManager {
         eventBus.subscribe(FileSelectedForOpeningEvent.class, this::handleFileSelected);
         eventBus.subscribe(DeleteFileRequestedEvent.class, this::handleFileSelectedForDeletion);
         eventBus.subscribe(FilePermissionRequestedEvent.class, this::handleFilePermissionRequestedEvent);
+        eventBus.subscribe(ApproveOrDenyRequestPickedEvent.class, this::handleFilePermissionApprovedOrDenied);
     }
 
     private void handleCreateNewRange(CreateNewRangeEvent event) {

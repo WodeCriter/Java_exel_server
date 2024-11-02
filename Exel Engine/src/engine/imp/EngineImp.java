@@ -79,17 +79,18 @@ public class EngineImp implements Engine
         if (request.status() != Status.PENDING)
             throw new IllegalArgumentException("The given request is not pending.");
 
-        if (allRequestsEverMade.remove(request))
+        PermissionRequest copyRequest = request.getCopy();
+        if (allRequestsEverMade.remove(copyRequest))
         {
-            allPendingRequests.remove(request);
+            allPendingRequests.remove(copyRequest);
             if (isApproved)
             {
-                request.approveRequest();
-                permissions.put(request.getSender(), request.permission());
+                copyRequest.approveRequest();
+                permissions.put(copyRequest.getSender(), copyRequest.permission());
             }
             else
-                request.denyRequest();
-            allRequestsEverMade.add(request);
+                copyRequest.denyRequest();
+            allRequestsEverMade.add(copyRequest);
         }
         else
             throw new IllegalArgumentException("There's no such request");

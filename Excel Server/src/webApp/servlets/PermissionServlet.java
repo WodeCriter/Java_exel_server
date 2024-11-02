@@ -22,5 +22,6 @@ public class PermissionServlet extends HttpServlet
         boolean toApprove = Boolean.parseBoolean(request.getParameter("toApprove"));
 
         ServletUtils.getRequestManager(getServletContext()).approveOrDenyRequest(permRequest, toApprove);
+        HomeServlet.increaseRequestNumber();
     }
 }

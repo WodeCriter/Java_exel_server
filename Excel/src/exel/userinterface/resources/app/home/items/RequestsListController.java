@@ -32,7 +32,7 @@ public class RequestsListController extends ControllerWithEventBus
         // Populate the ListView with sample data
         //requestsList.getItems().addAll(new PermissionRequest("a", Permission.NONE, "c"));
 
-        //setUpTooltip();
+        setUpTooltip();
     }
 
     private void setUpTooltip() {
