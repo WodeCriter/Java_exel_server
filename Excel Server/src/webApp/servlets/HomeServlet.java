@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.PrintWriter;
 
 import webApp.managers.fileManager.FileManager;
+import webApp.managers.requestManager.RequestManager;
 import webApp.managers.userManager.UserManager;
 import webApp.utils.ServletUtils;
 //import com.google.gson.Gson;
@@ -43,12 +44,13 @@ public class HomeServlet extends HttpServlet
 
         UserManager userManager = ServletUtils.getUserManager(getServletContext());
         FileManager fileManager = ServletUtils.getFileManager(getServletContext());
+        RequestManager requestManager = ServletUtils.getRequestManager(getServletContext());
         String sender = SessionUtils.getUsername(request);
         JsonObject jsonObject = new JsonObject();
 
         jsonObject.add("userNames", GSON_INSTANCE.toJsonTree(userManager.getUserNames()));
         jsonObject.add("fileNames", GSON_INSTANCE.toJsonTree(fileManager.getListOfFilesNames()));
-        jsonObject.add("PermissionRequests", GSON_INSTANCE.toJsonTree(fileManager.getAllUserPendingRequests(sender)));
+        jsonObject.add("PermissionRequests", GSON_INSTANCE.toJsonTree(requestManager.getRequestsForUser(sender)));
         response.getWriter().println(GSON_INSTANCE.toJson(jsonObject));
 
         response.setHeader(DATA_UPDATE_HEADER, "true");

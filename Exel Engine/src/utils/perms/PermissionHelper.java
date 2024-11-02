@@ -6,7 +6,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public interface PermissionHelper
 {
-    Boolean requestForPermission(String username, Permission requestedPermission);
+    Boolean requestForPermission(String requestSender, Permission requestedPermission);
 
     void acceptPendingRequest(PermissionRequest request);
 

@@ -87,8 +87,7 @@ public class FilesServlet extends HttpServlet
 
         if (requestedPermission != null)
         {
-            Engine engine = ServletUtils.getFileManager(getServletContext()).getEngine(fileName);
-            engine.requestForPermission(requestSender, requestedPermission);
+            ServletUtils.getRequestManager(getServletContext()).addRequest(requestSender, requestedPermission, fileName);
             HomeServlet.increaseRequestNumber();
         }
     }

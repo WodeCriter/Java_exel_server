@@ -4,6 +4,7 @@ package webApp.utils;
 //import engine.chat.ChatManager;
 
 import webApp.managers.fileManager.FileManager;
+import webApp.managers.requestManager.RequestManager;
 import webApp.managers.userManager.UserManager;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpServletRequest;
@@ -14,6 +15,7 @@ public class ServletUtils {
 
     private static final String USER_MANAGER_ATTRIBUTE_NAME = "userManager";
     private static final String FILE_MANAGER_ATTRIBUTE_NAME = "fileManager";
+    private static final String REQUEST_MANAGER_ATTRIBUTE_NAME = "requestManager";
 
     /*
     Note how the synchronization is done only on the question and\or creation of the relevant managers and once they exists -
@@ -21,6 +23,7 @@ public class ServletUtils {
      */
     private static final Object userManagerLock = new Object();
     private static final Object fileManagerLock = new Object();
+    private static final Object requestManagerLock = new Object();
 
     public static UserManager getUserManager(ServletContext servletContext) {
 
@@ -40,6 +43,16 @@ public class ServletUtils {
             }
         }
         return (FileManager) servletContext.getAttribute(FILE_MANAGER_ATTRIBUTE_NAME);
+    }
+
+    public static RequestManager getRequestManager(ServletContext servletContext) {
+        synchronized (requestManagerLock) {
+
+            if (servletContext.getAttribute(REQUEST_MANAGER_ATTRIBUTE_NAME) == null) {
+                servletContext.setAttribute(REQUEST_MANAGER_ATTRIBUTE_NAME, new RequestManager(getFileManager(servletContext)));
+            }
+        }
+        return (RequestManager) servletContext.getAttribute(REQUEST_MANAGER_ATTRIBUTE_NAME);
     }
 
     public static int getIntParameter(HttpServletRequest request, String name) {

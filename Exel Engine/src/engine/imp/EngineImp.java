@@ -32,19 +32,19 @@ public class EngineImp implements Engine
     private Sheet currentSheet;
     private ReadOnlySheet readOnlyCurrentSheet;
 
-    private final String name;
+    private final String engineName;
     private final String ownerName;
     private Map<String, Permission> permissions;
     private Set<PermissionRequest> allRequestsEverMade;
     private Set<PermissionRequest> allPendingRequests;
 
-    public EngineImp(String name, String ownerName, InputStream fileContent) throws JAXBException {
+    public EngineImp(String engineName, String ownerName, InputStream fileContent) throws JAXBException {
         permissions = new ConcurrentHashMap<>();
         allRequestsEverMade = new LinkedHashSet<>();
         allPendingRequests = new LinkedHashSet<>();
 
         permissions.put(ownerName, Permission.OWNER);
-        this.name = name;
+        this.engineName = engineName;
         this.ownerName = ownerName;
 
         loadSheet(fileContent);
@@ -54,16 +54,18 @@ public class EngineImp implements Engine
         return permissions.getOrDefault(userName, Permission.NONE);
     }
 
-    public Boolean requestForPermission(String username, Permission requestedPermission){
-        if (getUserPermission(username) == Permission.OWNER || getUserPermission(username) == requestedPermission)
+    public Boolean requestForPermission(String requestSender, Permission requestedPermission){
+        if (getUserPermission(requestSender) == Permission.OWNER || getUserPermission(requestSender) == requestedPermission)
             return false;
         else
         {
-            PermissionRequest newRequest = new PermissionRequest(username, requestedPermission, name);
+            PermissionRequest newRequest = new PermissionRequest(requestSender, requestedPermission, engineName);
             allPendingRequests.add(newRequest);
             return allRequestsEverMade.add(newRequest);
         }
     }
+
+    //public Boolean requestForPermission(String requestSender, Permission requestedPermission, Sheet sheet){}
 
     public void acceptPendingRequest(PermissionRequest request) {
         processRequest(request, true);
