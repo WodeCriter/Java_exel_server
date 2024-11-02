@@ -8,6 +8,7 @@ import okhttp3.Callback;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
 import org.jetbrains.annotations.NotNull;
+import utils.perms.PermissionRequest;
 
 import java.io.IOException;
 import java.util.List;
@@ -22,12 +23,14 @@ public class HomeRefresher extends TimerTask
 {
     private final Consumer<List<String>> activeUsersConsumer;
     private final Consumer<List<String>> savedFilesConsumer;
+    private final Consumer<List<PermissionRequest>> pendingRequestsConsumer;
     private int requestNumber;
 
-    public HomeRefresher(Consumer<List<String>> activeUsersConsumer, Consumer<List<String>> savedFilesConsumer)
+    public HomeRefresher(Consumer<List<String>> activeUsersConsumer, Consumer<List<String>> savedFilesConsumer, Consumer<List<PermissionRequest>> pendingRequestsConsumer)
     {
         this.activeUsersConsumer = activeUsersConsumer;
         this.savedFilesConsumer = savedFilesConsumer;
+        this.pendingRequestsConsumer = pendingRequestsConsumer;
         requestNumber = 0;
     }
 
@@ -50,9 +53,10 @@ public class HomeRefresher extends TimerTask
     private void updateListsFromJson(ResponseBody body){
         try
         {
-            Map<String, List<String>> jsonHeaderToList = GSON_INSTANCE.fromJson(body.string(), Map.class);
+            Map<String, List> jsonHeaderToList = GSON_INSTANCE.fromJson(body.string(), Map.class);
             activeUsersConsumer.accept(jsonHeaderToList.get("userNames"));
             savedFilesConsumer.accept(jsonHeaderToList.get("fileNames"));
+            pendingRequestsConsumer.accept(jsonHeaderToList.get("PermissionRequests"));
         }
         catch (IOException e)
         {

@@ -6,10 +6,7 @@ import utils.perms.PermissionRequest;
 import webApp.managers.fileManager.FileManager;
 import webApp.utils.ServletUtils;
 
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class RequestManager
@@ -26,12 +23,16 @@ public class RequestManager
         requests.add(request);
     }
 
-    public void addRequest(String senderName, Permission permission, String fileName){
+    public boolean addRequest(String senderName, Permission permission, String fileName){
         Engine engineToAddRequestTo = fileManager.getEngine(fileName);
         String username = engineToAddRequestTo.getOwnerName();
 
         if (engineToAddRequestTo.requestForPermission(senderName, permission))
+        {
             addRequest(username, new PermissionRequest(senderName, permission, fileName));
+            return true;
+        }
+        return false;
     }
 
 //    public boolean removeRequest(String username, PermissionRequest request){
@@ -41,7 +42,10 @@ public class RequestManager
 //        return requests.remove(request);
 //    }
 
-    public Set<PermissionRequest> getRequestsForUser(String username){
-        return usernameToRequestsForUserMap.get(username);
+    public List<PermissionRequest> getRequestsForUser(String username){
+        if (usernameToRequestsForUserMap.containsKey(username))
+            return usernameToRequestsForUserMap.get(username).stream().toList();
+        else
+            return Collections.emptyList();
     }
 }

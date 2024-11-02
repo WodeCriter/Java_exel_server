@@ -13,6 +13,7 @@ import javafx.scene.control.Menu;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Window;
+import utils.perms.PermissionRequest;
 
 import java.io.File;
 import java.io.IOException;
@@ -25,6 +26,7 @@ public class HomeController extends ControllerWithEventBus
 
     private List<String> activeUsers;
     private List<String> savedFiles;
+    private List<PermissionRequest> requestsForUser;
 
     private TimerTask refresher;
     private Timer timer;
@@ -105,8 +107,12 @@ public class HomeController extends ControllerWithEventBus
         }
     }
 
+    private void setPermissionRequests(List<PermissionRequest> permissionRequests) {
+        requestsController.updateRequestsList(permissionRequests);
+    }
+
     public void startDataRefresher() {
-        refresher = new HomeRefresher(this::setActiveUsers, this::setSavedFiles);
+        refresher = new HomeRefresher(this::setActiveUsers, this::setSavedFiles, this::setPermissionRequests);
         timer = new Timer();
         timer.schedule(refresher, 0, 2000);
     }

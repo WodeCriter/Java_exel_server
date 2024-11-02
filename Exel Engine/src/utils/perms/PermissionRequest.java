@@ -44,6 +44,10 @@ public class PermissionRequest implements Comparable<PermissionRequest>
         return requestSender;
     }
 
+    public String getFileName() {
+        return fileName;
+    }
+
     @Override
     public int compareTo(PermissionRequest o) {
         return permission.compareTo(o.permission());

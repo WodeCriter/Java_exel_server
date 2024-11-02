@@ -11,12 +11,16 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.util.Duration;
+import utils.perms.Permission;
+import utils.perms.PermissionRequest;
+
+import java.util.List;
 
 public class RequestsListController extends ControllerWithEventBus
 {
     private HomeController homeController;
     @FXML
-    private ListView<String> requestsList;
+    private ListView<PermissionRequest> requestsList;
     @FXML
     private ContextMenu contextMenu;
 
@@ -25,9 +29,9 @@ public class RequestsListController extends ControllerWithEventBus
     @FXML
     public void initialize() {
         // Populate the ListView with sample data
-        requestsList.getItems().addAll("hello", "world");
+        //requestsList.getItems().addAll(new PermissionRequest("a", Permission.NONE, "c"));
 
-        setUpTooltip();
+        //setUpTooltip();
     }
 
     private void setUpTooltip() {
@@ -36,14 +40,23 @@ public class RequestsListController extends ControllerWithEventBus
         tooltip.setShowDelay(Duration.millis(600)); // Optional: set delay for better user experience
         tooltip.setHideDelay(Duration.millis(100));
 
+
         // Add mouse hover listeners to display the tooltip
-        requestsList.setCellFactory(lv ->
-        {
-            var cell = new ListCell<String>() {
+        requestsList.setCellFactory(lv -> {
+            var cell = new ListCell<PermissionRequest>() {
                 @Override
-                protected void updateItem(String item, boolean empty) {
+                protected void updateItem(PermissionRequest item, boolean empty) {
                     super.updateItem(item, empty);
-                    setText(empty || item == null ? null : item);
+
+                    // Clear previous content
+                    setText(null);
+                    setTooltip(null);
+
+                    if (!empty && item != null) {
+                        // Set cell text and tooltip for non-empty items
+                        setText(item.getSender());
+                        setTooltip(tooltip);  // Attach the tooltip to the cell
+                    }
                 }
             };
 
@@ -61,13 +74,22 @@ public class RequestsListController extends ControllerWithEventBus
         });
     }
 
-    private void showTooltip(MouseEvent event, String request) {
-        tooltip.setText("Requester Name: " + request);
+    private void showTooltip(MouseEvent event, PermissionRequest request) {
+        tooltip.setText("For File: " + request.getFileName() + '\n' +
+                "Requested Permission: " + request.permission());
         tooltip.show(requestsList, event.getScreenX() + 10, event.getScreenY() + 10);
     }
 
     public void setHomeController(HomeController homeController) {
         this.homeController = homeController;
+    }
+
+    public void updateRequestsList(List<PermissionRequest> requests) {
+        if (requests != null)
+        {
+            requestsList.getItems().clear();
+            requestsList.getItems().addAll(requests);
+        }
     }
 
     @FXML
@@ -86,6 +108,6 @@ public class RequestsListController extends ControllerWithEventBus
     }
 
     private void contextMenuPickedHelper(Boolean isApproved){
-        String selectedRequest = requestsList.getSelectionModel().getSelectedItem();
+        //String selectedRequest = requestsList.getSelectionModel().getSelectedItem();
     }
 }
