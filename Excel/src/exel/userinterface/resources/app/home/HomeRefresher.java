@@ -53,10 +53,12 @@ public class HomeRefresher extends TimerTask
     private void updateListsFromJson(ResponseBody body){
         try
         {
-            Map<String, List> jsonHeaderToList = GSON_INSTANCE.fromJson(body.string(), Map.class);
-            activeUsersConsumer.accept(jsonHeaderToList.get("userNames"));
-            savedFilesConsumer.accept(jsonHeaderToList.get("fileNames"));
-            pendingRequestsConsumer.accept(jsonHeaderToList.get("PermissionRequests"));
+            //Map<String, List> jsonHeaderToList = GSON_INSTANCE.fromJson(body.string(), Map.class);
+            String json = body.string();
+            HomeDataWrapper data = GSON_INSTANCE.fromJson(json, HomeDataWrapper.class);
+            activeUsersConsumer.accept(data.getUserNames());
+            savedFilesConsumer.accept(data.getFileNames());
+            pendingRequestsConsumer.accept(data.getPermissionRequests());
         }
         catch (IOException e)
         {

@@ -50,7 +50,7 @@ public class HomeServlet extends HttpServlet
 
         jsonObject.add("userNames", GSON_INSTANCE.toJsonTree(userManager.getUserNames()));
         jsonObject.add("fileNames", GSON_INSTANCE.toJsonTree(fileManager.getListOfFilesNames()));
-        jsonObject.add("PermissionRequests", GSON_INSTANCE.toJsonTree(requestManager.getRequestsForUser(sender)));
+        jsonObject.add("permissionRequests", GSON_INSTANCE.toJsonTree(requestManager.getRequestsForUser(sender)));
         response.getWriter().println(GSON_INSTANCE.toJson(jsonObject));
 
         response.setHeader(DATA_UPDATE_HEADER, "true");

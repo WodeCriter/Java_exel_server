@@ -4,7 +4,6 @@ import engine.api.Engine;
 import utils.perms.Permission;
 import utils.perms.PermissionRequest;
 import webApp.managers.fileManager.FileManager;
-import webApp.utils.ServletUtils;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -33,6 +32,29 @@ public class RequestManager
             return true;
         }
         return false;
+    }
+
+    public void approveRequest(PermissionRequest request){
+        approveOrDenyRequest(request, true);
+    }
+
+    public void denyRequest(PermissionRequest request){
+        approveOrDenyRequest(request, false);
+    }
+
+    public void approveOrDenyRequest(PermissionRequest request, boolean toApprove){
+        Engine engineWithRequestToApprove = fileManager.getEngine(request.getFileName());
+        String username = engineWithRequestToApprove.getOwnerName();
+
+        if (usernameToRequestsForUserMap.containsKey(username))
+        {
+            if (toApprove)
+                engineWithRequestToApprove.approvePendingRequest(request);
+            else
+                engineWithRequestToApprove.denyPendingRequest(request);
+
+            usernameToRequestsForUserMap.get(username).remove(request);
+        }
     }
 
 //    public boolean removeRequest(String username, PermissionRequest request){

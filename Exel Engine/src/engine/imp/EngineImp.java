@@ -67,7 +67,7 @@ public class EngineImp implements Engine
 
     //public Boolean requestForPermission(String requestSender, Permission requestedPermission, Sheet sheet){}
 
-    public void acceptPendingRequest(PermissionRequest request) {
+    public void approvePendingRequest(PermissionRequest request) {
         processRequest(request, true);
     }
 

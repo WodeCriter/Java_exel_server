@@ -1,5 +1,6 @@
 package exel.userinterface.resources.app.home.items;
 
+import exel.eventsys.events.ApproveOrDenyRequestPickedEvent;
 import exel.userinterface.resources.app.ControllerWithEventBus;
 import exel.userinterface.resources.app.home.HomeController;
 import javafx.event.ActionEvent;
@@ -107,7 +108,8 @@ public class RequestsListController extends ControllerWithEventBus
         contextMenuPickedHelper(false);
     }
 
-    private void contextMenuPickedHelper(Boolean isApproved){
-        //String selectedRequest = requestsList.getSelectionModel().getSelectedItem();
+    private void contextMenuPickedHelper(Boolean toApprove){
+        PermissionRequest selectedRequest = requestsList.getSelectionModel().getSelectedItem();
+        eventBus.publish(new ApproveOrDenyRequestPickedEvent(selectedRequest, toApprove));
     }
 }

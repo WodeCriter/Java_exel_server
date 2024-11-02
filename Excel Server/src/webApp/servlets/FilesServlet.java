@@ -11,6 +11,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.Part;
 import jakarta.xml.bind.JAXBException;
 import utils.perms.Permission;
+import utils.perms.PermissionRequest;
 import webApp.managers.fileManager.FileManager;
 import webApp.utils.ServletUtils;
 import webApp.utils.SessionUtils;
@@ -81,8 +82,8 @@ public class FilesServlet extends HttpServlet
 
     @Override
     protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
-        String requestSender = SessionUtils.getUsername(request);
         String fileName = request.getParameter("fileName");
+        String requestSender = SessionUtils.getUsername(request);
         Permission requestedPermission = getPermissionFromRequest(request, response);
 
         if (requestedPermission != null)

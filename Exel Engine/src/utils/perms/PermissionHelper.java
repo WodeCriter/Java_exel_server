@@ -1,14 +1,12 @@
 package utils.perms;
 
-import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 
 public interface PermissionHelper
 {
     Boolean requestForPermission(String requestSender, Permission requestedPermission);
 
-    void acceptPendingRequest(PermissionRequest request);
+    void approvePendingRequest(PermissionRequest request);
 
     void denyPendingRequest(PermissionRequest request);
 

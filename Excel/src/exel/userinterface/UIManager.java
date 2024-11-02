@@ -35,6 +35,7 @@ import javafx.util.Pair;
 import okhttp3.*;
 import com.google.gson.Gson;
 import org.jetbrains.annotations.NotNull;
+import utils.perms.PermissionRequest;
 
 import java.io.IOException;
 import java.util.List;
@@ -402,6 +403,25 @@ public class UIManager {
                 .newBuilder()
                 .addQueryParameter("fileName", fileName)
                 .addQueryParameter("permission", permissionRequested)
+                .build()
+                .toString();
+
+        Request request = new Request.Builder()
+                .url(finalURL)
+                .put(RequestBody.create(null, new byte[0]))
+                .build();
+
+        HttpClientUtil.runAsync(request, response -> {});
+    }
+
+    private void handleFilePermissionApprovedOrDenied(ApproveOrDenyRequestPickedEvent event){
+        PermissionRequest permRequest = event.getRequest();
+        boolean toApprove = event.isToApprove();
+        String finalURL = HttpUrl
+                .parse(FULL_SERVER_PATH + "/files/permissions") //todo: add to constants
+                .newBuilder()
+                .addQueryParameter("permissionRequest", GSON_INSTANCE.toJson(permRequest))
+                .addQueryParameter("toApprove", String.valueOf(toApprove))
                 .build()
                 .toString();
 
