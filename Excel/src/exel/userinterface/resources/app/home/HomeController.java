@@ -3,6 +3,7 @@ package exel.userinterface.resources.app.home;
 import exel.eventsys.EventBus;
 import exel.userinterface.resources.app.ControllerWithEventBus;
 import exel.userinterface.resources.app.file.FileHelper;
+import exel.userinterface.resources.app.home.items.FilePermissionsController;
 import exel.userinterface.resources.app.home.items.FilesListController;
 import exel.userinterface.resources.app.home.items.RequestsListController;
 import javafx.event.ActionEvent;
@@ -23,6 +24,7 @@ public class HomeController extends ControllerWithEventBus
 {
     private static final String FILES_PATH = "/exel/userinterface/resources/app/home/items/FilesList.fxml";
     private static final String REQUESTS_PATH = "/exel/userinterface/resources/app/home/items/RequestsList.fxml";
+    private static final String PERMISSIONS_TABLE_PATH = "/exel/userinterface/resources/app/home/items/filePermissionsTable.fxml";
 
     private List<String> activeUsers;
     private List<String> savedFiles;
@@ -33,6 +35,7 @@ public class HomeController extends ControllerWithEventBus
 
     private FilesListController filesController;
     private RequestsListController requestsController;
+    private FilePermissionsController permissionsController;
 
     @FXML
     private Menu userNameButton;
@@ -41,6 +44,8 @@ public class HomeController extends ControllerWithEventBus
     @FXML
     private AnchorPane requestsListContainer;
     @FXML
+    private AnchorPane permissionsTableContainer;
+    @FXML
     private ProgressIndicator loadingFileIndicator;
 
     public void initialize() {
@@ -48,6 +53,7 @@ public class HomeController extends ControllerWithEventBus
         {
             initializeFilesListController();
             initializeRequestsListController();
+            initializePermissionsTableController();
         }
         catch (IOException e)
         {
@@ -75,11 +81,22 @@ public class HomeController extends ControllerWithEventBus
         requestsListContainer.getChildren().add(requestsList);
     }
 
+    private void initializePermissionsTableController() throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource(PERMISSIONS_TABLE_PATH));
+        Parent requestsList = loader.load();
+
+        permissionsController = loader.getController();
+        permissionsController.setHomeController(this);
+
+        permissionsTableContainer.getChildren().add(requestsList);
+    }
+
     @Override
     public void setEventBus(EventBus eventBus) {
         super.setEventBus(eventBus);
         filesController.setEventBus(eventBus);
         requestsController.setEventBus(eventBus);
+        permissionsController.setEventBus(eventBus);
     }
 
     @FXML
