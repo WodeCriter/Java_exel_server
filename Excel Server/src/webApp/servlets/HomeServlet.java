@@ -46,11 +46,13 @@ public class HomeServlet extends HttpServlet
         FileManager fileManager = ServletUtils.getFileManager(getServletContext());
         RequestManager requestManager = ServletUtils.getRequestManager(getServletContext());
         String sender = SessionUtils.getUsername(request);
+        String fileForPermissionTable = request.getParameter("fileForPermissionTable");
         JsonObject jsonObject = new JsonObject();
 
         jsonObject.add("userNames", GSON_INSTANCE.toJsonTree(userManager.getUserNames()));
         jsonObject.add("fileNames", GSON_INSTANCE.toJsonTree(fileManager.getListOfFilesNames()));
         jsonObject.add("permissionRequests", GSON_INSTANCE.toJsonTree(requestManager.getRequestsForUser(sender)));
+        jsonObject.add("permissionRequestsForFile", GSON_INSTANCE.toJsonTree(requestManager.getRequestsForFile(fileForPermissionTable)));
         response.getWriter().println(GSON_INSTANCE.toJson(jsonObject));
 
         response.setHeader(DATA_UPDATE_HEADER, "true");

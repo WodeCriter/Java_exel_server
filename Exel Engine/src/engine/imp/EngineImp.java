@@ -108,6 +108,11 @@ public class EngineImp implements Engine
     public Set<PermissionRequest> getAllPendingRequests(){
         return allPendingRequests;
     }
+
+    @Override
+    public Set<PermissionRequest> getAllRequestsEverMade(){
+        return allRequestsEverMade;
+    }
     //?
 
     @Override
@@ -184,7 +189,6 @@ public class EngineImp implements Engine
     public ReadOnlySheet getSheet() {
         return readOnlyCurrentSheet;
     }
-    //server
 
     @Override
     public ReadOnlySheet getSheetOfVersion(int version) {

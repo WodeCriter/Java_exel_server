@@ -1,18 +1,13 @@
 package exel.userinterface.resources.app.home;
 
-import com.google.gson.Gson;
 import exel.userinterface.util.http.HttpClientUtil;
 import javafx.application.Platform;
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.Response;
+import okhttp3.HttpUrl;
 import okhttp3.ResponseBody;
-import org.jetbrains.annotations.NotNull;
 import utils.perms.PermissionRequest;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 import java.util.TimerTask;
 import java.util.function.Consumer;
 
@@ -24,13 +19,18 @@ public class HomeRefresher extends TimerTask
     private final Consumer<List<String>> activeUsersConsumer;
     private final Consumer<List<String>> savedFilesConsumer;
     private final Consumer<List<PermissionRequest>> pendingRequestsConsumer;
+    private final Consumer<List<PermissionRequest>> filePermissionRequestsConsumer;
+    private String fileForPermissionTable;
     private int requestNumber;
 
-    public HomeRefresher(Consumer<List<String>> activeUsersConsumer, Consumer<List<String>> savedFilesConsumer, Consumer<List<PermissionRequest>> pendingRequestsConsumer)
+
+    public HomeRefresher(Consumer<List<String>> activeUsersConsumer, Consumer<List<String>> savedFilesConsumer, Consumer<List<PermissionRequest>> pendingRequestsConsumer, Consumer<List<PermissionRequest>> premissorRequestsConsumer)
     {
         this.activeUsersConsumer = activeUsersConsumer;
         this.savedFilesConsumer = savedFilesConsumer;
         this.pendingRequestsConsumer = pendingRequestsConsumer;
+        this.filePermissionRequestsConsumer = premissorRequestsConsumer;
+        fileForPermissionTable = "";
         requestNumber = 0;
     }
 
@@ -40,7 +40,15 @@ public class HomeRefresher extends TimerTask
     }
 
     public void updateData(){
-        HttpClientUtil.runAsync(HOME_PAGE, "requestNumber", String.valueOf(requestNumber), response ->
+        String finalURL = HttpUrl
+                .parse(HOME_PAGE)
+                .newBuilder()
+                .addQueryParameter("requestNumber", String.valueOf(requestNumber))
+                .addQueryParameter("fileForPermissionTable", fileForPermissionTable)
+                .build()
+                .toString();
+
+        HttpClientUtil.runAsync(finalURL, response ->
         {
             if ("true".equals(response.header("X-Data-Update-Available")))
             {
@@ -59,10 +67,15 @@ public class HomeRefresher extends TimerTask
             activeUsersConsumer.accept(data.getUserNames());
             savedFilesConsumer.accept(data.getFileNames());
             pendingRequestsConsumer.accept(data.getPermissionRequests());
+            filePermissionRequestsConsumer.accept(data.getPermissionRequestsForFile());
         }
         catch (IOException e)
         {
             throw new RuntimeException(e);
         }
+    }
+
+    public void setFileForTableFetch (String fileForTableFetch){
+        fileForPermissionTable = fileForTableFetch;
     }
 }

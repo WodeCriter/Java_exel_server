@@ -11,6 +11,7 @@ class HomeDataWrapper
     private List<String> userNames;
     private List<String> fileNames;
     private List<PermissionRequest> permissionRequests = new ArrayList<>();
+    private List<PermissionRequest> permissionRequestsForFile = new ArrayList<>();
 
     public HomeDataWrapper(){
     }
@@ -25,5 +26,9 @@ class HomeDataWrapper
 
     public List<PermissionRequest> getPermissionRequests() {
         return permissionRequests;
+    }
+
+    public List<PermissionRequest> getPermissionRequestsForFile() {
+        return permissionRequestsForFile;
     }
 }

@@ -2,6 +2,7 @@ package exel.userinterface.resources.app.home.items;
 
 import exel.userinterface.resources.app.ControllerWithEventBus;
 import exel.userinterface.resources.app.home.HomeController;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -10,6 +11,8 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import utils.perms.Permission;
 import utils.perms.PermissionRequest;
 import javafx.scene.control.TableColumn;
+
+import java.util.List;
 
 public class FilePermissionsController extends ControllerWithEventBus
 {
@@ -27,22 +30,24 @@ public class FilePermissionsController extends ControllerWithEventBus
 
 
     public void initialize(){
-        userColumn.setCellValueFactory(new PropertyValueFactory<>("getSender"));
-        permColumn.setCellValueFactory(new PropertyValueFactory<>("permission"));
-        statusColumn.setCellValueFactory(new PropertyValueFactory<>("status"));
-
-        // Create and populate the list with sample data
-        requestsList = FXCollections.observableArrayList(
-                new PermissionRequest("John Doe", Permission.WRITER, "read"),
-                new PermissionRequest("Jane Smith", Permission.READER, "write")
-        );
-
-        // Add data to the TableView
-        filePermTable.setItems(requestsList);
+        userColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getSender()));
+        permColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().permission().toString()));
+        statusColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().status().toString()));
         
     }
 
     public void setHomeController(HomeController homeController) {
         this.homeController = homeController;
+    }
+
+    public void updateRequestsTable(List<PermissionRequest> permissionRequests){
+        // Clear existing items
+        filePermTable.getItems().clear();
+
+        // Create an ObservableList from the provided list
+        ObservableList<PermissionRequest> observableRequests = FXCollections.observableArrayList(permissionRequests);
+
+        // Set the new items in the TableView
+        filePermTable.setItems(observableRequests);
     }
 }

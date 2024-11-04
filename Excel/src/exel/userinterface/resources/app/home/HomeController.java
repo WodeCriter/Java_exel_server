@@ -1,6 +1,7 @@
 package exel.userinterface.resources.app.home;
 
 import exel.eventsys.EventBus;
+import exel.eventsys.events.file.FileSelectedForOverview;
 import exel.userinterface.resources.app.ControllerWithEventBus;
 import exel.userinterface.resources.app.file.FileHelper;
 import exel.userinterface.resources.app.home.items.FilePermissionsController;
@@ -30,7 +31,7 @@ public class HomeController extends ControllerWithEventBus
     private List<String> savedFiles;
     private List<PermissionRequest> requestsForUser;
 
-    private TimerTask refresher;
+    private HomeRefresher refresher;
     private Timer timer;
 
     private FilesListController filesController;
@@ -124,12 +125,17 @@ public class HomeController extends ControllerWithEventBus
         }
     }
 
+    private void setFilePermissionsTable(List<PermissionRequest> permissionRequests) {
+        permissionsController.updateRequestsTable(permissionRequests);
+    }
+
     private void setPermissionRequests(List<PermissionRequest> permissionRequests) {
         requestsController.updateRequestsList(permissionRequests);
     }
 
     public void startDataRefresher() {
-        refresher = new HomeRefresher(this::setActiveUsers, this::setSavedFiles, this::setPermissionRequests);
+        refresher = new HomeRefresher(this::setActiveUsers, this::setSavedFiles,
+                this::setPermissionRequests, this::setFilePermissionsTable);
         timer = new Timer();
         timer.schedule(refresher, 0, 2000);
     }
@@ -145,6 +151,8 @@ public class HomeController extends ControllerWithEventBus
     public void handleFileSelectedForLooking(String fileName) {
         //todo: need to present users with access to file
         System.out.println("File pressed on Once: " + fileName);
+        refresher.setFileForTableFetch(fileName);
+        updateData();
     }
 
     public ProgressIndicator getProgressIndicator() {

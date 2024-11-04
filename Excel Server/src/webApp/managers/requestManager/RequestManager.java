@@ -70,4 +70,12 @@ public class RequestManager
         else
             return Collections.emptyList();
     }
+
+    public List<PermissionRequest> getRequestsForFile(String fileName){
+        if (fileName == null || fileName.isEmpty())
+            return Collections.emptyList();
+
+        Engine engine = fileManager.getEngine(fileName);
+        return engine.getAllRequestsEverMade().stream().toList();
+    }
 }

@@ -17,4 +17,6 @@ public interface PermissionHelper
     Set<PermissionRequest> getAllPendingRequests();
 
     String getOwnerName();
+
+    Set<PermissionRequest> getAllRequestsEverMade();
 }
