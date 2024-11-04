@@ -796,6 +796,11 @@ public class IndexController extends ControllerWithEventBus
         }
     }
 
+    @FXML
+    private void goBackHomeListener(ActionEvent event){
+        eventBus.publish(new GoBackHomeEvent());
+    }
+
 
 
 

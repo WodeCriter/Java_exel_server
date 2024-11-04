@@ -79,6 +79,7 @@ public class UIManager {
         eventBus.subscribe(DeleteFileRequestedEvent.class, this::handleFileSelectedForDeletion);
         eventBus.subscribe(FilePermissionRequestedEvent.class, this::handleFilePermissionRequestedEvent);
         eventBus.subscribe(ApproveOrDenyRequestPickedEvent.class, this::handleFilePermissionApprovedOrDenied);
+        eventBus.subscribe(GoBackHomeEvent.class, this::handleGoBackHomeEvent);
     }
 
     private void handleCreateNewRange(CreateNewRangeEvent event) {
@@ -320,6 +321,13 @@ public class UIManager {
             readOnlySheet = getSheetFromResponse(response);
             Platform.runLater(() -> eventBus.publish(new SheetDisplayRefactorEvent(readOnlySheet)));
         });
+    }
+
+    private void handleGoBackHomeEvent(GoBackHomeEvent event){
+        //indexController.stopDataRefresher();
+        showHomePage();
+        homeController.startDataRefresher();
+        homeController.setUsernameButtonText(username);
     }
 
 
