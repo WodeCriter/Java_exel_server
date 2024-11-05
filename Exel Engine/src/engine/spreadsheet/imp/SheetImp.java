@@ -152,19 +152,28 @@ public class SheetImp implements Sheet, Serializable
     }
 
     @Override
-    public Sheet updateCellValueAndCalculate(Coordinate coordinate, String newValue) throws Exception
+    public void updateCellValueAndVersion(Coordinate coordinate, String newValue) throws Exception
     {
+        List<Cell> orderedCells = updateCellValue(coordinate, newValue);
+        increaseVersionAndUpdateChangedCells(orderedCells);
+    }
+
+    public List<Cell> updateCellValue(Coordinate coordinate, String newValue) throws Exception {
         CellImp cell = getCell(coordinate);
-        if (cell == null) throw new IllegalArgumentException("Cell " + coordinate + " not found in map.");
+        if (cell == null)
+            throw new IllegalArgumentException("Cell " + coordinate + " not found in map.");
+
         List<Cell> orderedCells = cell.setOriginalValueIfPossible(newValue);
-
-        version++;
         orderedCells.forEach(Cell::calculateEffectiveValue);
-        orderedCells.forEach(orderedCell -> orderedCell.setVersion(version));
-        versionManager.recordChanges(orderedCells);
-        passVersionManager(versionManager);
 
-        return this;
+        return orderedCells;
+    }
+
+    public void increaseVersionAndUpdateChangedCells(List<Cell> changedCells){
+        version++;
+        changedCells.forEach(changedCell -> changedCell.setVersion(version));
+        versionManager.recordChanges(changedCells);
+        passVersionManager(versionManager);
     }
 
     public SheetImp copySheet() {

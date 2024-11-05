@@ -218,7 +218,7 @@ public class EngineImp implements Engine
             throw new IllegalStateException("No sheet is currently loaded.");
         }
         //update the current sheet to a copy created inside
-        currentSheet = currentSheet.updateCellValueAndCalculate(new Coordinate(coordinate), value); // Directly set the cell's value in the modifiable sheet
+        currentSheet.updateCellValueAndVersion(new Coordinate(coordinate), value); // Directly set the cell's value in the modifiable sheet
         //update your read only sheet based on the copy you just got
         readOnlyCurrentSheet = new ReadOnlySheetImp(currentSheet);
     }

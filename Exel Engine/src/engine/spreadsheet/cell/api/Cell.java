@@ -9,6 +9,8 @@ import java.util.List;
 
 public interface Cell extends Comparable<Cell>
 {
+    void stopCellFromDepending(List<CellImp> dependsOn);
+
     String getCoordinateStr();
 
     Coordinate getCoordinate();
@@ -22,5 +24,12 @@ public interface Cell extends Comparable<Cell>
     void setVersion(int version);
     int getVersion();
     List<CellImp> getDependsOn();
+
+    void setDependsOn(List<CellImp> dependsOn);
+
+    void clearDependsOn();
+
     List<CellImp> getInfluencingOn();
+
+    List<Cell> orderCellsForCalculation();
 }

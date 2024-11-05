@@ -65,7 +65,8 @@ public class CellImp implements Cell, Serializable {
         dependsOn.forEach(influencingCell -> influencingCell.influencingOn.add(this));
     }
 
-    private void stopCellFromDepending(List<CellImp> dependsOn) {
+    @Override
+    public void stopCellFromDepending(List<CellImp> dependsOn) {
         for (CellImp influencingCell : dependsOn)
             influencingCell.influencingOn.remove(this);
     }
@@ -124,12 +125,21 @@ public class CellImp implements Cell, Serializable {
     }
 
     @Override
+    public void setDependsOn(List<CellImp> dependsOn){
+        this.dependsOn = dependsOn;
+    }
+
+    @Override
+    public void clearDependsOn(){
+        dependsOn.clear();
+    }
+
+    @Override
     public List<CellImp> getInfluencingOn() {
         return influencingOn;
     }
 
-    public List<Cell> setOriginalValueIfPossible(String newValue) throws Exception
-    {
+    public List<Cell> setOriginalValueIfPossible(String newValue) throws Exception {
         if (originalValue.equals(newValue))
             return orderCellsForCalculation();
 
@@ -172,7 +182,8 @@ public class CellImp implements Cell, Serializable {
         }
     }
 
-    private List<Cell> orderCellsForCalculation()
+    @Override
+    public List<Cell> orderCellsForCalculation()
     {
         List<Cell> orderedCells = new LinkedList<>();
         Map<Cell, Boolean> coloredCells = new HashMap<>();
