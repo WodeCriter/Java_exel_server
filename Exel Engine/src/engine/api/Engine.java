@@ -2,16 +2,14 @@ package engine.api;
 
 import engine.spreadsheet.api.ReadOnlySheet;
 import engine.spreadsheet.cell.api.ReadOnlyCell;
-import utils.perms.Permission;
+import utils.dynamic.DynamicAnalysisEngine;
 import utils.perms.PermissionHelper;
-import utils.perms.PermissionRequest;
 
 import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
-public interface Engine extends PermissionHelper
+public interface Engine extends PermissionHelper, DynamicAnalysisEngine
 {
     /**
      * Creates a new spreadsheet.

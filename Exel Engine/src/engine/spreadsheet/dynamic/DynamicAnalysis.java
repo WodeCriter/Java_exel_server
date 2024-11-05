@@ -1,17 +1,19 @@
 package engine.spreadsheet.dynamic;
 
+import engine.spreadsheet.api.Sheet;
 import engine.spreadsheet.cell.api.Cell;
 import engine.spreadsheet.cell.imp.CellImp;
 
 import java.util.List;
 
-public class DynamicAnalysisHelper
+public class DynamicAnalysis
 {
     private List<Cell> cellsToAnalyze;
     private String pickedCellOriginalValue;
     private List<CellImp> cellDependsOn;
+    private Sheet sheet;
 
-    public DynamicAnalysisHelper(Cell cell){
+    public DynamicAnalysis(Cell cell, Sheet sheet){
         cellsToAnalyze = cell.orderCellsForCalculation();
         pickedCellOriginalValue = cell.getOriginalValue();
     }
@@ -32,5 +34,6 @@ public class DynamicAnalysisHelper
         Cell firstCell = cellsToAnalyze.getFirst();
         firstCell.stopCellFromDepending(cellDependsOn);
         firstCell.clearDependsOn();
+        sheet.increaseVersionAndUpdateChangedCells(cellsToAnalyze);
     }
 }

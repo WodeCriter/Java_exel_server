@@ -1,6 +1,7 @@
 package engine.imp;
 
 import engine.api.Engine;
+import engine.spreadsheet.dynamic.DynamicAnalysis;
 import engine.util.file_man.load.imp.sysStateLoader;
 import engine.util.file_man.load.imp.xmlFileLoader;
 import engine.util.file_man.save.imp.sysStateSaver;
@@ -31,6 +32,7 @@ public class EngineImp implements Engine
 {
     private Sheet currentSheet;
     private ReadOnlySheet readOnlyCurrentSheet;
+    private DynamicAnalysis dynamicAnalysisHelper;
 
     private final String engineName;
     private final String ownerName;
@@ -102,6 +104,31 @@ public class EngineImp implements Engine
 
     public Boolean removePermission(String username){
         return permissions.remove(username) != null;
+    }
+
+    public void pickCellForDynamicAnalysis(String coordinate){
+        Cell pickedCell = currentSheet.getCell(new Coordinate(coordinate));
+        dynamicAnalysisHelper = new DynamicAnalysis(pickedCell, currentSheet);
+    }
+
+    public void changeCellValueForDynamicAnalysis(String newValue){
+        if (dynamicAnalysisHelper == null)
+            throw new IllegalArgumentException("Illegal call. Need to pick cell first.");
+        dynamicAnalysisHelper.updateCellsValuesForAnalyzing(newValue);
+    }
+
+    public void saveSheetAfterDynamicAnalysis(){
+        if (dynamicAnalysisHelper == null)
+            throw new IllegalArgumentException("Illegal call. Need to pick cell first.");
+        dynamicAnalysisHelper.saveCellChanges();
+        dynamicAnalysisHelper = null;
+    }
+
+    public void returnSheetBackAfterDynamicAnalysis(){
+        if (dynamicAnalysisHelper == null)
+            throw new IllegalArgumentException("Illegal call. Need to pick cell first.");
+        dynamicAnalysisHelper.returnCellsBackToNormal();
+        dynamicAnalysisHelper = null;
     }
 
     @Override

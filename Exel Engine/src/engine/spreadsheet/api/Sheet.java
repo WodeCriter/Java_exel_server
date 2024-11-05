@@ -34,6 +34,8 @@ public interface Sheet {
     List<Integer> getNumOfChangesInEachVersion();
     List<ReadOnlyCell> getReadOnlyCells();
 
+    void increaseVersionAndUpdateChangedCells(List<Cell> changedCells);
+
     Boolean isCoordinateInRange(Coordinate coordinate);
 
     void addRange(String rangeName, Range range);
