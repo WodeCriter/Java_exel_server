@@ -36,6 +36,12 @@ public class IndexServlet extends HttpServlet
         response.setStatus(HttpServletResponse.SC_OK);
     }
 
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response){
+        String coordinate = request.getParameter("coordinate");
+
+    }
+
     private void addAllIndexDataToResponse(HttpServletRequest request, HttpServletResponse response) throws IOException {
         response.setContentType("text/html;charset=UTF-8");
 

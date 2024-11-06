@@ -26,6 +26,9 @@ public class Constants {
     public static final String VIEW_FILTERED_SHEET = "viewfiltered";
     public static final String SET_CELL_WIDTH = "setcellwidth";
     public static final String SET_CELL_HEIGHT = "setcellheight";
+    public static final String PUT_CELL_FOR_ANALYSIS = "putcellanalysis";
+    public static final String UPDATE_CELL_ANALYSIS = "updatecellanalysis";
+    public static final String STOP_CELL_ANALYSIS = "stopcellanalysis";
 
     public static final int INT_PARAMETER_ERROR = Integer.MIN_VALUE;
 

@@ -9,10 +9,7 @@ import engine.spreadsheet.imp.ReadOnlySheetImp;
 import engine.spreadsheet.range.ReadOnlyRange;
 import exel.eventsys.EventBus;
 import exel.eventsys.events.*;
-import exel.eventsys.events.cell.CellSelectedEvent;
-import exel.eventsys.events.cell.CellUpdateEvent;
-import exel.eventsys.events.cell.CellsRequestedToBeMarkedEvent;
-import exel.eventsys.events.cell.DisplaySelectedCellEvent;
+import exel.eventsys.events.cell.*;
 import exel.eventsys.events.file.DeleteFileRequestedEvent;
 import exel.eventsys.events.file.FilePermissionRequestedEvent;
 import exel.eventsys.events.file.FileSelectedForOpeningEvent;
@@ -80,6 +77,9 @@ public class UIManager {
         eventBus.subscribe(FilePermissionRequestedEvent.class, this::handleFilePermissionRequestedEvent);
         eventBus.subscribe(ApproveOrDenyRequestPickedEvent.class, this::handleFilePermissionApprovedOrDenied);
         eventBus.subscribe(GoBackHomeEvent.class, this::handleGoBackHomeEvent);
+        eventBus.subscribe(CellDynamicValChange.class, this::handleCellDynamicValChange);
+        eventBus.subscribe(CellDynamicReturnToNormal.class, this::handleCellDynamicReturnToNormal);
+        eventBus.subscribe(CellUpdateDynamicValInSheet.class, this::handleCellUpdateDynamicValInSheet);
     }
 
     private void handleCreateNewRange(CreateNewRangeEvent event) {
@@ -493,4 +493,10 @@ public class UIManager {
                     range.getBottomRightCord()));
         }
     }
+
+    private void handleCellDynamicValChange(CellDynamicValChange event){}
+
+    private void handleCellDynamicReturnToNormal(CellDynamicReturnToNormal event){}
+
+    private void handleCellUpdateDynamicValInSheet(CellUpdateDynamicValInSheet event){}
 }

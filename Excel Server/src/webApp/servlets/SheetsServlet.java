@@ -99,6 +99,15 @@ public class SheetsServlet extends HttpServlet
                 case SET_CELL_HEIGHT:
                     handleSetCellHeight(engine, request, response);
                     break;
+                case PUT_CELL_FOR_ANALYSIS:
+                    handlePutCellAnalysis(engine, request, response);
+                    break;
+                case UPDATE_CELL_ANALYSIS:
+                    handleUpdateCellAnalysis(engine, request, response);
+                    break;
+                case STOP_CELL_ANALYSIS:
+                    handleStopCellAnalysis(engine, request, response);
+                    break;
                 default:
                     response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Unknown action for PUT: " + requestData.action);
             }
@@ -248,6 +257,32 @@ public class SheetsServlet extends HttpServlet
 
         // Parse JSON into a Java object (replace DataObject with your actual class)
         return GSON_INSTANCE.fromJson(jsonString, mapType);
+    }
+
+    private void handlePutCellAnalysis(Engine engine, HttpServletRequest request, HttpServletResponse response) {
+        synchronized (engine) {
+            engine.pickCellForDynamicAnalysis(request.getParameter("coordinate"));
+            response.setStatus(HttpServletResponse.SC_OK);
+        }
+    }
+
+    private void handleUpdateCellAnalysis(Engine engine, HttpServletRequest request, HttpServletResponse response) {
+        synchronized (engine) {
+            engine.changeCellValueForDynamicAnalysis(request.getParameter("newValue"));
+            response.setStatus(HttpServletResponse.SC_OK);
+        }
+    }
+
+    private void handleStopCellAnalysis(Engine engine, HttpServletRequest request, HttpServletResponse response) {
+        boolean toSave = Boolean.parseBoolean(request.getParameter("toSave"));
+
+        synchronized (engine) {
+            if (toSave)
+                engine.saveSheetAfterDynamicAnalysis();
+            else
+                engine.returnSheetBackAfterDynamicAnalysis();
+            response.setStatus(HttpServletResponse.SC_OK);
+        }
     }
 
     private void handleUpdateCell(Engine engine, HttpServletRequest request, HttpServletResponse response) throws IOException {

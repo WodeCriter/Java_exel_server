@@ -1018,6 +1018,9 @@ public class IndexController extends ControllerWithEventBus
 
     @FXML
     public void handleDynamicAnalysis(ActionEvent event) {
+        if (selectedCell == null){
+            return;
+        }
         try {
             // Load the range input dialog FXML
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/exel/userinterface/resources/app/popups/dynamicAnalsys/SliderInputDialog.fxml"));
@@ -1032,9 +1035,9 @@ public class IndexController extends ControllerWithEventBus
             // Get the controller
             SliderInputDialogController controller = loader.getController();
 
-            // Set the dialog result converter
+            // Simplify the result converter by checking the ButtonData
             dialog.setResultConverter(dialogButton -> {
-                if (dialogButton == ButtonType.OK) {
+                if (dialogButton != null && dialogButton.getButtonData() == ButtonBar.ButtonData.OK_DONE) {
                     return controller.getInputValues();
                 }
                 return null;
@@ -1055,6 +1058,8 @@ public class IndexController extends ControllerWithEventBus
                     SliderWindowController sliderController = sliderLoader.getController();
                     sliderController.initializeSlider(rangeData.get("min"), rangeData.get("max"), rangeData.get("step"));
                     sliderController.setStage(sliderStage);
+                    sliderController.setCell(selectedCell.getCoordinate());
+                    sliderController.setEventBus(eventBus);
 
                     sliderStage.show();
                 } catch (IOException e) {

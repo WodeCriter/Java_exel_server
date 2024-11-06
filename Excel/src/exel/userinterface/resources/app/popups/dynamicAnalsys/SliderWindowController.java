@@ -1,5 +1,10 @@
 package exel.userinterface.resources.app.popups.dynamicAnalsys;
 
+
+import exel.eventsys.events.cell.CellDynamicReturnToNormal;
+import exel.eventsys.events.cell.CellDynamicValChange;
+import exel.eventsys.events.cell.CellUpdateDynamicValInSheet;
+import exel.userinterface.resources.app.ControllerWithEventBus;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -8,13 +13,15 @@ import javafx.scene.control.Slider;
 import javafx.stage.Stage;
 import javafx.event.ActionEvent;
 
-public class SliderWindowController {
+public class SliderWindowController extends ControllerWithEventBus {
 
     @FXML private Slider slider;
     @FXML private Label valueLabel;
 
     private double stepSize;
+    private double prevVal = 0;
     private Stage stage;
+    private String cell;
 
     @FXML
     private void initialize() {
@@ -24,6 +31,10 @@ public class SliderWindowController {
             valueLabel.setText("Current Value: " + value);
             handleSliderChange(value);
         });
+    }
+
+    public void setCell(String cell) {
+        this.cell = cell;
     }
 
     public void initializeSlider(double min, double max, double step) {
@@ -56,20 +67,17 @@ public class SliderWindowController {
     }
 
     private void handleSliderChange(double value) {
-        // Handle the change in the slider value
-        System.out.println("Slider value changed to: " + value);
-        // Add your code here to handle slider value changes
+        if(value != prevVal){
+            eventBus.publish(new CellDynamicValChange(cell,String.valueOf(value)));
+            prevVal = value;
+        }
     }
 
     private void handleAcceptAction(double value) {
-        // Handle the accept action
-        System.out.println("Accepted value: " + value);
-        // Add your code here to handle acceptance
+        eventBus.publish(new CellUpdateDynamicValInSheet(cell,String.valueOf(value)));
     }
 
     private void handleCancelAction() {
-        // Handle the cancel action
-        System.out.println("Action cancelled");
-        // Add your code here to handle cancellation
+        eventBus.publish(new CellDynamicReturnToNormal(cell));
     }
 }
