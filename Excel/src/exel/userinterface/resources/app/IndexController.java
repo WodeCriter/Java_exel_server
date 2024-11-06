@@ -14,6 +14,8 @@ import exel.eventsys.events.range.RangeSelectedEvent;
 import exel.eventsys.events.sheet.*;
 import exel.userinterface.resources.app.file.FileHelper;
 import exel.userinterface.resources.app.popups.displaySheet.DisplaySheetController;
+import exel.userinterface.resources.app.popups.dynamicAnalsys.SliderInputDialogController;
+import exel.userinterface.resources.app.popups.dynamicAnalsys.SliderWindowController;
 import exel.userinterface.resources.app.popups.filter.SetFilterScreenController;
 import exel.userinterface.resources.app.popups.newRange.CreateNewRangeScreenController;
 import exel.userinterface.resources.app.popups.sort.SetSortScreenController;
@@ -49,6 +51,7 @@ import javafx.application.Platform;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -1010,6 +1013,56 @@ public class IndexController extends ControllerWithEventBus
         {
             // No current file, perform "Save As"
             saveAsFileListener(event);
+        }
+    }
+
+    @FXML
+    public void handleDynamicAnalysis(ActionEvent event) {
+        try {
+            // Load the range input dialog FXML
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/exel/userinterface/resources/app/popups/dynamicAnalsys/SliderInputDialog.fxml"));
+            DialogPane dialogPane = loader.load();
+
+            // Create the dialog
+            Dialog<Map<String, Double>> dialog = new Dialog<>();
+            dialog.setDialogPane(dialogPane);
+            dialog.setTitle("Dynamic Analysis");
+            dialog.setHeaderText("Please enter the range and step size.");
+
+            // Get the controller
+            SliderInputDialogController controller = loader.getController();
+
+            // Set the dialog result converter
+            dialog.setResultConverter(dialogButton -> {
+                if (dialogButton == ButtonType.OK) {
+                    return controller.getInputValues();
+                }
+                return null;
+            });
+
+            // Show the dialog and wait for the result
+            Optional<Map<String, Double>> result = dialog.showAndWait();
+
+            result.ifPresent(rangeData -> {
+                // Open the slider window
+                try {
+                    FXMLLoader sliderLoader = new FXMLLoader(getClass().getResource("/exel/userinterface/resources/app/popups/dynamicAnalsys/SliderWindow.fxml"));
+                    Stage sliderStage = new Stage();
+                    sliderStage.setTitle("Adjust Value");
+                    sliderStage.setScene(new Scene(sliderLoader.load()));
+
+                    // Get the controller
+                    SliderWindowController sliderController = sliderLoader.getController();
+                    sliderController.initializeSlider(rangeData.get("min"), rangeData.get("max"), rangeData.get("step"));
+                    sliderController.setStage(sliderStage);
+
+                    sliderStage.show();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            });
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }

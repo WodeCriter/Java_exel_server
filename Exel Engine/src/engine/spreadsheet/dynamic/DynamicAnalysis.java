@@ -16,6 +16,7 @@ public class DynamicAnalysis
     public DynamicAnalysis(Cell cell, Sheet sheet){
         cellsToAnalyze = cell.orderCellsForCalculation();
         pickedCellOriginalValue = cell.getOriginalValue();
+        this.sheet = sheet;
     }
 
     public void updateCellsValuesForAnalyzing(String newValue) {

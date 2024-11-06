@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns:fx="http://javafx.com/fxml/1" fx:controller="exel.userinterface.resources.app.popups.dynamicAnalsys.SliderWindowController" spacing="10" alignment="CENTER" padding="20">
+    <Slider fx:id="slider" prefWidth="300"/>
+    <Label fx:id="valueLabel" text="Current Value: "/>
+    <HBox spacing="10" alignment="CENTER">
+        <Button text="Accept" onAction="#handleAccept"/>
+        <Button text="Cancel" onAction="#handleCancel"/>
+    </HBox>
+</VBox>

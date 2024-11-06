@@ -42,6 +42,7 @@
                   <MenuItem fx:id="formatRTL" mnemonicParsing="false" onAction="#formatRTLListener" text="Right to left " />
                     </items>
                   </Menu>
+                  <MenuItem mnemonicParsing="false" onAction="#handleDynamicAnalysis" text="Dynamic analysis" />
             <MenuItem fx:id="formatBGColor" mnemonicParsing="false" onAction="#formatBGColorListener" text="Select background color" />
                   <MenuItem fx:id="formatTextColor" mnemonicParsing="false" onAction="#formatTextColorListener" text="Change text color" />
                   <SeparatorMenuItem mnemonicParsing="false" />

@@ -33,7 +33,6 @@ public class FilePermissionsController extends ControllerWithEventBus
         userColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getSender()));
         permColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().permission().toString()));
         statusColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().status().toString()));
-        
     }
 
     public void setHomeController(HomeController homeController) {

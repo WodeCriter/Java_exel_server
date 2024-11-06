@@ -23,8 +23,9 @@ import java.util.Map;
 import static utils.Constants.*;
 
 @WebServlet(SHEETS_PATH + "/*")
-public class SheetsServlet extends HttpServlet {
-    FileManager fileManager;
+public class SheetsServlet extends HttpServlet
+{
+    private FileManager fileManager;
     //update sheet - PUT (done)
     //get Sheet - GET (done)
     //delete sheet - DELETE (done)
@@ -84,8 +85,8 @@ public class SheetsServlet extends HttpServlet {
         String sender = requestData.sender;
 
         if (engine.getUserPermission(sender).compareTo(Permission.WRITER) >= 0)
-            switch (requestData.action.toLowerCase())
-            {
+        {
+            switch (requestData.action.toLowerCase()) {
                 case UPDATE_CELL:
                     handleUpdateCell(engine, request, response);
                     break;
@@ -101,6 +102,8 @@ public class SheetsServlet extends HttpServlet {
                 default:
                     response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Unknown action for PUT: " + requestData.action);
             }
+            IndexServlet.increaseRequestNumber();
+        }
         else
             response.sendError(HttpServletResponse.SC_FORBIDDEN, "\"" + sender + "\" is not allowed to " + requestData.action);
     }
@@ -122,7 +125,10 @@ public class SheetsServlet extends HttpServlet {
                 break;
             case DELETE_RANGE:
                 if (requestData.engine.getUserPermission(sender).compareTo(Permission.WRITER) >= 0)
+                {
                     handleDeleteRange(requestData.engine, request, response);
+                    IndexServlet.increaseRequestNumber();
+                }
                 else
                     response.sendError(HttpServletResponse.SC_FORBIDDEN, "\"" + sender + "\" is not allowed to " + requestData.action);
                 break;

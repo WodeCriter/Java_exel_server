@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<DialogPane xmlns:fx="http://javafx.com/fxml/1" fx:id="dialogPane" fx:controller="exel.userinterface.resources.app.popups.dynamicAnalsys.SliderInputDialogController">
+    <content>
+        <GridPane hgap="10" vgap="10">
+            <Label text="Minimum Value:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+            <TextField fx:id="minField" promptText="Minimum value" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+            <Label text="Maximum Value:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+            <TextField fx:id="maxField" promptText="Maximum value" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+            <Label text="Step Size:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+            <TextField fx:id="stepField" promptText="Step size" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+        </GridPane>
+    </content>
+    <buttonTypes>
+        <ButtonType text="Confirm" buttonData="OK_DONE"/>
+        <ButtonType text="Cancel" buttonData="CANCEL_CLOSE"/>
+    </buttonTypes>
+</DialogPane>
