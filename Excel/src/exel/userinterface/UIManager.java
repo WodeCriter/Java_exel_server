@@ -494,9 +494,13 @@ public class UIManager {
         }
     }
 
-    private void handleCellDynamicValChange(CellDynamicValChange event){}
+    private void handleCellDynamicValChange(CellDynamicValChange event){
+        //update slider
+    }
 
-    private void handleCellDynamicReturnToNormal(CellDynamicReturnToNormal event){}
+    private void handleCellDynamicReturnToNormal(CellDynamicReturnToNormal event){
+        //
+    }
 
     private void handleCellUpdateDynamicValInSheet(CellUpdateDynamicValInSheet event){}
 }
