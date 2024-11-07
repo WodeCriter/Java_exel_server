@@ -266,9 +266,10 @@ public class SheetsServlet extends HttpServlet
         }
     }
 
-    private void handleUpdateCellAnalysis(Engine engine, HttpServletRequest request, HttpServletResponse response) {
+    private void handleUpdateCellAnalysis(Engine engine, HttpServletRequest request, HttpServletResponse response) throws IOException {
         synchronized (engine) {
-            engine.changeCellValueForDynamicAnalysis(request.getParameter("newValue"));
+            ReadOnlySheet sheet = engine.changeCellValueForDynamicAnalysis(request.getParameter("newValue"));
+            addSheetToResponse(sheet, response);
             response.setStatus(HttpServletResponse.SC_OK);
         }
     }

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox fx:controller="exel.userinterface.resources.app.chat.ChatWindowController"
+      xmlns:fx="http://javafx.com/javafx/8"
+      xmlns:fx="http://javafx.com/fxml/1"
+      spacing="10" padding="10">
+
+    <ListView fx:id="chatListView" prefHeight="400" />
+
+    <HBox spacing="5">
+        <TextField fx:id="messageTextField" HBox.hgrow="ALWAYS" promptText="Type your message here..." />
+        <Button text="Send" onAction="#handleSendMessage" />
+    </HBox>
+</VBox>

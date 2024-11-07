@@ -68,6 +68,18 @@ public class Constants {
         return getSheetsPathWithName(fileName) + SET_CELL_HEIGHT;
     }
 
+    public static String PUT_CELL_FOR_ANALYSIS_REQUEST_PATH(String fileName){
+        return getSheetsPathWithName(fileName) + PUT_CELL_FOR_ANALYSIS;
+    }
+
+    public static String UPDATE_CELL_ANALYSIS_REQUEST_PATH(String fileName){
+        return getSheetsPathWithName(fileName) + UPDATE_CELL_ANALYSIS;
+    }
+
+    public static String STOP_CELL_ANALYSIS_REQUEST_PATH(String fileName){
+        return getSheetsPathWithName(fileName) + STOP_CELL_ANALYSIS;
+    }
+
     public static String ADD_RANGE_REQUEST_PATH(String fileName){
         return getSheetsPathWithName(fileName) + ADD_RANGE;
     }

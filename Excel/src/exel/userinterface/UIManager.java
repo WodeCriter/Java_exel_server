@@ -80,6 +80,7 @@ public class UIManager {
         eventBus.subscribe(CellDynamicValChange.class, this::handleCellDynamicValChange);
         eventBus.subscribe(CellDynamicReturnToNormal.class, this::handleCellDynamicReturnToNormal);
         eventBus.subscribe(CellUpdateDynamicValInSheet.class, this::handleCellUpdateDynamicValInSheet);
+        eventBus.subscribe(CellBeginDynamicChange.class, this::handleCellBeginDynamicChange);
     }
 
     private void handleCreateNewRange(CreateNewRangeEvent event) {
@@ -494,13 +495,78 @@ public class UIManager {
         }
     }
 
+    private void handleCellBeginDynamicChange(CellBeginDynamicChange event){
+        String finalURL = HttpUrl
+                .parse(PUT_CELL_FOR_ANALYSIS_REQUEST_PATH(currSheetFileName))
+                .newBuilder()
+                .addQueryParameter("coordinate", event.getCoordinate())
+                .build()
+                .toString();
+
+        Request request = new Request.Builder()
+                .url(finalURL)
+                .put(RequestBody.create(null, new byte[0]))
+                .build();
+
+        HttpClientUtil.runAsync(request, response -> {});
+        //
+    }
+
     private void handleCellDynamicValChange(CellDynamicValChange event){
+        String finalURL = HttpUrl
+                .parse(UPDATE_CELL_ANALYSIS_REQUEST_PATH(currSheetFileName))
+                .newBuilder()
+                .addQueryParameter("newValue", event.getOriginalValue())
+                .build()
+                .toString();
+
+        Request request = new Request.Builder()
+                .url(finalURL)
+                .put(RequestBody.create(null, new byte[0]))
+                .build();
+
+        HttpClientUtil.runAsync(request,
+                response -> eventBus.publish(new SheetDisplayEvent(getSheetFromResponse(response))));
         //update slider
     }
 
     private void handleCellDynamicReturnToNormal(CellDynamicReturnToNormal event){
-        //
+        String finalURL = HttpUrl
+                .parse(STOP_CELL_ANALYSIS_REQUEST_PATH(currSheetFileName))
+                .newBuilder()
+                .addQueryParameter("toSave", "true")
+                .build()
+                .toString();
+
+        Request request = new Request.Builder()
+                .url(finalURL)
+                .put(RequestBody.create(null, new byte[0]))
+                .build();
+
+        HttpClientUtil.runAsync(request,
+                response -> eventBus.publish(new SheetDisplayEvent(readOnlySheet))); //todo: check why it still changes the sheet
     }
 
-    private void handleCellUpdateDynamicValInSheet(CellUpdateDynamicValInSheet event){}
+    private void handleCellUpdateDynamicValInSheet(CellUpdateDynamicValInSheet event){
+        String finalURL = HttpUrl
+                .parse(STOP_CELL_ANALYSIS_REQUEST_PATH(currSheetFileName))
+                .newBuilder()
+                .addQueryParameter("toSave", "false")
+                .build()
+                .toString();
+
+        Request request = new Request.Builder()
+                .url(finalURL)
+                .put(RequestBody.create(null, new byte[0]))
+                .build();
+
+        HttpClientUtil.runAsync(request, response -> {});
+    }
+
+    public void stopAllBackgroundTasks() {
+        if (homeController != null) {
+            homeController.stopDataRefresher();
+        }
+        // Stop other background tasks if any
+    }
 }
