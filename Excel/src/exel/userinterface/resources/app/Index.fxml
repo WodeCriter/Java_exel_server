@@ -132,7 +132,7 @@
                                     <HBox prefHeight="100.0" prefWidth="200.0">
                                        <children>
                                           <TextField fx:id="textFiledOriginalVal" prefHeight="25.0" prefWidth="348.0" promptText="Enter Original Value for Cell" />
-                                          <Button fx:id="buttonUpdateCell" mnemonicParsing="false" onAction="#updateCellButtonListener" text="Update cell" />
+                                          <Button fx:id="updateCellButton" mnemonicParsing="false" onAction="#updateCellButtonListener" text="Update cell" />
                                        </children>
                                        <padding>
                                           <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
