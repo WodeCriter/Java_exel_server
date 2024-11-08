@@ -1090,8 +1090,8 @@ public class IndexController extends ControllerWithEventBus
         }
     }
 
-    public void startDataRefresher() {
-        refresher = new IndexRefresher("grades", this); //todo: replace "grades" with dynamic name
+    public void startDataRefresher(String currentlyEditingFileName) {
+        refresher = new IndexRefresher(currentlyEditingFileName, this::setMostRecentSheetFromServer);
         timer = new Timer();
         timer.schedule(refresher, 0, 2000);
     }
@@ -1104,7 +1104,7 @@ public class IndexController extends ControllerWithEventBus
         }
     }
 
-    public void setMostRecentSheetFromServer(ReadOnlySheet mostRecentSheet) {
+    private void setMostRecentSheetFromServer(ReadOnlySheet mostRecentSheet) {
         mostRecentSheetFromServer = mostRecentSheet;
         updatedSheetIndicator.setFill(NOT_ON_MOST_UPDATED_SHEET);
         loadUpdatedSheetButton.setDisable(false);
@@ -1112,14 +1112,18 @@ public class IndexController extends ControllerWithEventBus
         //show on screen that there's a more recent sheet.
     }
 
+    public void indicateUserIsOnUpdatedSheet() {
+        updatedSheetIndicator.setFill(ON_MOST_UPDATED_SHEET);
+        loadUpdatedSheetButton.setDisable(true);
+        updateCellButton.setDisable(false);
+    }
+
     @FXML
     private void handleUpdateSheetButtonPressed(ActionEvent event){
         if (mostRecentSheetFromServer == null)
             throw new RuntimeException();
 
-        updatedSheetIndicator.setFill(ON_MOST_UPDATED_SHEET);
-        loadUpdatedSheetButton.setDisable(true);
-        updateCellButton.setDisable(false);
+        indicateUserIsOnUpdatedSheet();
         eventBus.publish(new SheetDisplayEvent(mostRecentSheetFromServer));
         mostRecentSheetFromServer = null;
     }

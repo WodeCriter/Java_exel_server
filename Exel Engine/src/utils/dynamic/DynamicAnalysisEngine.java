@@ -6,6 +6,6 @@ public interface DynamicAnalysisEngine
 {
     void pickCellForDynamicAnalysis(String coordinate);
     ReadOnlySheet changeCellValueForDynamicAnalysis(String newValue);
-    void saveSheetAfterDynamicAnalysis();
-    void returnSheetBackAfterDynamicAnalysis();
+    ReadOnlySheet saveSheetAfterDynamicAnalysis();
+    ReadOnlySheet returnSheetBackAfterDynamicAnalysis();
 }

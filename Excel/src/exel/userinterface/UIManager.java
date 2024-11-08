@@ -14,7 +14,6 @@ import exel.eventsys.events.range.*;
 import exel.eventsys.events.sheet.*;
 import exel.userinterface.resources.app.general.ControllerWithEventBus;
 import exel.userinterface.resources.app.IndexController;
-import exel.userinterface.resources.app.general.SheetParser;
 import exel.userinterface.resources.app.home.HomeController;
 import exel.userinterface.resources.app.login.LoginController;
 import exel.userinterface.util.http.HttpClientUtil;
@@ -32,6 +31,7 @@ import utils.perms.PermissionRequest;
 
 import java.util.List;
 
+import static exel.userinterface.resources.app.general.SheetParser.getSheetFromResponse;
 import static utils.Constants.*;
 
 public class UIManager {
@@ -74,7 +74,7 @@ public class UIManager {
         eventBus.subscribe(GoBackHomeEvent.class, this::handleGoBackHomeEvent);
         eventBus.subscribe(CellDynamicValChange.class, this::handleCellDynamicValChange);
         eventBus.subscribe(CellDynamicReturnToNormal.class, this::handleCellDynamicReturnToNormal);
-        eventBus.subscribe(CellUpdateDynamicValInSheet.class, this::handleCellUpdateDynamicValInSheet);
+        eventBus.subscribe(CellUpdateDynamicValInSheet.class, this::handleCellDynamicSaveSheet);
         eventBus.subscribe(CellBeginDynamicChange.class, this::handleCellBeginDynamicChange);
     }
 
@@ -93,7 +93,7 @@ public class UIManager {
 
             HttpClientUtil.runAsync(finalURL, HttpRequestType.PUT, response ->
             {
-                readOnlySheet = SheetParser.getSheetFromResponse(response);
+                readOnlySheet = getSheetFromResponse(response);
                 Platform.runLater(() -> eventBus.publish(new RangeCreatedEvent(
                         event.getRangeName(),
                         event.getTopLeftCord(),
@@ -115,12 +115,12 @@ public class UIManager {
 
         HttpClientUtil.runAsync(finalURL, response ->
         {
-            readOnlySheet = SheetParser.getSheetFromResponse(response);
+            readOnlySheet = getSheetFromResponse(response);
             currSheetFileName = event.getFileName();
             Platform.runLater(() -> {
                 showSheetPage();
                 loadSheetHelper();
-                indexController.startDataRefresher();
+                indexController.startDataRefresher(currSheetFileName);
             });
 
             homeController.stopDataRefresher();
@@ -154,7 +154,7 @@ public class UIManager {
 
         HttpClientUtil.runAsync(finalURL, HttpRequestType.PUT, response ->
         {
-            readOnlySheet = SheetParser.getSheetFromResponse(response);
+            readOnlySheet = getSheetFromResponse(response);
             Platform.runLater(() -> eventBus.publish(new SheetDisplayEvent(readOnlySheet)));
         });
     }
@@ -174,7 +174,7 @@ public class UIManager {
 
         HttpClientUtil.runAsync(finalURL, HttpRequestType.DELETE, response ->
                 {
-                    readOnlySheet = SheetParser.getSheetFromResponse(response);
+                    readOnlySheet = getSheetFromResponse(response);
                     Platform.runLater(() -> eventBus.publish(new DeletedRangeEvent(event.getRangeName())));
                 }
         );
@@ -185,7 +185,7 @@ public class UIManager {
         String finalURL = getSortURLFromEvent(event);
         HttpClientUtil.runAsync(finalURL, response ->
         {
-            ReadOnlySheet sortedSheet = SheetParser.getSheetFromResponse(response);
+            ReadOnlySheet sortedSheet = getSheetFromResponse(response);
             Platform.runLater(() -> eventBus.publish(new DisplaySheetPopupEvent(sortedSheet)));
         });
     }
@@ -209,7 +209,7 @@ public class UIManager {
         Request request = getFilterRequestFromEvent(event);
         HttpClientUtil.runAsync(request, response ->
         {
-            ReadOnlySheet filteredSheet = SheetParser.getSheetFromResponse(response);
+            ReadOnlySheet filteredSheet = getSheetFromResponse(response);
             Platform.runLater(() -> eventBus.publish(new DisplaySheetPopupEvent(filteredSheet)));
         });
     }
@@ -244,7 +244,7 @@ public class UIManager {
 
             HttpClientUtil.runAsync(finalURL, response ->
                     {
-                        ReadOnlySheet versionSheet = SheetParser.getSheetFromResponse(response);
+                        ReadOnlySheet versionSheet = getSheetFromResponse(response);
                         Platform.runLater(() -> eventBus.publish(new DisplaySheetPopupEvent(versionSheet)));
                     }
             );
@@ -266,7 +266,7 @@ public class UIManager {
 
         HttpClientUtil.runAsync(finalURL, HttpRequestType.PUT, response ->
         {
-            readOnlySheet = SheetParser.getSheetFromResponse(response);
+            readOnlySheet = getSheetFromResponse(response);
             Platform.runLater(() -> eventBus.publish(new SheetDisplayRefactorEvent(readOnlySheet)));
         });
     }
@@ -281,7 +281,7 @@ public class UIManager {
 
         HttpClientUtil.runAsync(finalURL, HttpRequestType.PUT, response ->
         {
-            readOnlySheet = SheetParser.getSheetFromResponse(response);
+            readOnlySheet = getSheetFromResponse(response);
             Platform.runLater(() -> eventBus.publish(new SheetDisplayRefactorEvent(readOnlySheet)));
         });
     }
@@ -293,7 +293,6 @@ public class UIManager {
         homeController.startDataRefresher();
         homeController.setUsernameButtonText(username);
     }
-
 
     private void handleLogInSuccessfulEvent(LogInSuccessfulEvent event){
         username = event.getUsername();
@@ -381,16 +380,6 @@ public class UIManager {
                     range.getBottomRightCord()));
         }
     }
-    private void handleCellDynamicValChange(CellDynamicValChange event){
-        //update slider
-    }
-
-    private void handleCellDynamicReturnToNormal(CellDynamicReturnToNormal event){
-        //
-    }
-
-    private void handleCellUpdateDynamicValInSheet(CellUpdateDynamicValInSheet event){}
-
 
     public void showLogin() {
         Pair<LoginController, Parent> result = loadFXML("/exel/userinterface/resources/app/login/login.fxml");
@@ -447,6 +436,7 @@ public class UIManager {
         // Displaying the contents of the stage
         primaryStage.show();
     }
+
     private void handleCellBeginDynamicChange(CellBeginDynamicChange event){
         String finalURL = HttpUrl
                 .parse(PUT_CELL_FOR_ANALYSIS_REQUEST_PATH(currSheetFileName))
@@ -455,15 +445,10 @@ public class UIManager {
                 .build()
                 .toString();
 
-        Request request = new Request.Builder()
-                .url(finalURL)
-                .put(RequestBody.create(null, new byte[0]))
-                .build();
-
-        HttpClientUtil.runAsync(request, response -> {});
-        //
+        HttpClientUtil.runAsync(finalURL, HttpRequestType.PUT, response -> {});
     }
 
+    private void handleCellDynamicValChange(CellDynamicValChange event){
         String finalURL = HttpUrl
                 .parse(UPDATE_CELL_ANALYSIS_REQUEST_PATH(currSheetFileName))
                 .newBuilder()
@@ -471,13 +456,11 @@ public class UIManager {
                 .build()
                 .toString();
 
-        Request request = new Request.Builder()
-                .url(finalURL)
-                .put(RequestBody.create(null, new byte[0]))
-                .build();
-
-        HttpClientUtil.runAsync(request,
+        HttpClientUtil.runAsync(finalURL, HttpRequestType.PUT,
                 response -> eventBus.publish(new SheetDisplayEvent(getSheetFromResponse(response))));
+    }
+
+    private void handleCellDynamicSaveSheet(CellUpdateDynamicValInSheet event){
         String finalURL = HttpUrl
                 .parse(STOP_CELL_ANALYSIS_REQUEST_PATH(currSheetFileName))
                 .newBuilder()
@@ -485,14 +468,14 @@ public class UIManager {
                 .build()
                 .toString();
 
-        Request request = new Request.Builder()
-                .url(finalURL)
-                .put(RequestBody.create(null, new byte[0]))
-                .build();
+        HttpClientUtil.runAsync(finalURL, HttpRequestType.PUT, response ->
+                {
+                    readOnlySheet = getSheetFromResponse(response);
+                    eventBus.publish(new SheetDisplayEvent(readOnlySheet));
+                });
+    }
 
-        HttpClientUtil.runAsync(request,
-                response -> eventBus.publish(new SheetDisplayEvent(readOnlySheet))); //todo: check why it still changes the sheet
-    private void handleCellUpdateDynamicValInSheet(CellUpdateDynamicValInSheet event){}
+    private void handleCellDynamicReturnToNormal(CellDynamicReturnToNormal event){
         String finalURL = HttpUrl
                 .parse(STOP_CELL_ANALYSIS_REQUEST_PATH(currSheetFileName))
                 .newBuilder()
@@ -500,18 +483,15 @@ public class UIManager {
                 .build()
                 .toString();
 
-        Request request = new Request.Builder()
-                .url(finalURL)
-                .put(RequestBody.create(null, new byte[0]))
-                .build();
-
-        HttpClientUtil.runAsync(request, response -> {});
+        HttpClientUtil.runAsync(finalURL, HttpRequestType.PUT,
+                response -> eventBus.publish(new SheetDisplayEvent(readOnlySheet))); //todo: check why it still changes the sheet
     }
 
     public void stopAllBackgroundTasks() {
-        if (homeController != null) {
+        if (homeController != null)
             homeController.stopDataRefresher();
-        }
+        if (indexController != null)
+            indexController.stopDataRefresher();
         // Stop other background tasks if any
     }
 }

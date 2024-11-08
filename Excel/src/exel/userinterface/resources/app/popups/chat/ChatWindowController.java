@@ -4,13 +4,14 @@ package exel.userinterface.resources.app.popups.chat;
 import exel.eventsys.EventBus;
 import exel.eventsys.events.chat.ChatMessageReceivedEvent;
 import exel.eventsys.events.chat.ChatMessageSentEvent;
-import exel.userinterface.resources.app.ControllerWithEventBus;
+import exel.userinterface.resources.app.general.ControllerWithEventBus;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 
-public class ChatWindowController extends ControllerWithEventBus {
+public class ChatWindowController extends ControllerWithEventBus
+{
 
     @FXML
     private ListView<String> chatListView;

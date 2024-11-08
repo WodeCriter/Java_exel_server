@@ -274,14 +274,17 @@ public class SheetsServlet extends HttpServlet
         }
     }
 
-    private void handleStopCellAnalysis(Engine engine, HttpServletRequest request, HttpServletResponse response) {
+    private void handleStopCellAnalysis(Engine engine, HttpServletRequest request, HttpServletResponse response) throws IOException {
         boolean toSave = Boolean.parseBoolean(request.getParameter("toSave"));
+        ReadOnlySheet sheet;
 
         synchronized (engine) {
             if (toSave)
-                engine.saveSheetAfterDynamicAnalysis();
+                sheet = engine.saveSheetAfterDynamicAnalysis();
             else
-                engine.returnSheetBackAfterDynamicAnalysis();
+                sheet = engine.returnSheetBackAfterDynamicAnalysis();
+
+            addSheetToResponse(sheet, response);
             response.setStatus(HttpServletResponse.SC_OK);
         }
     }

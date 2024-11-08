@@ -118,18 +118,20 @@ public class EngineImp implements Engine
         return new ReadOnlySheetImp(currentSheet);
     }
 
-    public void saveSheetAfterDynamicAnalysis(){
+    public ReadOnlySheet saveSheetAfterDynamicAnalysis(){
         if (dynamicAnalysisHelper == null)
             throw new IllegalArgumentException("Illegal call. Need to pick cell first.");
         dynamicAnalysisHelper.saveCellChanges();
         dynamicAnalysisHelper = null;
+        return new ReadOnlySheetImp(currentSheet);
     }
 
-    public void returnSheetBackAfterDynamicAnalysis(){
+    public ReadOnlySheet returnSheetBackAfterDynamicAnalysis(){
         if (dynamicAnalysisHelper == null)
             throw new IllegalArgumentException("Illegal call. Need to pick cell first.");
         dynamicAnalysisHelper.returnCellsBackToNormal();
         dynamicAnalysisHelper = null;
+        return new ReadOnlySheetImp(currentSheet);
     }
 
     @Override
