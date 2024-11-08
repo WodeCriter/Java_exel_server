@@ -12,6 +12,7 @@
 <?import javafx.scene.control.RadioMenuItem?>
 <?import javafx.scene.control.SeparatorMenuItem?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.effect.InnerShadow?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
@@ -19,8 +20,10 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.paint.Color?>
+<?import javafx.scene.shape.Circle?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="exel.userinterface.resources.app.IndexController">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="exel.userinterface.resources.app.IndexController">
   <children>
     <MenuBar maxWidth="-Infinity" prefHeight="25.0" prefWidth="640.0" VBox.vgrow="NEVER">
       <menus>
@@ -90,6 +93,20 @@
                            <VBox.margin>
                               <Insets />
                            </VBox.margin>
+                           <graphic>
+                              <Circle fx:id="updatedSheetIndicator" fill="#1fff2f" radius="7.0" stroke="BLACK" strokeMiterLimit="30.0" strokeType="INSIDE" strokeWidth="0.0">
+                                 <effect>
+                                    <InnerShadow height="21.86" radius="9.7" width="18.94">
+                                       <color>
+                                          <Color red="0.08696393668651581" green="0.28289473056793213" blue="0.03798123821616173" />
+                                       </color>
+                                    </InnerShadow>
+                                 </effect>
+                              </Circle>
+                           </graphic>
+                           <padding>
+                              <Insets left="5.0" right="30.0" />
+                           </padding>
                         </Label>
                         <HBox prefHeight="100.0" prefWidth="200.0">
                            <children>

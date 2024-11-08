@@ -48,6 +48,5 @@ public class IndexRefresher extends TimerTask
         ReadOnlySheet mostRecentSheet = SheetParser.getSheetFromResponse(response);
         if (mostRecentSheet != null)
             controller.setMostRecentSheetFromServer(mostRecentSheet);
-
     }
 }

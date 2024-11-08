@@ -119,6 +119,7 @@ public class UIManager {
             Platform.runLater(() -> {
                 showSheetPage();
                 loadSheetHelper();
+                indexController.startDataRefresher();
             });
 
             homeController.stopDataRefresher();
@@ -287,6 +288,7 @@ public class UIManager {
     private void handleGoBackHomeEvent(GoBackHomeEvent event){
         //indexController.stopDataRefresher();
         showHomePage();
+        indexController.stopDataRefresher();
         homeController.startDataRefresher();
         homeController.setUsernameButtonText(username);
     }
@@ -362,8 +364,7 @@ public class UIManager {
 //        engine.saveXmlFile( event.getAbsolutePath() );
 //    }
 
-    private void loadSheetHelper()
-    {
+    private void loadSheetHelper() {
         indexController.refreshSheetPlane();
         eventBus.publish(new SheetCreatedEvent(
                 readOnlySheet.getName(),

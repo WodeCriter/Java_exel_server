@@ -14,6 +14,7 @@ import exel.eventsys.events.range.RangeSelectedEvent;
 import exel.eventsys.events.sheet.*;
 import exel.userinterface.resources.app.general.ControllerWithEventBus;
 import exel.userinterface.resources.app.general.FileHelper;
+import exel.userinterface.resources.app.home.HomeRefresher;
 import exel.userinterface.resources.app.popups.displaySheet.DisplaySheetController;
 import exel.userinterface.resources.app.popups.dynamicAnalsys.SliderInputDialogController;
 import exel.userinterface.resources.app.popups.dynamicAnalsys.SliderWindowController;
@@ -38,6 +39,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.scene.shape.Circle;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -55,6 +57,7 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Timer;
 
 public class IndexController extends ControllerWithEventBus
 {
@@ -64,7 +67,10 @@ public class IndexController extends ControllerWithEventBus
     private boolean isDarkMode = false;
     private ContextMenu rangeDeleteMenu;
     private boolean isAnimationsEnabled = false;
+
     private ReadOnlySheet mostRecentSheetFromServer = null;
+    private IndexRefresher refresher;
+    private Timer timer;
 
     @FXML
     private AnchorPane sheetContainer;
@@ -101,6 +107,8 @@ public class IndexController extends ControllerWithEventBus
 
     @FXML
     private ToggleGroup themeToggleGroup;
+    @FXML
+    private Circle updatedSheetIndicator;
 
 
     @FXML
@@ -1075,6 +1083,21 @@ public class IndexController extends ControllerWithEventBus
 
     public void setMostRecentSheetFromServer(ReadOnlySheet mostRecentSheet) {
         mostRecentSheetFromServer = mostRecentSheet;
+        updatedSheetIndicator.setFill(Color.RED);
         //show on screen that there's a more recent sheet.
+    }
+
+    public void startDataRefresher() {
+        refresher = new IndexRefresher("grades", this); //todo: replace "grades" with dynamic name
+        timer = new Timer();
+        timer.schedule(refresher, 0, 2000);
+    }
+
+    public void stopDataRefresher() {
+        if (refresher != null && timer != null)
+        {
+            refresher.cancel();
+            timer.cancel();
+        }
     }
 }
