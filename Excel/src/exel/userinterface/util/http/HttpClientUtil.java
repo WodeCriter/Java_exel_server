@@ -39,8 +39,12 @@ public class HttpClientUtil {
                 if (response.code() == 200)
                     activateWhenOk.accept(response);
                 else
-                    System.out.println(YELLOW + "Something went wrong: " + response.body().string() + RESET);
-                    //Platform.runLater(()->showAlert(String.valueOf(response.code()), response.message()));
+                {
+                    String message = response.body().string();
+                    Platform.runLater(() -> showAlert(String.valueOf(response.code()), message));
+                }
+                    //System.out.println(YELLOW + "Something went wrong: " + response.body().string() + RESET);
+
             }
         };
     }
