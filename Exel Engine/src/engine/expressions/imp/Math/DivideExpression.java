@@ -26,7 +26,7 @@ public class DivideExpression implements Expression
 
         double rightNum = rightValue.extractValueWithExpectation(Double.class);
         if (rightNum == 0)
-            throw new RuntimeException("Cannot divide by zero");
+            return new EffectiveValueImp(CellType.UNDEFINED, UNDEFINED_NUMBER);
 
         double result = leftValue.extractValueWithExpectation(Double.class) / rightNum;
         return new EffectiveValueImp(CellType.NUMERIC, result);
