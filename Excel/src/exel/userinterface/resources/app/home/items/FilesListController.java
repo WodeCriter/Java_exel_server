@@ -10,10 +10,14 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.ContextMenu;
+import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
+import javafx.scene.control.Tooltip;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.util.Duration;
+import utils.perms.PermissionRequest;
 
 import java.util.List;
 
@@ -24,7 +28,7 @@ public class FilesListController extends ControllerWithEventBus
     private ListView<String> filesList;
     @FXML
     private ContextMenu contextMenu;
-
+    private Tooltip tooltip;
 
     // Property to hold the selected item for communication with MainController
     private final ObjectProperty<String> selectedItemProperty = new SimpleObjectProperty<>();

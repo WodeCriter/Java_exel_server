@@ -506,6 +506,7 @@ public class UIManager {
             homeController.stopDataRefresher();
         if (indexController != null)
             indexController.stopDataRefresher();
-        // Stop other background tasks if any
+
+        HttpClientUtil.shutdown();
     }
 }
