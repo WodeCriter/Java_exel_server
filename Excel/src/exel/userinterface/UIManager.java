@@ -498,7 +498,7 @@ public class UIManager {
                         eventBus.publish(new SheetDisplayEvent(readOnlySheet));
                     });
 
-                }); //todo: check why it still changes the sheet
+                });
     }
 
     public void stopAllBackgroundTasks() {

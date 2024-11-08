@@ -46,6 +46,7 @@ public class EngineImp implements Engine
         allPendingRequests = new LinkedHashSet<>();
 
         permissions.put(ownerName, Permission.OWNER);
+        allRequestsEverMade.add(new PermissionRequest(ownerName, Permission.OWNER,Status.ACCEPTED, engineName));
         this.engineName = engineName;
         this.ownerName = ownerName;
 

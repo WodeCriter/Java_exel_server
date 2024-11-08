@@ -77,5 +77,6 @@ public class HomeRefresher extends TimerTask
 
     public void setFileForTableFetch (String fileForTableFetch){
         fileForPermissionTable = fileForTableFetch;
+        requestNumber++;
     }
 }
