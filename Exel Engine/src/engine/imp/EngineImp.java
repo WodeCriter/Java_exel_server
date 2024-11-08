@@ -107,31 +107,30 @@ public class EngineImp implements Engine
     }
 
     public void pickCellForDynamicAnalysis(String coordinate){
-        Cell pickedCell = currentSheet.getCell(new Coordinate(coordinate));
-        dynamicAnalysisHelper = new DynamicAnalysis(pickedCell, currentSheet);
+        Sheet copySheet = currentSheet.copySheet();
+        Cell pickedCell = copySheet.getCell(new Coordinate(coordinate));
+        dynamicAnalysisHelper = new DynamicAnalysis(pickedCell, copySheet);
     }
 
     public ReadOnlySheet changeCellValueForDynamicAnalysis(String newValue){
         if (dynamicAnalysisHelper == null)
             throw new IllegalArgumentException("Illegal call. Need to pick cell first.");
-        dynamicAnalysisHelper.updateCellsValuesForAnalyzing(newValue);
-        return new ReadOnlySheetImp(currentSheet);
+        return dynamicAnalysisHelper.updateCellsValuesForAnalyzing(newValue);
     }
 
     public ReadOnlySheet saveSheetAfterDynamicAnalysis(){
         if (dynamicAnalysisHelper == null)
             throw new IllegalArgumentException("Illegal call. Need to pick cell first.");
-        dynamicAnalysisHelper.saveCellChanges();
+        currentSheet = dynamicAnalysisHelper.saveCellChanges();
+        readOnlyCurrentSheet = new ReadOnlySheetImp(currentSheet);
         dynamicAnalysisHelper = null;
-        return new ReadOnlySheetImp(currentSheet);
+
+        return readOnlyCurrentSheet;
     }
 
     public ReadOnlySheet returnSheetBackAfterDynamicAnalysis(){
-        if (dynamicAnalysisHelper == null)
-            throw new IllegalArgumentException("Illegal call. Need to pick cell first.");
-        dynamicAnalysisHelper.returnCellsBackToNormal();
         dynamicAnalysisHelper = null;
-        return new ReadOnlySheetImp(currentSheet);
+        return readOnlyCurrentSheet;
     }
 
     @Override

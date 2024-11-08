@@ -3,6 +3,7 @@ package engine.spreadsheet.api;
 import engine.spreadsheet.cell.api.Cell;
 import engine.spreadsheet.cell.api.ReadOnlyCell;
 import engine.spreadsheet.coordinate.Coordinate;
+import engine.spreadsheet.imp.SheetImp;
 import engine.spreadsheet.range.Range;
 import engine.spreadsheet.range.ReadOnlyRange;
 
@@ -35,6 +36,8 @@ public interface Sheet {
     List<ReadOnlyCell> getReadOnlyCells();
 
     void increaseVersionAndUpdateChangedCells(List<Cell> changedCells);
+
+    SheetImp copySheet();
 
     Boolean isCoordinateInRange(Coordinate coordinate);
 

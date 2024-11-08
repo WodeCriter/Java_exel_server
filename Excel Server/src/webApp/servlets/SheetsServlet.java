@@ -405,7 +405,8 @@ public class SheetsServlet extends HttpServlet
     }
 
     private void addSheetToResponse(ReadOnlySheet sheet, HttpServletResponse response) throws IOException {
-        response.getWriter().write(GSON_INSTANCE.toJson(sheet));
+        if (sheet != null)
+            response.getWriter().write(GSON_INSTANCE.toJson(sheet));
     }
 }
 
