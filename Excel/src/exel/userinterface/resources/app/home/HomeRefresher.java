@@ -1,5 +1,6 @@
 package exel.userinterface.resources.app.home;
 
+import engine.util.FileData;
 import exel.userinterface.util.http.HttpClientUtil;
 import javafx.application.Platform;
 import okhttp3.HttpUrl;
@@ -17,14 +18,14 @@ import static utils.Constants.HOME_PAGE;
 public class HomeRefresher extends TimerTask
 {
     private final Consumer<List<String>> activeUsersConsumer;
-    private final Consumer<List<String>> savedFilesConsumer;
+    private final Consumer<List<FileData>> savedFilesConsumer;
     private final Consumer<List<PermissionRequest>> pendingRequestsConsumer;
     private final Consumer<List<PermissionRequest>> filePermissionRequestsConsumer;
     private String fileForPermissionTable;
     private int requestNumber;
 
 
-    public HomeRefresher(Consumer<List<String>> activeUsersConsumer, Consumer<List<String>> savedFilesConsumer, Consumer<List<PermissionRequest>> pendingRequestsConsumer, Consumer<List<PermissionRequest>> premissorRequestsConsumer)
+    public HomeRefresher(Consumer<List<String>> activeUsersConsumer, Consumer<List<FileData>> savedFilesConsumer, Consumer<List<PermissionRequest>> pendingRequestsConsumer, Consumer<List<PermissionRequest>> premissorRequestsConsumer)
     {
         this.activeUsersConsumer = activeUsersConsumer;
         this.savedFilesConsumer = savedFilesConsumer;
@@ -65,7 +66,7 @@ public class HomeRefresher extends TimerTask
             String json = body.string();
             HomeDataWrapper data = GSON_INSTANCE.fromJson(json, HomeDataWrapper.class);
             activeUsersConsumer.accept(data.getUserNames());
-            savedFilesConsumer.accept(data.getFileNames());
+            savedFilesConsumer.accept(data.getFileData());
             pendingRequestsConsumer.accept(data.getPermissionRequests());
             filePermissionRequestsConsumer.accept(data.getPermissionRequestsForFile());
         }

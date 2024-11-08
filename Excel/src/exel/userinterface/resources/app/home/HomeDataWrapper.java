@@ -1,6 +1,6 @@
 package exel.userinterface.resources.app.home;
 
-import utils.perms.Permission;
+import engine.util.FileData;
 import utils.perms.PermissionRequest;
 
 import java.util.ArrayList;
@@ -9,7 +9,7 @@ import java.util.List;
 class HomeDataWrapper
 {
     private List<String> userNames;
-    private List<String> fileNames;
+    private List<FileData> fileData;
     private List<PermissionRequest> permissionRequests = new ArrayList<>();
     private List<PermissionRequest> permissionRequestsForFile = new ArrayList<>();
 
@@ -20,8 +20,8 @@ class HomeDataWrapper
         return userNames;
     }
 
-    public List<String> getFileNames() {
-        return fileNames;
+    public List<FileData> getFileData() {
+        return fileData;
     }
 
     public List<PermissionRequest> getPermissionRequests() {

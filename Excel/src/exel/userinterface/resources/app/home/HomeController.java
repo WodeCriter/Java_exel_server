@@ -1,5 +1,6 @@
 package exel.userinterface.resources.app.home;
 
+import engine.util.FileData;
 import exel.eventsys.EventBus;
 import exel.userinterface.resources.app.general.ControllerWithEventBus;
 import exel.userinterface.resources.app.general.FileHelper;
@@ -27,7 +28,7 @@ public class HomeController extends ControllerWithEventBus
     private static final String PERMISSIONS_TABLE_PATH = "/exel/userinterface/resources/app/home/items/filePermissionsTable.fxml";
 
     private List<String> activeUsers;
-    private List<String> savedFiles;
+    private List<FileData> savedFiles;
     private List<PermissionRequest> requestsForUser;
 
     private HomeRefresher refresher;
@@ -114,7 +115,7 @@ public class HomeController extends ControllerWithEventBus
             this.activeUsers = activeUsers;
     }
 
-    private void setSavedFiles(List<String> savedFiles) {
+    private void setSavedFiles(List<FileData> savedFiles) {
         if (savedFiles == null || !savedFiles.equals(this.savedFiles))
         {
             this.savedFiles = savedFiles;

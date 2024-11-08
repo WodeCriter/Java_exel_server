@@ -123,17 +123,23 @@ public class SheetsServlet extends HttpServlet
         if (requestData == null) return;
 
         String sender = requestData.sender;
+        Engine engine = requestData.engine;
+        if (engine == null)
+        {
+            response.setStatus(HttpServletResponse.SC_OK);
+            return;
+        }
 
         switch (requestData.action.toLowerCase())
         {
             case DELETE_SHEET:
-                if (requestData.engine.getUserPermission(sender).compareTo(Permission.OWNER) >= 0)
+                if (engine.getUserPermission(sender).compareTo(Permission.OWNER) >= 0)
                     handleDeleteSheet(requestData.fileName, response);
                 else
                     response.sendError(HttpServletResponse.SC_FORBIDDEN, "\"" + sender + "\" is not allowed to " + requestData.action);
                 break;
             case DELETE_RANGE:
-                if (requestData.engine.getUserPermission(sender).compareTo(Permission.WRITER) >= 0)
+                if (engine.getUserPermission(sender).compareTo(Permission.WRITER) >= 0)
                 {
                     handleDeleteRange(requestData.engine, request, response);
                     IndexServlet.increaseRequestNumber(sender);
@@ -166,15 +172,16 @@ public class SheetsServlet extends HttpServlet
 
         //todo: think
         // For DELETE, the engine may not exist
-        Engine engine = null;
-        if (!"DELETE".equalsIgnoreCase(request.getMethod()) || !"deletesheet".equalsIgnoreCase(action)) {
-            engine = fileManager.getEngine(fileName);
-            if (engine == null) {
-                response.sendError(HttpServletResponse.SC_NOT_FOUND, "Engine not found for FileName: " + fileName);
-                return null;
-            }
-        }
+//        Engine engine = null;
+//        if (!"DELETE".equalsIgnoreCase(request.getMethod()) || !"deletesheet".equalsIgnoreCase(action)) {
+//            engine = fileManager.getEngine(fileName);
+//            if (engine == null) {
+//                response.sendError(HttpServletResponse.SC_NOT_FOUND, "Engine not found for FileName: " + fileName);
+//                return null;
+//            }
+//        }
 
+        Engine engine = fileManager.getEngine(fileName);
         return new RequestData(fileName, action, engine, sender);
     }
 

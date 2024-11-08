@@ -66,6 +66,10 @@ public interface Engine extends PermissionHelper, DynamicAnalysisEngine
      */
     void saveXmlFile(String filePath);
 
+    int getNumOfCols();
+
+    int getNumOfRows();
+
     //method to save system state files
     void saveSysStateFile(String filePath, String fileName);
 

@@ -46,7 +46,7 @@ public class EngineImp implements Engine
         allPendingRequests = new LinkedHashSet<>();
 
         permissions.put(ownerName, Permission.OWNER);
-        allRequestsEverMade.add(new PermissionRequest(ownerName, Permission.OWNER,Status.ACCEPTED, engineName));
+        //allRequestsEverMade.add(new PermissionRequest(ownerName, Permission.OWNER,Status.ACCEPTED, engineName));
         this.engineName = engineName;
         this.ownerName = ownerName;
 
@@ -257,6 +257,16 @@ public class EngineImp implements Engine
     public void saveXmlFile(String filePath){
 
         xmlFileSaver.saveSpreadsheet(this.currentSheet , filePath);
+    }
+
+    @Override
+    public int getNumOfCols(){
+        return currentSheet.getNumOfCols();
+    }
+
+    @Override
+    public int getNumOfRows(){
+        return currentSheet.getNumOfRows();
     }
 
     @Override

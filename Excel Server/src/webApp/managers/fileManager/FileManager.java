@@ -4,7 +4,7 @@ import engine.api.Engine;
 import engine.imp.EngineImp;
 import jakarta.xml.bind.JAXBException;
 import utils.perms.Permission;
-import utils.perms.PermissionRequest;
+import engine.util.FileData;
 
 import java.io.InputStream;
 import java.util.*;
@@ -14,8 +14,8 @@ import java.util.concurrent.ConcurrentHashMap;
 public class FileManager
 {
     private Map<String, Engine> fileNameToEngineMap = new ConcurrentHashMap<>();
-    private List<String> fileNames = new ArrayList<>();
-    //private Map<String, Set<Engine>> usernameToUserEnginesMap = new ConcurrentHashMap<>();
+    //private List<String> fileNames = new ArrayList<>();
+    private List<FileData> fileDataList = new ArrayList<>();
 
     public void addFile(String fileName, InputStream fileContent, String ownerName) throws JAXBException {
         if (isFileExists(fileName))
@@ -29,15 +29,16 @@ public class FileManager
 
     public boolean removeFile(String fileName)
     {
-        fileNames.remove(fileName);
-        Engine engineToRemove = fileNameToEngineMap.remove(fileName);
-//        if (engineToRemove != null)
-//        {
-//            String engineOwner = engineToRemove.getOwnerName();
-//            usernameToUserEnginesMap.get(engineOwner).remove(engineToRemove);
-//        }
-
-        return engineToRemove != null;
+        ListIterator<FileData> iterator = fileDataList.listIterator();
+        while (iterator.hasNext())
+        {
+            if (iterator.next().getFilename().equals(fileName))
+            {
+                iterator.remove();
+                break;
+            }
+        }
+        return fileNameToEngineMap.remove(fileName) != null;
     }
 
     public boolean isFileExists(String fileName)
@@ -51,23 +52,36 @@ public class FileManager
         return fileNameToEngineMap.get(fileName);
     }
 
-    public List<String> getListOfFilesNames(){
-        return fileNames;
+    public List<FileData> getFileDataListWithPerms(String username){
+        fileDataList.forEach(fileData ->
+        {
+            Engine engine = fileNameToEngineMap.get(fileData.getFilename());
+            Permission userPermission = engine.getUserPermission(username);
+            fileData.setUserPermission(userPermission);
+        });
+
+        return fileDataList;
     }
 
     private void addNameSorted(String fileName) {
         int index = binarySearchInsertionPoint(fileName);
-        fileNames.add(index, fileName);
+
+        Engine engine = fileNameToEngineMap.get(fileName);
+        int numOfCols = engine.getNumOfCols();
+        int numOfRows = engine.getNumOfRows();
+        String ownerName = engine.getOwnerName();
+
+        fileDataList.add(index, new FileData(fileName, ownerName, numOfCols, numOfRows));
     }
 
     private int binarySearchInsertionPoint(String fileName) {
         int low = 0;
-        int high = fileNames.size() - 1;
+        int high = fileDataList.size() - 1;
 
         while (low <= high)
         {
             int mid = low + (high - low) / 2;
-            int comparison = fileNames.get(mid).compareTo(fileName);
+            int comparison = fileDataList.get(mid).compareTo(fileName);
 
             if (comparison < 0)
                 low = mid + 1;

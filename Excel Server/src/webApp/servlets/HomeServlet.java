@@ -50,7 +50,7 @@ public class HomeServlet extends HttpServlet
         JsonObject jsonObject = new JsonObject();
 
         jsonObject.add("userNames", GSON_INSTANCE.toJsonTree(userManager.getUserNames()));
-        jsonObject.add("fileNames", GSON_INSTANCE.toJsonTree(fileManager.getListOfFilesNames()));
+        jsonObject.add("fileData", GSON_INSTANCE.toJsonTree(fileManager.getFileDataListWithPerms(sender)));
         jsonObject.add("permissionRequests", GSON_INSTANCE.toJsonTree(requestManager.getRequestsForUser(sender)));
         jsonObject.add("permissionRequestsForFile", GSON_INSTANCE.toJsonTree(requestManager.getRequestsForFile(fileForPermissionTable)));
         response.getWriter().println(GSON_INSTANCE.toJson(jsonObject));

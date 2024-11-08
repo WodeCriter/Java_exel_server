@@ -1,5 +1,6 @@
 package exel.userinterface.resources.app.home.items;
 
+import engine.util.FileData;
 import exel.eventsys.events.file.DeleteFileRequestedEvent;
 import exel.eventsys.events.file.FilePermissionRequestedEvent;
 import exel.eventsys.events.file.FileSelectedForOpeningEvent;
@@ -25,7 +26,7 @@ public class FilesListController extends ControllerWithEventBus
 {
     private HomeController homeController;
     @FXML
-    private ListView<String> filesList;
+    private ListView<FileData> filesList;
     @FXML
     private ContextMenu contextMenu;
     private Tooltip tooltip;
@@ -34,11 +35,14 @@ public class FilesListController extends ControllerWithEventBus
     private final ObjectProperty<String> selectedItemProperty = new SimpleObjectProperty<>();
 
     public void initialize() {
+        TooltipUtil.setUpTooltip(filesList, fileData -> "Owner: " + fileData.getOwnerName() + '\n'
+        + "Size: " + fileData.getNumOfCols() + 'x' + fileData.getNumOfRows() + '\n'
+        + "Permission: " + fileData.getUserPermission());
     }
 
     @FXML
     private void handleFileMouseClicked(MouseEvent event){
-        String selectedFile = filesList.getSelectionModel().getSelectedItem();
+        String selectedFile = filesList.getSelectionModel().getSelectedItem().getFilename();
         if (selectedFile == null || homeController == null)
             return;
 
@@ -55,7 +59,7 @@ public class FilesListController extends ControllerWithEventBus
 
     @FXML
     private void handleFileKeyPress(KeyEvent event) {
-        String selectedFile = filesList.getSelectionModel().getSelectedItem();
+        String selectedFile = filesList.getSelectionModel().getSelectedItem().getFilename();
         if (selectedFile == null)
             return;
 
@@ -72,7 +76,7 @@ public class FilesListController extends ControllerWithEventBus
 
     @FXML
     private void handleContextMenuOpenPicked(ActionEvent event) {
-        String selectedFile = filesList.getSelectionModel().getSelectedItem();
+        String selectedFile = filesList.getSelectionModel().getSelectedItem().getFilename();
         if (selectedFile == null)
             return;
 
@@ -81,7 +85,7 @@ public class FilesListController extends ControllerWithEventBus
 
     @FXML
     private void handleContextMenuDeletePicked(ActionEvent event){
-        String selectedFile = filesList.getSelectionModel().getSelectedItem();
+        String selectedFile = filesList.getSelectionModel().getSelectedItem().getFilename();
         if (selectedFile == null)
             return;
 
@@ -98,13 +102,13 @@ public class FilesListController extends ControllerWithEventBus
 
     @FXML
     private void handleFileReaderPermRequest(ActionEvent event){
-        String selectedFile = filesList.getSelectionModel().getSelectedItem();
+        String selectedFile = filesList.getSelectionModel().getSelectedItem().getFilename();
         eventBus.publish(new FilePermissionRequestedEvent("READER", selectedFile));
     }
 
     @FXML
     private void handleFileWriterPermRequest(ActionEvent event){
-        String selectedFile = filesList.getSelectionModel().getSelectedItem();
+        String selectedFile = filesList.getSelectionModel().getSelectedItem().getFilename();
         eventBus.publish(new FilePermissionRequestedEvent("WRITER", selectedFile));
     }
 
@@ -112,7 +116,7 @@ public class FilesListController extends ControllerWithEventBus
         return selectedItemProperty;
     }
 
-    public void updateFilesList(List<String> filesList) {
+    public void updateFilesList(List<FileData> filesList) {
         this.filesList.getItems().clear();
         this.filesList.getItems().addAll(filesList);
     }
