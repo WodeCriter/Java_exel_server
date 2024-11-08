@@ -475,16 +475,15 @@ public class IndexController extends ControllerWithEventBus
     }
 
     private void handleSheetDisplayEvent(SheetDisplayEvent sheetEvent) {
-        if (sheetEvent.shouldUpdateVersion())
-        {
+        if (sheetEvent.shouldUpdateVersion()) {
             int sheetVersion = sheetEvent.getSheet().getVersion();
-            for (int i = latestDisplayedVersion + 1; i <= sheetVersion; i++)
+            menuButtonSelectVersion.getItems().clear();
+            for (int i = 1; i <= sheetVersion; i++) {
                 addVersionMenuButton(i);
+            }
             latestDisplayedVersion = sheetVersion;
         }
     }
-
-    //todo: fix versioning
 
     private void addVersionMenuButton(int versionNum) {
         MenuItem versionItem = new MenuItem("Version " + versionNum);
