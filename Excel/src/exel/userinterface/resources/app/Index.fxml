@@ -89,25 +89,27 @@
                <top>
                   <VBox prefHeight="60.0" prefWidth="630.0" BorderPane.alignment="CENTER">
                      <children>
-                        <Label fx:id="labelFileLoaded" maxWidth="1.7976931348623157E308" text="Current file loaded : No file open">
+                        <HBox alignment="CENTER_LEFT">
                            <VBox.margin>
                               <Insets />
                            </VBox.margin>
-                           <graphic>
-                              <Circle fx:id="updatedSheetIndicator" fill="#1fff2f" radius="7.0" stroke="BLACK" strokeMiterLimit="30.0" strokeType="INSIDE" strokeWidth="0.0">
+                           <children>
+                              <Label fx:id="labelFileLoaded" maxWidth="1.7976931348623157E308" prefHeight="17.0" prefWidth="177.0" text="Current file loaded : No file open" />
+                              <Circle fx:id="updatedSheetIndicator" fill="#1fff2f" radius="7.0" stroke="BLACK" strokeLineCap="ROUND" strokeMiterLimit="30.0" strokeType="INSIDE" strokeWidth="0.0">
                                  <effect>
-                                    <InnerShadow height="21.86" radius="9.7" width="18.94">
+                                    <InnerShadow height="19.13" radius="9.0175" width="18.94">
                                        <color>
                                           <Color red="0.08696393668651581" green="0.28289473056793213" blue="0.03798123821616173" />
                                        </color>
                                     </InnerShadow>
                                  </effect>
+                                 <HBox.margin>
+                                    <Insets left="3.0" right="3.0" />
+                                 </HBox.margin>
                               </Circle>
-                           </graphic>
-                           <padding>
-                              <Insets left="5.0" right="30.0" />
-                           </padding>
-                        </Label>
+                              <Button fx:id="loadUpdatedSheetButton" disable="true" mnemonicParsing="false" onAction="#handleUpdateSheetButtonPressed" prefHeight="25.0" prefWidth="138.0" text="Load Updated Sheet" />
+                           </children>
+                        </HBox>
                         <HBox prefHeight="100.0" prefWidth="200.0">
                            <children>
                               <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="100.0" prefWidth="523.0">
@@ -129,7 +131,7 @@
                                     </GridPane>
                                     <HBox prefHeight="100.0" prefWidth="200.0">
                                        <children>
-                                          <TextField fx:id="textFiledOriginalVal" prefHeight="25.0" prefWidth="424.0" promptText="Enter Original Value for Cell" />
+                                          <TextField fx:id="textFiledOriginalVal" prefHeight="25.0" prefWidth="348.0" promptText="Enter Original Value for Cell" />
                                           <Button fx:id="buttonUpdateCell" mnemonicParsing="false" onAction="#updateCellButtonListener" text="Update cell" />
                                        </children>
                                        <padding>

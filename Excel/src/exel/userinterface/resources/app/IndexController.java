@@ -109,6 +109,8 @@ public class IndexController extends ControllerWithEventBus
     private ToggleGroup themeToggleGroup;
     @FXML
     private Circle updatedSheetIndicator;
+    @FXML
+    private Button loadUpdatedSheetButton;
 
 
     @FXML
@@ -242,7 +244,6 @@ public class IndexController extends ControllerWithEventBus
         {
             setUpDisplaySheet(eventBus);
             applyCurrentTheme(sheetContainer.getScene());
-
         }
         catch (Exception e)
         {
@@ -1081,12 +1082,6 @@ public class IndexController extends ControllerWithEventBus
         }
     }
 
-    public void setMostRecentSheetFromServer(ReadOnlySheet mostRecentSheet) {
-        mostRecentSheetFromServer = mostRecentSheet;
-        updatedSheetIndicator.setFill(Color.RED);
-        //show on screen that there's a more recent sheet.
-    }
-
     public void startDataRefresher() {
         refresher = new IndexRefresher("grades", this); //todo: replace "grades" with dynamic name
         timer = new Timer();
@@ -1099,5 +1094,23 @@ public class IndexController extends ControllerWithEventBus
             refresher.cancel();
             timer.cancel();
         }
+    }
+
+    public void setMostRecentSheetFromServer(ReadOnlySheet mostRecentSheet) {
+        mostRecentSheetFromServer = mostRecentSheet;
+        updatedSheetIndicator.setFill(Color.RED);
+        loadUpdatedSheetButton.setDisable(false);
+        //show on screen that there's a more recent sheet.
+    }
+
+    @FXML
+    private void handleUpdateSheetButtonPressed(ActionEvent event){
+        if (mostRecentSheetFromServer == null)
+            throw new RuntimeException();
+
+        updatedSheetIndicator.setFill(Color.GREEN);
+        loadUpdatedSheetButton.setDisable(true);
+        eventBus.publish(new SheetDisplayEvent(mostRecentSheetFromServer));
+        mostRecentSheetFromServer = null;
     }
 }
