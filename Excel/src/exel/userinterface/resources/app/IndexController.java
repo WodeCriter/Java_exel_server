@@ -484,6 +484,7 @@ public class IndexController extends ControllerWithEventBus
             int sheetVersion = sheetEvent.getSheet().getVersion();
             for (int i = latestDisplayedVersion + 1; i <= sheetVersion; i++)
                 addVersionMenuButton(i);
+            latestDisplayedVersion = sheetVersion;
         }
     }
 
@@ -491,7 +492,6 @@ public class IndexController extends ControllerWithEventBus
         MenuItem versionItem = new MenuItem("Version " + versionNum);
         versionItem.setOnAction(event -> handleVersionSelected(versionNum));
         menuButtonSelectVersion.getItems().add(versionItem);
-        latestDisplayedVersion = versionNum;
     }
 
     private void handleVersionSelected(int versionId) {
