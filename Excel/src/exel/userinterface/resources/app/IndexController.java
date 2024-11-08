@@ -14,7 +14,6 @@ import exel.eventsys.events.range.RangeSelectedEvent;
 import exel.eventsys.events.sheet.*;
 import exel.userinterface.resources.app.general.ControllerWithEventBus;
 import exel.userinterface.resources.app.general.FileHelper;
-import exel.userinterface.resources.app.home.HomeRefresher;
 import exel.userinterface.resources.app.popups.displaySheet.DisplaySheetController;
 import exel.userinterface.resources.app.popups.dynamicAnalsys.SliderInputDialogController;
 import exel.userinterface.resources.app.popups.dynamicAnalsys.SliderWindowController;
@@ -61,6 +60,9 @@ import java.util.Timer;
 
 public class IndexController extends ControllerWithEventBus
 {
+    private static final Color ON_MOST_UPDATED_SHEET = Color.web("#1fff2f");
+    private static final Color NOT_ON_MOST_UPDATED_SHEET = Color.RED;
+
     private ReadOnlyCell selectedCell;
     private boolean isSheetLoaded = false;
     private File currentFile;
@@ -71,9 +73,13 @@ public class IndexController extends ControllerWithEventBus
     private ReadOnlySheet mostRecentSheetFromServer = null;
     private IndexRefresher refresher;
     private Timer timer;
+    private int latestDisplayedVersion = 0;
 
     @FXML
     private AnchorPane sheetContainer;
+
+    @FXML
+    private Button updateCellButton;
 
     @FXML
     private CheckMenuItem cMenItemAnimations;
@@ -473,13 +479,19 @@ public class IndexController extends ControllerWithEventBus
     }
 
     private void handleSheetDisplayEvent(SheetDisplayEvent sheetEvent) {
-        addVersionMenuButton(sheetEvent.getSheet().getVersion());
+        if (sheetEvent.shouldUpdateVersion())
+        {
+            int sheetVersion = sheetEvent.getSheet().getVersion();
+            for (int i = latestDisplayedVersion + 1; i <= sheetVersion; i++)
+                addVersionMenuButton(i);
+        }
     }
 
     private void addVersionMenuButton(int versionNum) {
         MenuItem versionItem = new MenuItem("Version " + versionNum);
         versionItem.setOnAction(event -> handleVersionSelected(versionNum));
         menuButtonSelectVersion.getItems().add(versionItem);
+        latestDisplayedVersion = versionNum;
     }
 
     private void handleVersionSelected(int versionId) {
@@ -1098,8 +1110,9 @@ public class IndexController extends ControllerWithEventBus
 
     public void setMostRecentSheetFromServer(ReadOnlySheet mostRecentSheet) {
         mostRecentSheetFromServer = mostRecentSheet;
-        updatedSheetIndicator.setFill(Color.RED);
+        updatedSheetIndicator.setFill(NOT_ON_MOST_UPDATED_SHEET);
         loadUpdatedSheetButton.setDisable(false);
+        updateCellButton.setDisable(true);
         //show on screen that there's a more recent sheet.
     }
 
@@ -1108,8 +1121,9 @@ public class IndexController extends ControllerWithEventBus
         if (mostRecentSheetFromServer == null)
             throw new RuntimeException();
 
-        updatedSheetIndicator.setFill(Color.GREEN);
+        updatedSheetIndicator.setFill(ON_MOST_UPDATED_SHEET);
         loadUpdatedSheetButton.setDisable(true);
+        updateCellButton.setDisable(false);
         eventBus.publish(new SheetDisplayEvent(mostRecentSheetFromServer));
         mostRecentSheetFromServer = null;
     }
