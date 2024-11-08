@@ -7,17 +7,19 @@ import javafx.scene.input.MouseEvent;
 import javafx.util.Duration;
 import java.util.function.Function;
 
-public class TooltipUtil {
+public class TooltipUtil<T> extends Tooltip {
 
-    private static final Tooltip tooltip = new Tooltip();
+    //private static final Tooltip tooltip = new Tooltip();
+    private ListView<T> listView;
 
-    static {
-        // Set default tooltip delay settings
-        tooltip.setShowDelay(Duration.millis(600));
-        tooltip.setHideDelay(Duration.millis(100));
+    public TooltipUtil(ListView<T> listView, Function<T, String> tooltipTextProvider) {
+        this.listView = listView;
+        super.setShowDelay(Duration.millis(600));
+        super.setHideDelay(Duration.millis(100));
+        setUpTooltip(tooltipTextProvider, this);
     }
 
-    public static <T> void setUpTooltip(ListView<T> listView, Function<T, String> tooltipTextProvider) {
+    private void setUpTooltip(Function<T, String> tooltipTextProvider, Tooltip tooltip) {
         // Configure the ListView's cell factory to add tooltips
         listView.setCellFactory(lv -> {
             ListCell<T> cell = new ListCell<>() {
@@ -29,7 +31,8 @@ public class TooltipUtil {
                     setText(null);
                     setTooltip(null);
 
-                    if (!empty && item != null) {
+                    if (!empty && item != null)
+                    {
                         // Set cell text (you might want to customize this as needed)
                         setText(item.toString()); // Customize display text if needed
 
@@ -53,9 +56,10 @@ public class TooltipUtil {
         });
     }
 
-    private static <T> void showTooltip(MouseEvent event, T item, Function<T, String> tooltipTextProvider) {
-        tooltip.setText(tooltipTextProvider.apply(item)); // Set tooltip text based on the item
-        tooltip.show((ListView<?>) event.getSource(), event.getScreenX() + 10, event.getScreenY() + 10);
+    private <T> void showTooltip(MouseEvent event, T item, Function<T, String> tooltipTextProvider) {
+        this.setText(tooltipTextProvider.apply(item)); // Set tooltip text based on the item
+        ListCell<?> cell = (ListCell<?>) event.getSource();
+        this.show(cell.getListView(), event.getScreenX() + 10, event.getScreenY() + 10);
     }
 }
 

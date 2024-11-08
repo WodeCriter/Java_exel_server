@@ -23,6 +23,7 @@ public class RequestsListController extends ControllerWithEventBus
     private ListView<PermissionRequest> requestsList;
     @FXML
     private ContextMenu contextMenu;
+    private TooltipUtil<PermissionRequest> toolTip;
 
     @FXML
     public void initialize() {
@@ -30,7 +31,7 @@ public class RequestsListController extends ControllerWithEventBus
     }
 
     private void setUpTooltip() {
-        TooltipUtil.setUpTooltip(requestsList, request ->
+        toolTip = new TooltipUtil<>(requestsList, request ->
                 "For File: " + request.getFileName() + '\n' +
                         "Requested Permission: " + request.permission());
     }

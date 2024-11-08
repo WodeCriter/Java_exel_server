@@ -29,15 +29,16 @@ public class FilesListController extends ControllerWithEventBus
     private ListView<FileData> filesList;
     @FXML
     private ContextMenu contextMenu;
-    private Tooltip tooltip;
+    private TooltipUtil<FileData> tooltip;
 
     // Property to hold the selected item for communication with MainController
     private final ObjectProperty<String> selectedItemProperty = new SimpleObjectProperty<>();
 
     public void initialize() {
-        TooltipUtil.setUpTooltip(filesList, fileData -> "Owner: " + fileData.getOwnerName() + '\n'
-        + "Size: " + fileData.getNumOfCols() + 'x' + fileData.getNumOfRows() + '\n'
-        + "Permission: " + fileData.getUserPermission());
+        tooltip = new TooltipUtil<>(filesList, fileData ->
+                "Owner: " + fileData.getOwnerName() + '\n'
+                        + "Size: " + fileData.getNumOfCols() + 'x' + fileData.getNumOfRows() + '\n'
+                        + "Permission: " + fileData.getUserPermission());
     }
 
     @FXML

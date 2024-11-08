@@ -48,7 +48,7 @@ public class FileManager
 
     public Engine getEngine(String fileName){
         if (!isFileExists(fileName))
-            throw new RuntimeException("File does not exist");
+            return null;
         return fileNameToEngineMap.get(fileName);
     }
 

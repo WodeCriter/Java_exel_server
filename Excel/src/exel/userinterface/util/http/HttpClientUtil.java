@@ -40,10 +40,10 @@ public class HttpClientUtil {
                     activateWhenOk.accept(response);
                 else
                 {
-                    String message = response.body().string();
-                    Platform.runLater(() -> showAlert(String.valueOf(response.code()), message));
+//                    String message = response.body().string();
+//                    Platform.runLater(() -> showAlert(String.valueOf(response.code()), message));
+                    System.out.println(YELLOW + "Something went wrong: " + response.body().string() + RESET);
                 }
-                    //System.out.println(YELLOW + "Something went wrong: " + response.body().string() + RESET);
 
             }
         };

@@ -76,6 +76,8 @@ public class RequestManager
             return Collections.emptyList();
 
         Engine engine = fileManager.getEngine(fileName);
+        if (engine == null)
+            return Collections.emptyList();
         return engine.getAllRequestsEverMade().stream().toList();
     }
 }
