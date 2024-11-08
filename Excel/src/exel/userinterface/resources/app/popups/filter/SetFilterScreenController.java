@@ -2,7 +2,7 @@ package exel.userinterface.resources.app.popups.filter;
 
 import engine.imp.EngineImp;
 import exel.eventsys.events.sheet.FilterRequestedEvent;
-import exel.userinterface.resources.app.ControllerWithEventBus;
+import exel.userinterface.resources.app.general.ControllerWithEventBus;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;

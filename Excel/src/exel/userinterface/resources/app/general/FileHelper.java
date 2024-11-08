@@ -1,14 +1,11 @@
-package exel.userinterface.resources.app.file;
+package exel.userinterface.resources.app.general;
 
 import exel.userinterface.util.http.HttpClientUtil;
-import javafx.application.Platform;
 import javafx.stage.FileChooser;
 import javafx.stage.Window;
 import okhttp3.*;
-import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
-import java.io.IOException;
 
 import static utils.Constants.FILES;
 

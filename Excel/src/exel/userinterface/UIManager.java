@@ -1,11 +1,8 @@
 package exel.userinterface;
 
-import com.google.gson.GsonBuilder;
 import engine.api.Engine;
 import engine.spreadsheet.api.ReadOnlySheet;
 import engine.spreadsheet.cell.api.ReadOnlyCell;
-import engine.spreadsheet.imp.ReadOnlySheetImpAdapter;
-import engine.spreadsheet.imp.ReadOnlySheetImp;
 import engine.spreadsheet.range.ReadOnlyRange;
 import exel.eventsys.EventBus;
 import exel.eventsys.events.*;
@@ -15,26 +12,24 @@ import exel.eventsys.events.file.FilePermissionRequestedEvent;
 import exel.eventsys.events.file.FileSelectedForOpeningEvent;
 import exel.eventsys.events.range.*;
 import exel.eventsys.events.sheet.*;
-import exel.userinterface.resources.app.ControllerWithEventBus;
+import exel.userinterface.resources.app.general.ControllerWithEventBus;
 import exel.userinterface.resources.app.IndexController;
+import exel.userinterface.resources.app.general.SheetParser;
 import exel.userinterface.resources.app.home.HomeController;
 import exel.userinterface.resources.app.login.LoginController;
 import exel.userinterface.util.http.HttpClientUtil;
+import exel.userinterface.util.http.HttpRequestType;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
-import javafx.util.Builder;
 import javafx.util.Pair;
 import okhttp3.*;
-import com.google.gson.Gson;
 import org.jetbrains.annotations.NotNull;
 import utils.perms.PermissionRequest;
 
-import java.io.IOException;
 import java.util.List;
 
 import static utils.Constants.*;
@@ -95,20 +90,14 @@ public class UIManager {
                     .build()
                     .toString();
 
-            Request request = new Request.Builder()
-                    .url(finalURL)
-                    .put(RequestBody.create(null, new byte[0]))
-                    .build();
-
-            HttpClientUtil.runAsync(request, response ->
+            HttpClientUtil.runAsync(finalURL, HttpRequestType.PUT, response ->
             {
-                readOnlySheet = getSheetFromResponse(response);
+                readOnlySheet = SheetParser.getSheetFromResponse(response);
                 Platform.runLater(() -> eventBus.publish(new RangeCreatedEvent(
                         event.getRangeName(),
                         event.getTopLeftCord(),
                         event.getBottomRightCord())));
-            }
-            );
+            });
         }
         catch (Exception e)
         {
@@ -125,7 +114,7 @@ public class UIManager {
 
         HttpClientUtil.runAsync(finalURL, response ->
         {
-            readOnlySheet = getSheetFromResponse(response);
+            readOnlySheet = SheetParser.getSheetFromResponse(response);
             currSheetFileName = event.getFileName();
             Platform.runLater(() -> {
                 showSheetPage();
@@ -143,12 +132,7 @@ public class UIManager {
                 .build()
                 .toString();
 
-        Request request = new Request.Builder()
-                .url(finalURL)
-                .delete()
-                .build();
-
-        HttpClientUtil.runAsync(request, r -> homeController.updateData());
+        HttpClientUtil.runAsync(finalURL, HttpRequestType.DELETE, r -> homeController.updateData());
     }
 
     private void handleCellSelected(CellSelectedEvent event) {
@@ -166,14 +150,9 @@ public class UIManager {
                 .build()
                 .toString();
 
-        Request request = new Request.Builder()
-                .url(finalURL)
-                .put(RequestBody.create(null, new byte[0]))
-                .build();
-
-        HttpClientUtil.runAsync(request, response ->
+        HttpClientUtil.runAsync(finalURL, HttpRequestType.PUT, response ->
         {
-            readOnlySheet = getSheetFromResponse(response);
+            readOnlySheet = SheetParser.getSheetFromResponse(response);
             Platform.runLater(() -> eventBus.publish(new SheetDisplayEvent(readOnlySheet)));
         });
     }
@@ -191,14 +170,9 @@ public class UIManager {
                 .build()
                 .toString();
 
-        Request request = new Request.Builder()
-                .url(finalURL)
-                .delete()
-                .build();
-
-        HttpClientUtil.runAsync(request, response ->
+        HttpClientUtil.runAsync(finalURL, HttpRequestType.DELETE, response ->
                 {
-                    readOnlySheet = getSheetFromResponse(response);
+                    readOnlySheet = SheetParser.getSheetFromResponse(response);
                     Platform.runLater(() -> eventBus.publish(new DeletedRangeEvent(event.getRangeName())));
                 }
         );
@@ -209,7 +183,7 @@ public class UIManager {
         String finalURL = getSortURLFromEvent(event);
         HttpClientUtil.runAsync(finalURL, response ->
         {
-            ReadOnlySheet sortedSheet = getSheetFromResponse(response);
+            ReadOnlySheet sortedSheet = SheetParser.getSheetFromResponse(response);
             Platform.runLater(() -> eventBus.publish(new DisplaySheetPopupEvent(sortedSheet)));
         });
     }
@@ -228,14 +202,12 @@ public class UIManager {
         return builder.build().toString();
     }
 
-    //TODO: CHANGE
-
     private void handleFilterRequested(FilterRequestedEvent event)
     {
         Request request = getFilterRequestFromEvent(event);
         HttpClientUtil.runAsync(request, response ->
         {
-            ReadOnlySheet filteredSheet = getSheetFromResponse(response);
+            ReadOnlySheet filteredSheet = SheetParser.getSheetFromResponse(response);
             Platform.runLater(() -> eventBus.publish(new DisplaySheetPopupEvent(filteredSheet)));
         });
     }
@@ -270,7 +242,7 @@ public class UIManager {
 
             HttpClientUtil.runAsync(finalURL, response ->
                     {
-                        ReadOnlySheet versionSheet = getSheetFromResponse(response);
+                        ReadOnlySheet versionSheet = SheetParser.getSheetFromResponse(response);
                         Platform.runLater(() -> eventBus.publish(new DisplaySheetPopupEvent(versionSheet)));
                     }
             );
@@ -283,7 +255,6 @@ public class UIManager {
     }
 
     private void handleSheetResizeWidthEvent(SheetResizeWidthEvent event){
-        //ReadOnlySheet updatedSheet = engine.changeCellWidth(event.getWidth());
         String finalURL = HttpUrl
                 .parse(SET_CELL_WIDTH_REQUEST_PATH(currSheetFileName))
                 .newBuilder()
@@ -291,14 +262,9 @@ public class UIManager {
                 .build()
                 .toString();
 
-        Request request = new Request.Builder()
-                .url(finalURL)
-                .put(RequestBody.create(null, new byte[0]))
-                .build();
-
-        HttpClientUtil.runAsync(request, response ->
+        HttpClientUtil.runAsync(finalURL, HttpRequestType.PUT, response ->
         {
-            readOnlySheet = getSheetFromResponse(response);
+            readOnlySheet = SheetParser.getSheetFromResponse(response);
             Platform.runLater(() -> eventBus.publish(new SheetDisplayRefactorEvent(readOnlySheet)));
         });
     }
@@ -311,14 +277,9 @@ public class UIManager {
                 .build()
                 .toString();
 
-        Request request = new Request.Builder()
-                .url(finalURL)
-                .put(RequestBody.create(null, new byte[0]))
-                .build();
-
-        HttpClientUtil.runAsync(request, response ->
+        HttpClientUtil.runAsync(finalURL, HttpRequestType.PUT, response ->
         {
-            readOnlySheet = getSheetFromResponse(response);
+            readOnlySheet = SheetParser.getSheetFromResponse(response);
             Platform.runLater(() -> eventBus.publish(new SheetDisplayRefactorEvent(readOnlySheet)));
         });
     }
@@ -337,6 +298,97 @@ public class UIManager {
         homeController.setUsernameButtonText(username);
         homeController.startDataRefresher();
     }
+
+    private void handleFilePermissionRequestedEvent(FilePermissionRequestedEvent event){
+        String fileName = event.getFileName();
+        String permissionRequested = event.getPermission();
+        String finalURL = HttpUrl
+                .parse(FILES)
+                .newBuilder()
+                .addQueryParameter("fileName", fileName)
+                .addQueryParameter("permission", permissionRequested)
+                .build()
+                .toString();
+
+        HttpClientUtil.runAsync(finalURL, HttpRequestType.PUT, response -> {});
+    }
+
+    private void handleFilePermissionApprovedOrDenied(ApproveOrDenyRequestPickedEvent event){
+        PermissionRequest permRequest = event.getRequest();
+        boolean toApprove = event.isToApprove();
+        String finalURL = HttpUrl
+                .parse(FULL_SERVER_PATH + "/files/permissions") //todo: add to constants
+                .newBuilder()
+                .addQueryParameter("permissionRequest", GSON_INSTANCE.toJson(permRequest))
+                .addQueryParameter("toApprove", String.valueOf(toApprove))
+                .build()
+                .toString();
+
+        HttpClientUtil.runAsync(finalURL, HttpRequestType.PUT, response -> {});
+    }
+
+    //    //TODO: REDUNDANT?
+//    private void handleCreateNewSheet(CreateNewSheetEvent event) {
+//        // Call the engine to create a new sheet based on the event details
+//        readOnlySheet = engine.createSheet(event.getSheetName(), event.getRows(), event.getCols(), event.getWidth(), event.getHeight());
+//        indexController.refreshSheetPlane();
+//        eventBus.publish(new SheetCreatedEvent(
+//                readOnlySheet.getName(),
+//                readOnlySheet.getCellHeight(),
+//                readOnlySheet.getCellWidth(),
+//                readOnlySheet.getNumOfRows(),
+//                readOnlySheet.getNumOfCols()));
+//
+//
+//        eventBus.publish(new SheetDisplayEvent(readOnlySheet));
+//    }
+//
+//    //TODO: REDUNDANT
+//    private void handleLoadSheetFromPath(LoadSheetEvent event){
+//        try
+//        {
+//            readOnlySheet = engine.loadSheet(event.getFilePath());
+//            loadSheetHelper();
+//        }
+//        catch (Exception e)
+//        {
+//            e.printStackTrace();
+//            throw new RuntimeException(e.getMessage());
+//        }
+//    }
+//
+//    //TODO:  REDUNDANT?
+//    private void handleSaveSheet(SaveSheetEvent event){
+//        engine.saveXmlFile( event.getAbsolutePath() );
+//    }
+
+    private void loadSheetHelper()
+    {
+        indexController.refreshSheetPlane();
+        eventBus.publish(new SheetCreatedEvent(
+                readOnlySheet.getName(),
+                readOnlySheet.getCellHeight(),
+                readOnlySheet.getCellWidth(),
+                readOnlySheet.getNumOfRows(),
+                readOnlySheet.getNumOfCols()));
+
+        eventBus.publish(new SheetDisplayEvent(readOnlySheet));
+        for (ReadOnlyRange range : readOnlySheet.getRanges()){
+            eventBus.publish(new RangeCreatedEvent(range.getRangeName(),
+                    range.getTopLeftCord(),
+                    range.getBottomRightCord()));
+        }
+    }
+    private void handleCellDynamicValChange(CellDynamicValChange event){
+        //update slider
+    }
+
+    private void handleCellDynamicReturnToNormal(CellDynamicReturnToNormal event){
+        //
+    }
+
+    private void handleCellUpdateDynamicValInSheet(CellUpdateDynamicValInSheet event){}
+
 
     public void showLogin() {
         Pair<LoginController, Parent> result = loadFXML("/exel/userinterface/resources/app/login/login.fxml");
@@ -393,114 +445,4 @@ public class UIManager {
         // Displaying the contents of the stage
         primaryStage.show();
     }
-
-    private Gson getGsonForSheet(){
-        return new GsonBuilder()
-                .registerTypeAdapter(ReadOnlySheetImp.class, new ReadOnlySheetImpAdapter())
-                .create();
-    }
-
-    private ReadOnlySheet getSheetFromResponse(Response response) throws IOException{
-        return getGsonForSheet().fromJson(response.body().string(), ReadOnlySheetImp.class);
-    }
-
-    private void handleFilePermissionRequestedEvent(FilePermissionRequestedEvent event){
-        String fileName = event.getFileName();
-        String permissionRequested = event.getPermission();
-        String finalURL = HttpUrl
-                .parse(FILES)
-                .newBuilder()
-                .addQueryParameter("fileName", fileName)
-                .addQueryParameter("permission", permissionRequested)
-                .build()
-                .toString();
-
-        Request request = new Request.Builder()
-                .url(finalURL)
-                .put(RequestBody.create(null, new byte[0]))
-                .build();
-
-        HttpClientUtil.runAsync(request, response -> {});
-    }
-
-    private void handleFilePermissionApprovedOrDenied(ApproveOrDenyRequestPickedEvent event){
-        PermissionRequest permRequest = event.getRequest();
-        boolean toApprove = event.isToApprove();
-        String finalURL = HttpUrl
-                .parse(FULL_SERVER_PATH + "/files/permissions") //todo: add to constants
-                .newBuilder()
-                .addQueryParameter("permissionRequest", GSON_INSTANCE.toJson(permRequest))
-                .addQueryParameter("toApprove", String.valueOf(toApprove))
-                .build()
-                .toString();
-
-        Request request = new Request.Builder()
-                .url(finalURL)
-                .put(RequestBody.create(null, new byte[0]))
-                .build();
-
-        HttpClientUtil.runAsync(request, response -> {});
-    }
-
-    //    //TODO: REDUNDANT?
-//    private void handleCreateNewSheet(CreateNewSheetEvent event) {
-//        // Call the engine to create a new sheet based on the event details
-//        readOnlySheet = engine.createSheet(event.getSheetName(), event.getRows(), event.getCols(), event.getWidth(), event.getHeight());
-//        indexController.refreshSheetPlane();
-//        eventBus.publish(new SheetCreatedEvent(
-//                readOnlySheet.getName(),
-//                readOnlySheet.getCellHeight(),
-//                readOnlySheet.getCellWidth(),
-//                readOnlySheet.getNumOfRows(),
-//                readOnlySheet.getNumOfCols()));
-//
-//
-//        eventBus.publish(new SheetDisplayEvent(readOnlySheet));
-//    }
-//
-//    //TODO: REDUNDANT
-//    private void handleLoadSheetFromPath(LoadSheetEvent event){
-//        try
-//        {
-//            readOnlySheet = engine.loadSheet(event.getFilePath());
-//            loadSheetHelper();
-//        }
-//        catch (Exception e)
-//        {
-//            e.printStackTrace();
-//            throw new RuntimeException(e.getMessage());
-//        }
-//    }
-//
-//    //TODO:  REDUNDANT?
-//    private void handleSaveSheet(SaveSheetEvent event){
-//        engine.saveXmlFile( event.getAbsolutePath() );
-//    }
-    private void loadSheetHelper()
-    {
-        indexController.refreshSheetPlane();
-        eventBus.publish(new SheetCreatedEvent(
-                readOnlySheet.getName(),
-                readOnlySheet.getCellHeight(),
-                readOnlySheet.getCellWidth(),
-                readOnlySheet.getNumOfRows(),
-                readOnlySheet.getNumOfCols()));
-
-        eventBus.publish(new SheetDisplayEvent(readOnlySheet));
-        for (ReadOnlyRange range : readOnlySheet.getRanges()){
-            eventBus.publish(new RangeCreatedEvent(range.getRangeName(),
-                    range.getTopLeftCord(),
-                    range.getBottomRightCord()));
-        }
-    }
-
-    private void handleCellDynamicValChange(CellDynamicValChange event){
-        //update slider
-    }
-
-    private void handleCellDynamicReturnToNormal(CellDynamicReturnToNormal event){
-        //
-    }
-
-    private void handleCellUpdateDynamicValInSheet(CellUpdateDynamicValInSheet event){}
 }

@@ -1,7 +1,7 @@
 package exel.userinterface.resources.app.login;
 
 import exel.eventsys.events.LogInSuccessfulEvent;
-import exel.userinterface.resources.app.ControllerWithEventBus;
+import exel.userinterface.resources.app.general.ControllerWithEventBus;
 import exel.userinterface.util.http.HttpClientUtil;
 
 import javafx.application.Platform;
@@ -13,9 +13,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
 import okhttp3.*;
-import org.jetbrains.annotations.NotNull;
-
-import java.io.IOException;
 
 import static utils.Constants.LOGIN_PAGE;
 

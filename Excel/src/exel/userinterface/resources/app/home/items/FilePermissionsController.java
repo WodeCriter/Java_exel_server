@@ -1,14 +1,12 @@
 package exel.userinterface.resources.app.home.items;
 
-import exel.userinterface.resources.app.ControllerWithEventBus;
+import exel.userinterface.resources.app.general.ControllerWithEventBus;
 import exel.userinterface.resources.app.home.HomeController;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.TableView;
-import javafx.scene.control.cell.PropertyValueFactory;
-import utils.perms.Permission;
 import utils.perms.PermissionRequest;
 import javafx.scene.control.TableColumn;
 

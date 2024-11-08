@@ -22,6 +22,7 @@ public class IndexServlet extends HttpServlet
 {
     private static final String DATA_UPDATE_HEADER = "X-Data-Update-Available";
     private static int latestRequestNumber = 0;
+    private static String userResponsible;
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -39,30 +40,24 @@ public class IndexServlet extends HttpServlet
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response){
         String coordinate = request.getParameter("coordinate");
-
     }
 
     private void addAllIndexDataToResponse(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        response.setContentType("text/html;charset=UTF-8");
+        //response.setContentType("text/html;charset=UTF-8");
 
-//        UserManager userManager = ServletUtils.getUserManager(getServletContext());
-//        FileManager fileManager = ServletUtils.getFileManager(getServletContext());
-//        RequestManager requestManager = ServletUtils.getRequestManager(getServletContext());
-//        String sender = SessionUtils.getUsername(request);
-//        String fileForPermissionTable = request.getParameter("fileForPermissionTable");
-//        JsonObject jsonObject = new JsonObject();
-//
-//        jsonObject.add("userNames", GSON_INSTANCE.toJsonTree(userManager.getUserNames()));
-//        jsonObject.add("fileNames", GSON_INSTANCE.toJsonTree(fileManager.getListOfFilesNames()));
-//        jsonObject.add("permissionRequests", GSON_INSTANCE.toJsonTree(requestManager.getRequestsForUser(sender)));
-//        jsonObject.add("permissionRequestsForFile", GSON_INSTANCE.toJsonTree(requestManager.getRequestsForFile(fileForPermissionTable)));
-//        response.getWriter().println(GSON_INSTANCE.toJson(jsonObject));
+        FileManager fileManager = ServletUtils.getFileManager(getServletContext());
+        String fileName = request.getParameter("fileName");
+        String sender = SessionUtils.getUsername(request);
+
+        if (!userResponsible.equals(sender))
+            response.getWriter().println(GSON_INSTANCE.toJson(fileManager.getEngine(fileName).getSheet()));
 
         response.setHeader(DATA_UPDATE_HEADER, "true");
         response.setHeader("X-Latest-Number", String.valueOf(latestRequestNumber));
     }
 
-    static void increaseRequestNumber(){
+    static void increaseRequestNumber(String userResponsibleForUpdate){
         latestRequestNumber = (latestRequestNumber + 1) % MAX_VALUE;
+        userResponsible = userResponsibleForUpdate;
     }
 }

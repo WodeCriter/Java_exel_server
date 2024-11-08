@@ -111,7 +111,7 @@ public class SheetsServlet extends HttpServlet
                 default:
                     response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Unknown action for PUT: " + requestData.action);
             }
-            IndexServlet.increaseRequestNumber();
+            IndexServlet.increaseRequestNumber(sender);
         }
         else
             response.sendError(HttpServletResponse.SC_FORBIDDEN, "\"" + sender + "\" is not allowed to " + requestData.action);
@@ -136,7 +136,7 @@ public class SheetsServlet extends HttpServlet
                 if (requestData.engine.getUserPermission(sender).compareTo(Permission.WRITER) >= 0)
                 {
                     handleDeleteRange(requestData.engine, request, response);
-                    IndexServlet.increaseRequestNumber();
+                    IndexServlet.increaseRequestNumber(sender);
                 }
                 else
                     response.sendError(HttpServletResponse.SC_FORBIDDEN, "\"" + sender + "\" is not allowed to " + requestData.action);

@@ -12,7 +12,8 @@ import exel.eventsys.events.range.RangeCreatedEvent;
 import exel.eventsys.events.range.RangeDeleteEvent;
 import exel.eventsys.events.range.RangeSelectedEvent;
 import exel.eventsys.events.sheet.*;
-import exel.userinterface.resources.app.file.FileHelper;
+import exel.userinterface.resources.app.general.ControllerWithEventBus;
+import exel.userinterface.resources.app.general.FileHelper;
 import exel.userinterface.resources.app.popups.displaySheet.DisplaySheetController;
 import exel.userinterface.resources.app.popups.dynamicAnalsys.SliderInputDialogController;
 import exel.userinterface.resources.app.popups.dynamicAnalsys.SliderWindowController;
@@ -63,6 +64,7 @@ public class IndexController extends ControllerWithEventBus
     private boolean isDarkMode = false;
     private ContextMenu rangeDeleteMenu;
     private boolean isAnimationsEnabled = false;
+    private ReadOnlySheet mostRecentSheetFromServer = null;
 
     @FXML
     private AnchorPane sheetContainer;
@@ -1069,5 +1071,10 @@ public class IndexController extends ControllerWithEventBus
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public void setMostRecentSheetFromServer(ReadOnlySheet mostRecentSheet) {
+        mostRecentSheetFromServer = mostRecentSheet;
+        //show on screen that there's a more recent sheet.
     }
 }

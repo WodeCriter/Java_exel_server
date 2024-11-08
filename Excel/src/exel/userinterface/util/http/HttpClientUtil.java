@@ -1,11 +1,9 @@
 package exel.userinterface.util.http;
 
-import javafx.application.Platform;
 import okhttp3.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
-import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 public class HttpClientUtil {
@@ -16,6 +14,7 @@ public class HttpClientUtil {
                     .cookieJar(simpleCookieManager)
                     .followRedirects(false)
                     .build();
+    private final static RequestBody EMPTY_BODY = RequestBody.create(null, new byte[0]);
 
     private static final String YELLOW = "\u001B[33m";
     private static final String RESET = "\u001B[0m";
@@ -75,6 +74,28 @@ public class HttpClientUtil {
 
     public static void runAsync(String finalUrl, ThrowingConsumer<Response> activateWhenOk){
         runAsync(finalUrl, getGenericCallback(activateWhenOk));
+    }
+
+    public static void runAsync(String finalUrl, HttpRequestType requestType, ThrowingConsumer<Response> activateWhenOk){
+        Request.Builder builder = new Request.Builder().url(finalUrl);
+        Request request = null;
+
+        switch (requestType) {
+            case POST:
+                request = builder.post(EMPTY_BODY).build();
+                break;
+            case PUT:
+                request = builder.put(EMPTY_BODY).build();
+                break;
+            case DELETE:
+                request = builder.delete().build();
+                break;
+            case GET:
+            default:
+                request = builder.build();
+                break;
+        }
+        runAsync(request, getGenericCallback(activateWhenOk));
     }
 
     public static void runAsync(Request request, ThrowingConsumer<Response> activateWhenOk){

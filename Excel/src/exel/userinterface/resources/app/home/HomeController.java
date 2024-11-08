@@ -1,9 +1,8 @@
 package exel.userinterface.resources.app.home;
 
 import exel.eventsys.EventBus;
-import exel.eventsys.events.file.FileSelectedForOverview;
-import exel.userinterface.resources.app.ControllerWithEventBus;
-import exel.userinterface.resources.app.file.FileHelper;
+import exel.userinterface.resources.app.general.ControllerWithEventBus;
+import exel.userinterface.resources.app.general.FileHelper;
 import exel.userinterface.resources.app.home.items.FilePermissionsController;
 import exel.userinterface.resources.app.home.items.FilesListController;
 import exel.userinterface.resources.app.home.items.RequestsListController;

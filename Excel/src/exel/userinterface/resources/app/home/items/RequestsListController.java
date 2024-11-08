@@ -1,7 +1,7 @@
 package exel.userinterface.resources.app.home.items;
 
 import exel.eventsys.events.ApproveOrDenyRequestPickedEvent;
-import exel.userinterface.resources.app.ControllerWithEventBus;
+import exel.userinterface.resources.app.general.ControllerWithEventBus;
 import exel.userinterface.resources.app.home.HomeController;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -12,7 +12,6 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.util.Duration;
-import utils.perms.Permission;
 import utils.perms.PermissionRequest;
 
 import java.util.List;

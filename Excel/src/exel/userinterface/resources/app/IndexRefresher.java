@@ -1,18 +1,28 @@
 package exel.userinterface.resources.app;
 
+import engine.spreadsheet.api.ReadOnlySheet;
+import exel.eventsys.events.sheet.TheresUpdateToSheetEvent;
+import exel.userinterface.resources.app.general.ControllerWithEventBus;
+import exel.userinterface.resources.app.general.SheetParser;
 import exel.userinterface.util.http.HttpClientUtil;
-import javafx.application.Platform;
 import okhttp3.HttpUrl;
-import okhttp3.ResponseBody;
+import okhttp3.Response;
 
+import java.io.IOException;
 import java.util.TimerTask;
 
 import static utils.Constants.FULL_SERVER_PATH;
-import static utils.Constants.HOME_PAGE;
 
 public class IndexRefresher extends TimerTask
 {
     private int requestNumber;
+    private String currentlyEditingFileName;
+    private IndexController controller;
+
+    public IndexRefresher(String currentlyEditingFileName, IndexController controller) {
+        this.currentlyEditingFileName = currentlyEditingFileName;
+        this.controller = controller;
+    }
 
     @Override
     public void run() {
@@ -20,7 +30,7 @@ public class IndexRefresher extends TimerTask
                 .parse(FULL_SERVER_PATH + "/index") //todo: add constant
                 .newBuilder()
                 .addQueryParameter("requestNumber", String.valueOf(requestNumber))
-                //.addQueryParameter("fileForPermissionTable", fileForPermissionTable)
+                .addQueryParameter("fileName", currentlyEditingFileName)
                 .build()
                 .toString();
 
@@ -28,13 +38,16 @@ public class IndexRefresher extends TimerTask
         {
             if ("true".equals(response.header("X-Data-Update-Available")))
             {
-                Platform.runLater(() -> updateSheetFromJson(response.body()));
+                notifyUserIfTheresUpdateToSheet(response);
                 requestNumber = Integer.parseInt(response.header("X-Latest-Number"));
             }
         });
     }
 
-    private void updateSheetFromJson(ResponseBody body) {
-        //send event so that it will appear on screen that there is an updated sheet
+    private void notifyUserIfTheresUpdateToSheet(Response response) throws IOException {
+        ReadOnlySheet mostRecentSheet = SheetParser.getSheetFromResponse(response);
+        if (mostRecentSheet != null)
+            controller.setMostRecentSheetFromServer(mostRecentSheet);
+
     }
 }

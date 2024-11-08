@@ -11,7 +11,7 @@ import exel.eventsys.events.cell.DisplaySelectedCellEvent;
 import exel.eventsys.events.sheet.SheetCreatedEvent;
 import exel.eventsys.events.sheet.SheetDisplayEvent;
 import exel.eventsys.events.sheet.SheetDisplayRefactorEvent;
-import exel.userinterface.resources.app.ControllerWithEventBus;
+import exel.userinterface.resources.app.general.ControllerWithEventBus;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
