@@ -4,6 +4,7 @@ package exel.userinterface.resources.app;
 import engine.spreadsheet.api.ReadOnlySheet;
 import engine.spreadsheet.cell.api.ReadOnlyCell;
 import exel.eventsys.events.*;
+import exel.eventsys.events.cell.CellBeginDynamicChange;
 import exel.eventsys.events.cell.CellStyleUpdateEvent;
 import exel.eventsys.events.cell.CellUpdateEvent;
 import exel.eventsys.events.cell.DisplaySelectedCellEvent;
@@ -488,6 +489,8 @@ public class IndexController extends ControllerWithEventBus
         }
     }
 
+    //todo: fix versioning
+
     private void addVersionMenuButton(int versionNum) {
         MenuItem versionItem = new MenuItem("Version " + versionNum);
         versionItem.setOnAction(event -> handleVersionSelected(versionNum));
@@ -828,14 +831,6 @@ public class IndexController extends ControllerWithEventBus
     }
 
 
-
-
-
-
-
-
-
-
     @FXML
     public void newFileEventListener(ActionEvent event) {
         try
@@ -1078,6 +1073,7 @@ public class IndexController extends ControllerWithEventBus
                     sliderStage.setScene(new Scene(sliderLoader.load()));
 
                     // Get the controller
+                    eventBus.publish(new CellBeginDynamicChange(selectedCell.getCoordinate()));
                     SliderWindowController sliderController = sliderLoader.getController();
                     sliderController.initializeSlider(rangeData.get("min"), rangeData.get("max"), rangeData.get("step"));
                     sliderController.setStage(sliderStage);

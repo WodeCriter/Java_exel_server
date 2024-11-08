@@ -5,6 +5,7 @@ import engine.imp.EngineImp;
 import exel.eventsys.EventBus;
 import exel.userinterface.UIManager;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.stage.Stage;
 
 public class Main extends Application {
@@ -17,6 +18,11 @@ public class Main extends Application {
             UIManager ui = new UIManager(null, eventBus, primaryStage); //todo: delete null
             ui.showLogin();
 
+            primaryStage.setOnCloseRequest(event -> {
+                // Stop any background tasks
+                ui.stopAllBackgroundTasks();
+                Platform.exit();
+            });
         } catch (Exception e) {
             e.printStackTrace();
         }

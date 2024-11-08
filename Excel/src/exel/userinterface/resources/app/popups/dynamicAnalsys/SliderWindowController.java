@@ -1,6 +1,7 @@
 package exel.userinterface.resources.app.popups.dynamicAnalsys;
 
 
+import exel.eventsys.EventBus;
 import exel.eventsys.events.cell.CellDynamicReturnToNormal;
 import exel.eventsys.events.cell.CellDynamicValChange;
 import exel.eventsys.events.cell.CellUpdateDynamicValInSheet;
@@ -24,6 +25,12 @@ public class SliderWindowController extends ControllerWithEventBus {
     @FXML
     private void initialize() {
         // Listener for slider value changes
+
+    }
+
+    @Override
+    public void setEventBus(EventBus eventBus) {
+        this.eventBus = eventBus;
         slider.valueProperty().addListener((observable, oldValue, newValue) -> {
             double value = Math.round(newValue.doubleValue() / stepSize) * stepSize;
             valueLabel.setText("Current Value: " + value);

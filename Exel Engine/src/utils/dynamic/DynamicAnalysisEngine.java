@@ -1,9 +1,11 @@
 package utils.dynamic;
 
+import engine.spreadsheet.api.ReadOnlySheet;
+
 public interface DynamicAnalysisEngine
 {
     void pickCellForDynamicAnalysis(String coordinate);
-    void changeCellValueForDynamicAnalysis(String newValue);
+    ReadOnlySheet changeCellValueForDynamicAnalysis(String newValue);
     void saveSheetAfterDynamicAnalysis();
     void returnSheetBackAfterDynamicAnalysis();
 }

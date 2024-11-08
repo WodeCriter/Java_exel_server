@@ -111,10 +111,11 @@ public class EngineImp implements Engine
         dynamicAnalysisHelper = new DynamicAnalysis(pickedCell, currentSheet);
     }
 
-    public void changeCellValueForDynamicAnalysis(String newValue){
+    public ReadOnlySheet changeCellValueForDynamicAnalysis(String newValue){
         if (dynamicAnalysisHelper == null)
             throw new IllegalArgumentException("Illegal call. Need to pick cell first.");
         dynamicAnalysisHelper.updateCellsValuesForAnalyzing(newValue);
+        return new ReadOnlySheetImp(currentSheet);
     }
 
     public void saveSheetAfterDynamicAnalysis(){
