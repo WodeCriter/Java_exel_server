@@ -31,7 +31,7 @@ import utils.perms.PermissionRequest;
 
 import java.util.List;
 
-import static exel.userinterface.resources.app.general.SheetParser.getSheetFromResponse;
+import static exel.userinterface.util.SheetParser.getSheetFromResponse;
 import static utils.Constants.*;
 
 public class UIManager {
@@ -483,8 +483,11 @@ public class UIManager {
                 .build()
                 .toString();
 
-        HttpClientUtil.runAsync(finalURL, HttpRequestType.PUT,
-                response -> eventBus.publish(new SheetDisplayEvent(readOnlySheet))); //todo: check why it still changes the sheet
+        HttpClientUtil.runAsync(finalURL, HttpRequestType.PUT, response ->
+                {
+                    readOnlySheet = getSheetFromResponse(response);
+                    eventBus.publish(new SheetDisplayEvent(readOnlySheet));
+                }); //todo: check why it still changes the sheet
     }
 
     public void stopAllBackgroundTasks() {

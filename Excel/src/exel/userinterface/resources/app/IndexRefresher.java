@@ -1,7 +1,7 @@
 package exel.userinterface.resources.app;
 
 import engine.spreadsheet.api.ReadOnlySheet;
-import exel.userinterface.resources.app.general.SheetParser;
+import exel.userinterface.util.SheetParser;
 import exel.userinterface.util.http.HttpClientUtil;
 import okhttp3.HttpUrl;
 import okhttp3.Response;

@@ -1,4 +1,4 @@
-package exel.userinterface.resources.app.general;
+package exel.userinterface.util;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

@@ -1,7 +1,9 @@
 package exel.userinterface.util.http;
 
+import javafx.application.Platform;
 import okhttp3.*;
 import org.jetbrains.annotations.NotNull;
+import static exel.userinterface.util.ScreenUtils.showAlert;
 
 import java.io.IOException;
 import java.util.function.Consumer;
@@ -38,6 +40,7 @@ public class HttpClientUtil {
                     activateWhenOk.accept(response);
                 else
                     System.out.println(YELLOW + "Something went wrong: " + response.body().string() + RESET);
+                    //Platform.runLater(()->showAlert(String.valueOf(response.code()), response.message()));
             }
         };
     }

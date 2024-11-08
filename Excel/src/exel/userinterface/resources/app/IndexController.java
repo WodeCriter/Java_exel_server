@@ -59,6 +59,8 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Timer;
 
+import static exel.userinterface.util.ScreenUtils.showAlert;
+
 public class IndexController extends ControllerWithEventBus
 {
     private static final Color ON_MOST_UPDATED_SHEET = Color.web("#1fff2f");
@@ -316,13 +318,6 @@ public class IndexController extends ControllerWithEventBus
         {
             showAlert("Failed to update cell", e.getMessage());
         }
-    }
-
-    private void showAlert(String header, String content) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setHeaderText(header);
-        alert.setContentText(content);
-        alert.showAndWait();
     }
 
     @FXML
