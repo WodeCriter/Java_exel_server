@@ -486,7 +486,18 @@ public class UIManager {
         HttpClientUtil.runAsync(finalURL, HttpRequestType.PUT, response ->
                 {
                     readOnlySheet = getSheetFromResponse(response);
-                    eventBus.publish(new SheetDisplayEvent(readOnlySheet));
+                    Platform.runLater(() ->{
+                                indexController.refreshSheetPlane();
+                        eventBus.publish(new SheetCreatedEvent(
+                                readOnlySheet.getName(),
+                                readOnlySheet.getCellHeight(),
+                                readOnlySheet.getCellWidth(),
+                                readOnlySheet.getNumOfRows(),
+                                readOnlySheet.getNumOfCols()));
+
+                        eventBus.publish(new SheetDisplayEvent(readOnlySheet));
+                    });
+
                 }); //todo: check why it still changes the sheet
     }
 
