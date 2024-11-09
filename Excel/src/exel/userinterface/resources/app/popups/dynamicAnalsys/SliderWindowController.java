@@ -14,6 +14,7 @@ import javafx.stage.Stage;
 import javafx.event.ActionEvent;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -36,6 +37,7 @@ public class SliderWindowController extends ControllerWithEventBus {
     private void initialize() {
         cellToSliderMap = new HashMap<>();
         cellToLabelMap = new HashMap<>();
+        //cells = new HashSet<>();
     }
 
     @Override

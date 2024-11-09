@@ -32,7 +32,7 @@ public class EngineImp implements Engine
 {
     private Sheet currentSheet;
     private ReadOnlySheet readOnlyCurrentSheet;
-    private Map<String, DynamicAnalysis> dynamicAnalysisHelper;
+    private Map<String, DynamicAnalysis> dynamicAnalysisHelper = new ConcurrentHashMap<>();
 
     private final String engineName;
     private final String ownerName;
@@ -134,7 +134,7 @@ public class EngineImp implements Engine
     }
 
     public ReadOnlySheet returnSheetBackAfterDynamicAnalysis(){
-        dynamicAnalysisHelper = null;
+        dynamicAnalysisHelper.clear();
         return readOnlyCurrentSheet;
     }
 

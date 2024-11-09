@@ -1031,9 +1031,10 @@ public class IndexController extends ControllerWithEventBus
 
     @FXML
     public void handleDynamicAnalysis(ActionEvent event) {
-        if (selectedCell == null){
+        if (selectedCell == null) {
             return;
         }
+
         try {
             // Load the range input dialog FXML
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/exel/userinterface/resources/app/popups/dynamicAnalsys/SliderInputDialog.fxml"));
@@ -1047,6 +1048,8 @@ public class IndexController extends ControllerWithEventBus
 
             // Get the controller
             SliderInputDialogController controller = loader.getController();
+
+
             // Simplify the result converter by checking the ButtonData
             dialog.setResultConverter(dialogButton -> {
                 if (dialogButton != null && dialogButton.getButtonData() == ButtonBar.ButtonData.OK_DONE) {
@@ -1057,6 +1060,9 @@ public class IndexController extends ControllerWithEventBus
 
             // Show the dialog and wait for the result
             Optional<Map<String, Double>> result = dialog.showAndWait();
+            // Initialize and populate pickedCells
+            Set<String> pickedCells = controller.getMoreCells();
+            pickedCells.add(selectedCell.getCoordinate());
 
             result.ifPresent(rangeData -> {
                 // Open the slider window
@@ -1066,15 +1072,14 @@ public class IndexController extends ControllerWithEventBus
                     sliderStage.setTitle("Adjust Value");
                     sliderStage.setScene(new Scene(sliderLoader.load()));
 
-                    Set<String> pickedCells = controller.getMoreCells();
-                    pickedCells.add(selectedCell.getCoordinate());
-
-                    // Get the controller
+                    // Publish dynamic change event for the cells
                     eventBus.publish(new CellBeginDynamicChange(pickedCells));
+
+                    // Get the SliderWindowController and set properties
                     SliderWindowController sliderController = sliderLoader.getController();
+                    sliderController.setCells(pickedCells);
                     sliderController.initializeSlider(rangeData.get("min"), rangeData.get("max"), rangeData.get("step"));
                     sliderController.setStage(sliderStage);
-                    sliderController.setCells(pickedCells);
                     sliderController.setEventBus(eventBus);
 
                     sliderStage.show();
@@ -1086,6 +1091,7 @@ public class IndexController extends ControllerWithEventBus
             e.printStackTrace();
         }
     }
+
 
     public void startDataRefresher(String currentlyEditingFileName) {
         refresher = new IndexRefresher(currentlyEditingFileName, this::setMostRecentSheetFromServer);

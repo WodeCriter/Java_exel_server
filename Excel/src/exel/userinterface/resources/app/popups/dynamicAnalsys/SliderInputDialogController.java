@@ -24,6 +24,7 @@ public class SliderInputDialogController {
 
     @FXML
     private void initialize() {
+        moreCells = new HashSet<>();
         // Retrieve the ButtonType instances from the DialogPane
         for (ButtonType bt : dialogPane.getButtonTypes()) {
             if (bt.getButtonData() == ButtonBar.ButtonData.OK_DONE && "Confirm".equals(bt.getText())) {
