@@ -27,6 +27,9 @@ public class DisplaySheetController {
     private Label labalCellVersion;
 
     @FXML
+    private Label labelEditor;
+
+    @FXML
     private AnchorPane sheetContainer;
 
     private ReadOnlySheet sheetData;
@@ -117,6 +120,6 @@ public class DisplaySheetController {
     }
 
     private void setCellEditorName(String editorName) {
-        //todo: add label for editor and set text here
+        labelEditor.setText("Editor: " + editorName);
     }
 }

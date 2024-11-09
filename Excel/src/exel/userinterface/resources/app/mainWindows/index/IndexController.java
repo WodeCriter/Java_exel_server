@@ -106,6 +106,9 @@ public class IndexController extends ControllerWithEventBus
     private Label labelCellVersion;
 
     @FXML
+    private Label labelEditorName;
+
+    @FXML
     private TextField textFiledOriginalVal;
 
     @FXML
@@ -292,8 +295,9 @@ public class IndexController extends ControllerWithEventBus
     private void handleDisplaySelectedCell(DisplaySelectedCellEvent event) {
         this.selectedCell = event.getCell();
         labelCoordinate.setText("Cell: " + selectedCell.getCoordinate());
-        labelOriginalVal.setText("original value:" + selectedCell.getOriginalValue());
-        labelCellVersion.setText("Cell version:" + String.valueOf(selectedCell.getVersion()));
+        labelOriginalVal.setText("original value: " + selectedCell.getOriginalValue());
+        labelCellVersion.setText("Cell version:" + selectedCell.getVersion());
+        labelEditorName.setText("Last Edited By: " + selectedCell.getEditorName());
         textFiledOriginalVal.setText(selectedCell.getOriginalValue());
     }
 
