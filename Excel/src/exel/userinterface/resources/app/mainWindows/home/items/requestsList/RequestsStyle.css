@@ -1,0 +1,6 @@
+.request-item:hover{
+    -fx-background-color: lightblue;
+}
+.request-item:selected{
+    -fx-background-color: #0095c7;
+}

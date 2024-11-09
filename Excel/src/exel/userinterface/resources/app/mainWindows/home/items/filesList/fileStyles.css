@@ -1,0 +1,35 @@
+/* Reader permission color */
+.reader-item {
+    -fx-background-color: lightblue;
+    -fx-text-fill: black; /* Optional: set text color */
+}
+.reader-item:hover {
+    -fx-background-color: #00eaff;
+}
+.reader-item:selected {
+    -fx-background-color: #0040ff;
+}
+
+/* Writer permission color */
+.writer-item {
+    -fx-background-color: lightgreen;
+    -fx-text-fill: black; /* Optional: set text color */
+}
+.writer-item:hover {
+    -fx-background-color: rgba(0, 255, 34, 0.8);
+}
+.writer-item:selected {
+    -fx-background-color: rgba(1, 78, 13, 0.75);
+}
+
+/* Owner permission color */
+.owner-item {
+    -fx-background-color: #f4db67;
+    -fx-text-fill: black; /* Optional: set text color */
+}
+.owner-item:hover {
+    -fx-background-color: rgba(251, 206, 0, 0.82);
+}
+.owner-item:selected {
+    -fx-background-color: rgb(127, 127, 2);
+}

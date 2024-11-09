@@ -1,8 +1,9 @@
-package exel.userinterface.resources.app.mainWindows.home.items;
+package exel.userinterface.resources.app.mainWindows.home.items.requestsList;
 
 import exel.eventsys.events.ApproveOrDenyRequestPickedEvent;
 import exel.userinterface.resources.app.general.ControllerWithEventBus;
 import exel.userinterface.resources.app.mainWindows.home.HomeController;
+import exel.userinterface.resources.app.mainWindows.home.items.TooltipUtil;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.ContextMenu;
@@ -28,9 +29,10 @@ public class RequestsListController extends ControllerWithEventBus
     }
 
     private void setUpTooltip() {
-        toolTip = new TooltipUtil<>(requestsList, request ->
-                "For File: " + request.getFileName() + '\n' +
-                        "Requested Permission: " + request.permission());
+//        toolTip = new TooltipUtil<>(requestsList, request ->
+//                "For File: " + request.getFileName() + '\n' +
+//                        "Requested Permission: " + request.permission(),
+//                request -> "request-item");
     }
 
     public void setHomeController(HomeController homeController) {

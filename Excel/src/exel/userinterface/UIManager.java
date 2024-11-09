@@ -312,7 +312,7 @@ public class UIManager {
                 .build()
                 .toString();
 
-        HttpClientUtil.runAsync(finalURL, HttpRequestType.PUT, response -> {});
+        HttpClientUtil.runAsync(finalURL, HttpRequestType.PUT, response -> homeController.updateData());
     }
 
     private void handleFilePermissionApprovedOrDenied(ApproveOrDenyRequestPickedEvent event){
@@ -326,7 +326,7 @@ public class UIManager {
                 .build()
                 .toString();
 
-        HttpClientUtil.runAsync(finalURL, HttpRequestType.PUT, response -> {});
+        HttpClientUtil.runAsync(finalURL, HttpRequestType.PUT, response -> homeController.updateData());
     }
 
     //    //TODO: REDUNDANT?

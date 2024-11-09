@@ -54,7 +54,8 @@ public class FileData
         return filename.equals(obj.filename)
                 && ownerName.equals(obj.ownerName)
                 && numOfCols == obj.numOfCols
-                && numOfRows == obj.numOfRows;
+                && numOfRows == obj.numOfRows
+                && userPermission.equals(obj.userPermission);
     }
 
     public int compareTo(String fileName) {

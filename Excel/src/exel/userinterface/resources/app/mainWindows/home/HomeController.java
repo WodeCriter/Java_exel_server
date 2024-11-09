@@ -4,9 +4,9 @@ import engine.util.FileData;
 import exel.eventsys.EventBus;
 import exel.userinterface.resources.app.general.ControllerWithEventBus;
 import exel.userinterface.resources.app.general.FileHelper;
-import exel.userinterface.resources.app.mainWindows.home.items.FilePermissionsController;
-import exel.userinterface.resources.app.mainWindows.home.items.FilesListController;
-import exel.userinterface.resources.app.mainWindows.home.items.RequestsListController;
+import exel.userinterface.resources.app.mainWindows.home.items.filePermissions.FilePermissionsController;
+import exel.userinterface.resources.app.mainWindows.home.items.filesList.FilesListController;
+import exel.userinterface.resources.app.mainWindows.home.items.requestsList.RequestsListController;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -23,9 +23,9 @@ import java.util.*;
 
 public class HomeController extends ControllerWithEventBus
 {
-    private static final String FILES_PATH = "/exel/userinterface/resources/app/mainWindows/home/items/FilesList.fxml";
-    private static final String REQUESTS_PATH = "/exel/userinterface/resources/app/mainWindows/home/items/RequestsList.fxml";
-    private static final String PERMISSIONS_TABLE_PATH = "/exel/userinterface/resources/app/mainWindows/home/items/filePermissionsTable.fxml";
+    private static final String FILES_PATH = "/exel/userinterface/resources/app/mainWindows/home/items/filesList/FilesList.fxml";
+    private static final String REQUESTS_PATH = "/exel/userinterface/resources/app/mainWindows/home/items/requestsList/RequestsList.fxml";
+    private static final String PERMISSIONS_TABLE_PATH = "/exel/userinterface/resources/app/mainWindows/home/items/filePermissions/filePermissionsTable.fxml";
 
     private List<String> activeUsers;
     private List<FileData> savedFiles;

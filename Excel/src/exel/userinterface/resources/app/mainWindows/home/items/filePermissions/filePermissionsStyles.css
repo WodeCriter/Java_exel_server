@@ -1,0 +1,22 @@
+/* Style for rows with accepted status */
+.accepted-row {
+    -fx-background-color: lightgreen;
+    -fx-text-fill: black; /* Optional: Set text color */
+}
+
+/* Style for rows with denied status */
+.denied-row {
+    -fx-background-color: lightcoral;
+    -fx-text-fill: black; /* Optional: Set text color */
+}
+
+/* Style for rows with pending status */
+.pending-row {
+    -fx-background-color: lightyellow;
+    -fx-text-fill: black; /* Optional: Set text color */
+}
+
+/*!* Optional: Add hover effect for better visual feedback *!*/
+/*.table-row-cell:hover {*/
+/*    -fx-background-color: lightblue;*/
+/*}*/

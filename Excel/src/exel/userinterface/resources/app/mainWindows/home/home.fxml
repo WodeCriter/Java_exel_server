@@ -51,11 +51,11 @@
                      <children>
                         <AnchorPane fx:id="filesListContainer" prefHeight="165.0" prefWidth="540.0">
                            <children>
-                               <fx:include source="items/FilesList.fxml" />
+                               <fx:include source="items/filesList/FilesList.fxml" />
                            </children></AnchorPane>
                         <AnchorPane fx:id="permissionsTableContainer" prefHeight="200.0" prefWidth="200.0">
                            <children>
-                               <fx:include source="items/filePermissionsTable.fxml" />
+                               <fx:include source="items/filePermissions/filePermissionsTable.fxml" />
                            </children></AnchorPane>
                      </children>
                   </VBox>
@@ -66,7 +66,7 @@
                         <Label text="Pending Requests" />
                         <AnchorPane fx:id="requestsListContainer" prefHeight="334.0" prefWidth="100.0">
                            <children>
-                              <fx:include source="items/RequestsList.fxml" />
+                              <fx:include source="items/requestsList/RequestsList.fxml" />
                            </children></AnchorPane>
                      </children>
                   </VBox>

@@ -1,4 +1,4 @@
-package exel.userinterface.resources.app.mainWindows.home.items;
+package exel.userinterface.resources.app.mainWindows.home.items.filesList;
 
 import engine.util.FileData;
 import exel.eventsys.events.file.DeleteFileRequestedEvent;
@@ -6,11 +6,13 @@ import exel.eventsys.events.file.FilePermissionRequestedEvent;
 import exel.eventsys.events.file.FileSelectedForOpeningEvent;
 import exel.userinterface.resources.app.general.ControllerWithEventBus;
 import exel.userinterface.resources.app.mainWindows.home.HomeController;
+import exel.userinterface.resources.app.mainWindows.home.items.TooltipUtil;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.ContextMenu;
+import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
@@ -31,10 +33,35 @@ public class FilesListController extends ControllerWithEventBus
     private final ObjectProperty<String> selectedItemProperty = new SimpleObjectProperty<>();
 
     public void initialize() {
-        tooltip = new TooltipUtil<>(filesList, fileData ->
-                "Owner: " + fileData.getOwnerName() + '\n'
-                        + "Size: " + fileData.getNumOfCols() + 'x' + fileData.getNumOfRows() + '\n'
-                        + "Permission: " + fileData.getUserPermission());
+        setUpTooltipAndColors();
+        //setUpFilesListListener();
+    }
+
+    private void setUpFilesListListener() {
+        filesList.focusedProperty().addListener((obs, wasFocused, isNowFocused) -> {
+            if (!isNowFocused) {
+                filesList.getSelectionModel().clearSelection();
+            }
+        });
+    }
+
+    private void setUpTooltipAndColors() {
+        new TooltipUtil<>(filesList,
+                fileData -> "Owner: " + fileData.getOwnerName() + '\n' +
+                        "Size: " + fileData.getNumOfCols() + 'x' + fileData.getNumOfRows() + '\n' +
+                        "Permission: " + fileData.getUserPermission(),
+
+                fileData -> { // Style based on user permission
+                    switch (fileData.getUserPermission()) {
+                        case READER:
+                            return "reader-item";
+                        case WRITER:
+                            return "writer-item";
+                        case OWNER:
+                            return "owner-item";
+                        default: return ""; // No style for NONE
+                    }
+                });
     }
 
     @FXML

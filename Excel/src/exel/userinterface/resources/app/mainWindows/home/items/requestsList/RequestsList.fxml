@@ -4,7 +4,11 @@
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.MenuItem?>
 
-<ListView fx:id="requestsList" onMouseClicked="#handleRequestMouseClicked" prefHeight="334.0" prefWidth="120.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="exel.userinterface.resources.app.mainWindows.home.items.RequestsListController">
+<?import java.net.URL?>
+<ListView fx:id="requestsList" onMouseClicked="#handleRequestMouseClicked" prefHeight="334.0" prefWidth="120.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="exel.userinterface.resources.app.mainWindows.home.items.requestsList.RequestsListController">
+    <stylesheets>
+        <URL value="@RequestsStyle.css" />
+    </stylesheets>
     <contextMenu>
         <ContextMenu fx:id="contextMenu">
             <items>
