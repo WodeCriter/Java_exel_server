@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.*;
 
+import static jakarta.servlet.http.HttpServletResponse.*;
 import static utils.Constants.*;
 
 @WebServlet(SHEETS_PATH + "/*")
@@ -57,7 +58,7 @@ public class SheetsServlet extends HttpServlet
             switch (requestData.action.toLowerCase())
             {
                 case VIEW_SHEET:
-                    handleGetSheet(engine, response);
+                    handleGetSheet(engine, sender, response);
                     break;
                 case VIEW_BY_VERSION:
                     handleGetByVersion(engine, request, response);
@@ -69,10 +70,12 @@ public class SheetsServlet extends HttpServlet
                     handleGetFiltered(engine, request, response);
                     break;
                 default:
-                    response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Unknown action for GET: " + requestData.action);
+                    addErrorToResponse(SC_BAD_REQUEST,
+                            "Unknown action for GET: " + requestData.action, response);
             }
         else
-            response.sendError(HttpServletResponse.SC_FORBIDDEN, "\"" + sender + "\" is not allowed to " + requestData.action);
+            addErrorToResponse(HttpServletResponse.SC_FORBIDDEN,
+                    "User \"" + sender + "\" is not allowed to " + requestData.action, response);
     }
 
     @Override
@@ -82,6 +85,7 @@ public class SheetsServlet extends HttpServlet
 
         Engine engine = requestData.engine;
         String sender = requestData.sender;
+        String fileName = requestData.fileName;
 
         if (engine.getUserPermission(sender).compareTo(Permission.WRITER) >= 0)
         {
@@ -108,12 +112,16 @@ public class SheetsServlet extends HttpServlet
                     handleStopCellAnalysis(engine, request, response);
                     break;
                 default:
-                    response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Unknown action for PUT: " + requestData.action);
+                    addErrorToResponse(SC_BAD_REQUEST,
+                            "Unknown action for PUT: " + requestData.action, response);
             }
-            IndexServlet.increaseRequestNumber(sender);
+            IndexServlet.increaseRequestNumber(sender, fileName);
         }
         else
-            response.sendError(HttpServletResponse.SC_FORBIDDEN, "\"" + sender + "\" is not allowed to " + requestData.action);
+        {
+            addErrorToResponse(HttpServletResponse.SC_FORBIDDEN,
+                    "User \"" + sender + "\" is not allowed to " + requestData.action, response);
+        }
     }
 
     @Override
@@ -121,8 +129,10 @@ public class SheetsServlet extends HttpServlet
         RequestData requestData = parseRequest(request, response);
         if (requestData == null) return;
 
-        String sender = requestData.sender;
         Engine engine = requestData.engine;
+        String sender = requestData.sender;
+        String fileName = requestData.fileName;
+
         if (engine == null)
         {
             response.setStatus(HttpServletResponse.SC_OK);
@@ -135,33 +145,36 @@ public class SheetsServlet extends HttpServlet
                 if (engine.getUserPermission(sender).compareTo(Permission.OWNER) >= 0)
                     handleDeleteSheet(requestData.fileName, response);
                 else
-                    response.sendError(HttpServletResponse.SC_FORBIDDEN, "\"" + sender + "\" is not allowed to " + requestData.action);
+                    response.sendError(SC_FORBIDDEN, "\"" + sender + "\" is not allowed to " + requestData.action);
                 break;
             case DELETE_RANGE:
                 if (engine.getUserPermission(sender).compareTo(Permission.WRITER) >= 0)
                 {
                     handleDeleteRange(requestData.engine, request, response);
-                    IndexServlet.increaseRequestNumber(sender);
+                    IndexServlet.increaseRequestNumber(sender, fileName);
                 }
                 else
-                    response.sendError(HttpServletResponse.SC_FORBIDDEN, "\"" + sender + "\" is not allowed to " + requestData.action);
+                    addErrorToResponse(SC_FORBIDDEN,
+                            "\"" + sender + "\" is not allowed to " + requestData.action, response);
                 break;
             default:
-                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Unknown action for DELETE: " + requestData.action);
+                addErrorToResponse(SC_BAD_REQUEST,
+                        "Unknown action for DELETE: " + requestData.action, response);
         }
     }
 
     // Separate parse method
+
     private RequestData parseRequest(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String pathInfo = request.getPathInfo(); // e.g., /FileName/action
         if (pathInfo == null || pathInfo.equals("/")) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "FileName and action are required in the path.");
+            response.sendError(SC_BAD_REQUEST, "FileName and action are required in the path.");
             return null;
         }
 
         String[] pathParts = pathInfo.substring(1).split("/");
         if (pathParts.length < 2) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid request path.");
+            response.sendError(SC_BAD_REQUEST, "Invalid request path.");
             return null;
         }
 
@@ -169,45 +182,33 @@ public class SheetsServlet extends HttpServlet
         String action = pathParts[1];
         String sender = SessionUtils.getUsername(request);
 
-        //todo: think
-        // For DELETE, the engine may not exist
-//        Engine engine = null;
-//        if (!"DELETE".equalsIgnoreCase(request.getMethod()) || !"deletesheet".equalsIgnoreCase(action)) {
-//            engine = fileManager.getEngine(fileName);
-//            if (engine == null) {
-//                response.sendError(HttpServletResponse.SC_NOT_FOUND, "Engine not found for FileName: " + fileName);
-//                return null;
-//            }
-//        }
-
         Engine engine = fileManager.getEngine(fileName);
         return new RequestData(fileName, action, engine, sender);
     }
 
     // Handler methods
-
-    private void handleGetSheet(Engine engine, HttpServletResponse response) throws IOException {
+    private void handleGetSheet(Engine engine, String sender, HttpServletResponse response) throws IOException {
         synchronized (engine) {
             ReadOnlySheet sheet = engine.getSheet();
             addSheetToResponse(sheet, response);
+            response.setHeader("permission", engine.getUserPermission(sender).toString());
         }
     }
+
     private void handleGetByVersion(Engine engine,HttpServletRequest request, HttpServletResponse response) throws IOException {
         String version = request.getParameter("version");
         synchronized (engine) {
             try {
                 ReadOnlySheet versionSheet = engine.getSheetOfVersion(Integer.parseInt(version));
-                response.setStatus(HttpServletResponse.SC_OK);
+                response.setStatus(SC_OK);
                 addSheetToResponse(versionSheet, response);
             }
             catch (Exception e) {
-                response.setStatus(SC_UNPROCESSABLE_CONTENT); //when get version fails
-                response.getWriter().write(e.getMessage());
+                addErrorToResponse(SC_UNPROCESSABLE_CONTENT, e.getMessage(), response);
             }
 
         }
     }
-
     private void handleGetSorted(Engine engine, HttpServletRequest request, HttpServletResponse response) throws IOException {
         String cord1 = request.getParameter("cord1");
         String cord2 = request.getParameter("cord2");
@@ -222,8 +223,7 @@ public class SheetsServlet extends HttpServlet
             }
             catch (Exception e)
             {
-                response.setStatus(SC_UNPROCESSABLE_CONTENT);
-                response.getWriter().write(e.getMessage());
+                addErrorToResponse(SC_UNPROCESSABLE_CONTENT, e.getMessage(), response);
             }
         }
     }
@@ -242,8 +242,7 @@ public class SheetsServlet extends HttpServlet
             }
             catch (Exception e)
             {
-                response.setStatus(SC_UNPROCESSABLE_CONTENT);
-                response.getWriter().write(e.getMessage());
+                addErrorToResponse(SC_UNPROCESSABLE_CONTENT, e.getMessage(), response);
             }
         }
     }
@@ -269,7 +268,7 @@ public class SheetsServlet extends HttpServlet
         synchronized (engine) {
             Set<String> coordinates = new HashSet<>(Arrays.asList(request.getParameterValues("coordinate")));
             engine.pickCellForDynamicAnalysis(coordinates);
-            response.setStatus(HttpServletResponse.SC_OK);
+            response.setStatus(SC_OK);
         }
     }
 
@@ -278,7 +277,7 @@ public class SheetsServlet extends HttpServlet
             ReadOnlySheet sheet = engine.changeCellValueForDynamicAnalysis(request.getParameter("coordinate"),
                     request.getParameter("newValue"));
             addSheetToResponse(sheet, response);
-            response.setStatus(HttpServletResponse.SC_OK);
+            response.setStatus(SC_OK);
         }
     }
 
@@ -294,7 +293,7 @@ public class SheetsServlet extends HttpServlet
                 sheet = engine.returnSheetBackAfterDynamicAnalysis(); //todo: delete returnBackToNormal
 
             addSheetToResponse(sheet, response);
-            response.setStatus(HttpServletResponse.SC_OK);
+            response.setStatus(SC_OK);
         }
     }
 
@@ -305,12 +304,13 @@ public class SheetsServlet extends HttpServlet
             try
             {
                 engine.updateCellContents(request.getParameter("coordinate"), request.getParameter("newValue"), sender);
-                response.setStatus(HttpServletResponse.SC_OK);
+                response.setStatus(SC_OK);
                 addSheetToResponse(engine.getSheet(), response);
             }
             catch (Exception e)
             {
-                response.setStatus(SC_UNPROCESSABLE_CONTENT); //when maham fails
+                addErrorToResponse(SC_UNPROCESSABLE_CONTENT, e.getMessage(), response);
+                //response.setStatus(SC_UNPROCESSABLE_CONTENT); //when maham fails
             }
         }
     }
@@ -325,12 +325,12 @@ public class SheetsServlet extends HttpServlet
             }
             catch (Exception e)
             {
-                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                response.getWriter().write(e.getMessage());
+                addErrorToResponse(SC_BAD_REQUEST, e.getMessage(), response);
             }
 
         }
     }
+
     private void handleSetCellHeight(Engine engine, HttpServletRequest request, HttpServletResponse response) throws IOException{
         synchronized (engine) {
             String height = request.getParameter("height");
@@ -341,12 +341,10 @@ public class SheetsServlet extends HttpServlet
             }
             catch (Exception e)
             {
-                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                response.getWriter().write(e.getMessage());
+                addErrorToResponse(SC_BAD_REQUEST, e.getMessage(), response);
             }
         }
     }
-
     private void handleAddRange(Engine engine, HttpServletRequest request, HttpServletResponse response) throws IOException {
         synchronized (engine) {
             String rangeName = request.getParameter("rangeName");
@@ -360,13 +358,11 @@ public class SheetsServlet extends HttpServlet
             }
             catch (IllegalArgumentException e)
             {
-                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                response.getWriter().write(e.getMessage());
+                addErrorToResponse(SC_BAD_REQUEST, e.getMessage(), response);
             }
             catch (RuntimeException e)
             {
-                response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-                response.getWriter().write(e.getMessage());
+                addErrorToResponse(SC_FORBIDDEN, e.getMessage(), response);
             }
         }
     }
@@ -375,11 +371,11 @@ public class SheetsServlet extends HttpServlet
         synchronized (fileManager) {
             if (fileManager.removeFile(fileName))
             {
-                response.setStatus(HttpServletResponse.SC_OK);
+                response.setStatus(SC_OK);
                 HomeServlet.increaseRequestNumber();
             }
             else
-                response.setStatus(HttpServletResponse.SC_NOT_FOUND);;
+                response.setStatus(SC_NOT_FOUND);
         }
     }
 
@@ -388,35 +384,38 @@ public class SheetsServlet extends HttpServlet
         synchronized (engine) {
             try {
                 engine.deleteRange(rangeName);
-                response.setStatus(HttpServletResponse.SC_OK);
+                response.setStatus(SC_OK);
                 addSheetToResponse(engine.getSheet(), response);
             } catch (IllegalArgumentException e) {
-                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                response.getWriter().write(e.getMessage());
+                addErrorToResponse(SC_BAD_REQUEST, e.getMessage(), response);
             } catch (RuntimeException e) {
-                response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-                response.getWriter().write(e.getMessage());
+                addErrorToResponse(SC_INTERNAL_SERVER_ERROR, e.getMessage(), response);
             }
         }
     }
 
     private class RequestData {
+
         String fileName;
         String action;
         Engine engine;
         String sender;
-
         RequestData(String fileName, String action, Engine engine, String sender) {
             this.fileName = fileName;
             this.action = action;
             this.engine = engine;
             this.sender = sender;
         }
-    }
 
+    }
     private void addSheetToResponse(ReadOnlySheet sheet, HttpServletResponse response) throws IOException {
         if (sheet != null)
             response.getWriter().write(GSON_INSTANCE.toJson(sheet));
+    }
+
+    private static void addErrorToResponse(int statusCode, String errorMessage, HttpServletResponse response) throws IOException {
+        response.getWriter().write(errorMessage);
+        response.setStatus(statusCode);
     }
 }
 

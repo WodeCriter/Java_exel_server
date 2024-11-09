@@ -1,10 +1,13 @@
 package exel.userinterface.util.http;
 
+import javafx.application.Platform;
 import okhttp3.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.util.function.Consumer;
+
+import static exel.userinterface.util.ScreenUtils.showAlert;
 
 public class HttpClientUtil {
 
@@ -39,9 +42,9 @@ public class HttpClientUtil {
                 else
                 {
                     activateOnError.accept(response);
-//                    String message = response.body().string();
-//                    Platform.runLater(() -> showAlert(String.valueOf(response.code()), message));
-                    System.out.println(YELLOW + "Something went wrong: " + response.body().string() + RESET);
+                    String message = response.body().string();
+                    Platform.runLater(() -> showAlert("Something went wrong", message));
+                    //System.out.println(YELLOW + "Something went wrong: " + response.body().string() + RESET);
                 }
 
             }

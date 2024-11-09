@@ -97,4 +97,16 @@ public class ReadOnlyCellImp implements ReadOnlyCell {
     public String getEditorName() {
         return editorName;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof ReadOnlyCell))
+            return false;
+
+        ReadOnlyCell other = (ReadOnlyCell) o;
+        return coordinate.equals(other.getCoordinate()) && originalValue.equals(other.getOriginalValue())
+                && effectiveValue.equals(other.getEffectiveValue()) && version == other.getVersion()
+                && dependsOn.equals(other.getDependsOn()) && influencingOn.equals(other.getInfluencingOn())
+                && editorName.equals(other.getEditorName());
+    }
 }

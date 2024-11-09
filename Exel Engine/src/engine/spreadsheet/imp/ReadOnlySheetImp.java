@@ -111,4 +111,16 @@ public class ReadOnlySheetImp implements ReadOnlySheet {
         // Use the SheetUtils method to get the coordinates within the range
         return SheetUtils.getCoordinatesInRange(range.getTopLeftCord(), range.getBottomRightCord());
     }
+
+    @Override
+    public boolean equals(Object o){
+        if (!(o instanceof ReadOnlySheet))
+            return false;
+
+        ReadOnlySheet other = (ReadOnlySheet) o;
+        return version == other.getVersion() && cells.equals(other.getCells())
+                && name.equals(other.getName()) && numOfCols == other.getNumOfCols()
+                && numOfRows == other.getNumOfRows() && cellWidth == other.getCellWidth()
+                && cellHeight == other.getCellHeight() && ranges.equals(other.getRanges());
+    }
 }

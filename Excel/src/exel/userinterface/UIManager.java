@@ -27,6 +27,7 @@ import javafx.stage.Stage;
 import javafx.util.Pair;
 import okhttp3.*;
 import org.jetbrains.annotations.NotNull;
+import utils.perms.Permission;
 import utils.perms.PermissionRequest;
 
 import java.util.List;
@@ -119,6 +120,11 @@ public class UIManager {
             currSheetFileName = event.getFileName();
             Platform.runLater(() -> {
                 showSheetPage();
+                Permission perm = Permission.valueOf(response.header("permission"));
+                if (Permission.READER.compareTo(perm) < 0)
+                    indexController.enableEditButtons(true);
+                else
+                    indexController.enableEditButtons(false);
                 loadSheetHelper();
                 indexController.startDataRefresher(currSheetFileName);
             });

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
@@ -11,9 +10,8 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
 
-<VBox prefHeight="400.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="exel.userinterface.resources.app.mainWindows.home.HomeController">
+<VBox prefHeight="400.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="exel.userinterface.resources.app.mainWindows.home.HomeController">
   <children>
     <MenuBar VBox.vgrow="NEVER">
       <menus>
@@ -22,7 +20,7 @@
             <MenuItem mnemonicParsing="false" onAction="#uploadFileListener" text="Upload File" />
             <Menu mnemonicParsing="false" text="My Sheets" />
             <SeparatorMenuItem mnemonicParsing="false" />
-            <MenuItem mnemonicParsing="false" text="Log Out" />
+            <MenuItem mnemonicParsing="false" text="Log Out" visible="false" />
           </items>
         </Menu>
         <Menu mnemonicParsing="false" text="Help">
@@ -38,10 +36,6 @@
                <top>
                   <HBox prefHeight="21.0" prefWidth="630.0" BorderPane.alignment="CENTER">
                      <children>
-                        <Button mnemonicParsing="false" text="↻">
-                           <font>
-                              <Font name="System Bold" size="12.0" />
-                           </font></Button>
                         <ProgressIndicator fx:id="loadingFileIndicator" prefHeight="0.0" prefWidth="50.0" visible="false" />
                      </children>
                   </HBox>

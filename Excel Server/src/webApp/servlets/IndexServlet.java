@@ -1,14 +1,11 @@
 package webApp.servlets;
 
-import com.google.gson.JsonObject;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import webApp.managers.fileManager.FileManager;
-import webApp.managers.requestManager.RequestManager;
-import webApp.managers.userManager.UserManager;
 import webApp.utils.ServletUtils;
 import webApp.utils.SessionUtils;
 
@@ -23,6 +20,7 @@ public class IndexServlet extends HttpServlet
     private static final String DATA_UPDATE_HEADER = "X-Data-Update-Available";
     private static int latestRequestNumber = 0;
     private static String userResponsible;
+    private static String fileNameResponsible;
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -49,15 +47,16 @@ public class IndexServlet extends HttpServlet
         String fileName = request.getParameter("fileName");
         String sender = SessionUtils.getUsername(request);
 
-        if (!userResponsible.equals(sender))
+        if (!userResponsible.equals(sender) && fileNameResponsible.equals(fileName))
             response.getWriter().println(GSON_INSTANCE.toJson(fileManager.getEngine(fileName).getSheet()));
 
         response.setHeader(DATA_UPDATE_HEADER, "true");
         response.setHeader("X-Latest-Number", String.valueOf(latestRequestNumber));
     }
 
-    static void increaseRequestNumber(String userResponsibleForUpdate){
+    static void increaseRequestNumber(String userResponsibleForUpdate, String fileNameResponsibleForUpdate){
         latestRequestNumber = (latestRequestNumber + 1) % MAX_VALUE;
         userResponsible = userResponsibleForUpdate;
+        fileNameResponsible = fileNameResponsibleForUpdate;
     }
 }

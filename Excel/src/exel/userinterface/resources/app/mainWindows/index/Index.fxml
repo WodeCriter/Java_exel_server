@@ -94,7 +94,6 @@
                               <Insets />
                            </VBox.margin>
                            <children>
-                              <Label fx:id="labelFileLoaded" maxWidth="1.7976931348623157E308" prefHeight="17.0" prefWidth="177.0" text="Current file loaded : No file open" />
                               <Circle fx:id="updatedSheetIndicator" fill="#1fff2f" radius="7.0" stroke="BLACK" strokeLineCap="ROUND" strokeMiterLimit="30.0" strokeType="INSIDE" strokeWidth="0.0">
                                  <effect>
                                     <InnerShadow height="19.13" radius="9.0175" width="18.94">
@@ -166,7 +165,7 @@
                            </rowConstraints>
                            <children>
                               <Label contentDisplay="CENTER" maxWidth="1.7976931348623157E308" text="Ranges" textAlignment="CENTER" />
-                              <Button mnemonicParsing="false" onAction="#addNewRangeButtonListener" prefHeight="12.0" prefWidth="45.0" text="Add" GridPane.columnIndex="1" />
+                              <Button fx:id="addRangeButton" mnemonicParsing="false" onAction="#addNewRangeButtonListener" prefHeight="12.0" prefWidth="45.0" text="Add" GridPane.columnIndex="1" />
                            </children>
                         </GridPane>
                         <ListView fx:id="rangesList" onMouseClicked="#rangeSelectedListener" prefHeight="269.0" prefWidth="90.0" VBox.vgrow="ALWAYS" />

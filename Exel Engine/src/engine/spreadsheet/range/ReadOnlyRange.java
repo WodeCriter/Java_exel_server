@@ -32,4 +32,13 @@ public class ReadOnlyRange implements Serializable {
     public void setRangeName(String rangeName) {
         this.rangeName = rangeName;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof ReadOnlyRange))
+            return false;
+        ReadOnlyRange other = (ReadOnlyRange) o;
+        return topLeftCord.equals(other.topLeftCord) && bottomRightCord.equals(other.bottomRightCord)
+                && rangeName.equals(other.rangeName);
+    }
 }

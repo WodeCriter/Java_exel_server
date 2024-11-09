@@ -75,51 +75,24 @@ public class IndexController extends ControllerWithEventBus
     private Timer timer;
     private int latestDisplayedVersion = 0;
 
-    @FXML
-    private AnchorPane sheetContainer;
+    @FXML private AnchorPane sheetContainer;
+    @FXML private Button updateCellButton;
+    @FXML private CheckMenuItem cMenItemAnimations;
+    @FXML private RadioMenuItem radMenItemLightMode;
+    @FXML private RadioMenuItem radMenItemDarkMode;
+    //@FXML private Label labelFileLoaded;
+    @FXML private Label labelOriginalVal;
+    @FXML private Label labelCoordinate;
+    @FXML private Label labelCellVersion;
+    @FXML private Label labelEditorName;
+    @FXML private TextField textFiledOriginalVal;
+    @FXML private MenuButton menuButtonSelectVersion;
+    @FXML private ListView rangesList;
 
-    @FXML
-    private Button updateCellButton;
-
-    @FXML
-    private CheckMenuItem cMenItemAnimations;
-
-    @FXML
-    private RadioMenuItem radMenItemLightMode;
-
-    @FXML
-    private RadioMenuItem radMenItemDarkMode;
-
-    @FXML
-    private Label labelFileLoaded;
-
-    @FXML
-    private Label labelOriginalVal;
-
-    @FXML
-    private Label labelCoordinate;
-
-    @FXML
-    private Label labelCellVersion;
-
-    @FXML
-    private Label labelEditorName;
-
-    @FXML
-    private TextField textFiledOriginalVal;
-
-    @FXML
-    private MenuButton menuButtonSelectVersion;
-
-    @FXML
-    private ListView rangesList;
-
-    @FXML
-    private ToggleGroup themeToggleGroup;
-    @FXML
-    private Circle updatedSheetIndicator;
-    @FXML
-    private Button loadUpdatedSheetButton;
+    @FXML private ToggleGroup themeToggleGroup;
+    @FXML private Circle updatedSheetIndicator;
+    @FXML private Button loadUpdatedSheetButton;
+    @FXML private Button addRangeButton;
 
 
     @FXML
@@ -205,7 +178,6 @@ public class IndexController extends ControllerWithEventBus
     private void handleSheetCreated(SheetCreatedEvent event) {
         isSheetLoaded = true;
         currentFile = null;
-        labelFileLoaded.setText("Current file loaded: No file path");
         menuButtonSelectVersion.getItems().clear();
         rangesList.getItems().clear();
     }
@@ -911,8 +883,6 @@ public class IndexController extends ControllerWithEventBus
                 menuButtonSelectVersion.getItems().clear();
                 currentFile = selectedFile;
                 eventBus.publish(new LoadSheetEvent(absolutePath));
-                labelFileLoaded.setText("Current file loaded: " + absolutePath);
-
             }
             catch (Exception e)
             {
@@ -972,8 +942,6 @@ public class IndexController extends ControllerWithEventBus
                 // **Pass the file path to your engine or handle the saving process**
                 // Replace 'SaveSheetEvent' with your actual event or method
                 eventBus.publish(new SaveSheetEvent(fileToSave.getAbsolutePath()));
-                labelFileLoaded.setText("Current file loaded: " + fileToSave.getAbsolutePath());
-
             }
             catch (Exception e)
             {
@@ -1108,17 +1076,28 @@ public class IndexController extends ControllerWithEventBus
     }
 
     private void setMostRecentSheetFromServer(ReadOnlySheet mostRecentSheet) {
-        mostRecentSheetFromServer = mostRecentSheet;
+        if (!mostRecentSheet.equals(mostRecentSheetFromServer))
+        {
+            mostRecentSheetFromServer = mostRecentSheet;
+            indicateUserIsNotOnUpdatedSheet();
+        }
+    }
+
+    public void enableEditButtons(boolean enableButtons) {
+        updateCellButton.setDisable(!enableButtons);
+        addRangeButton.setDisable(!enableButtons);
+    }
+
+    private void indicateUserIsNotOnUpdatedSheet() {
         updatedSheetIndicator.setFill(NOT_ON_MOST_UPDATED_SHEET);
         loadUpdatedSheetButton.setDisable(false);
-        updateCellButton.setDisable(true);
-        //show on screen that there's a more recent sheet.
+        enableEditButtons(false);
     }
 
     public void indicateUserIsOnUpdatedSheet() {
         updatedSheetIndicator.setFill(ON_MOST_UPDATED_SHEET);
         loadUpdatedSheetButton.setDisable(true);
-        updateCellButton.setDisable(false);
+        enableEditButtons(true);
     }
 
     @FXML
@@ -1128,6 +1107,6 @@ public class IndexController extends ControllerWithEventBus
 
         indicateUserIsOnUpdatedSheet();
         eventBus.publish(new SheetDisplayEvent(mostRecentSheetFromServer));
-        mostRecentSheetFromServer = null;
+        //mostRecentSheetFromServer = null;
     }
 }
