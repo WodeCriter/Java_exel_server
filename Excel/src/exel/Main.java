@@ -21,6 +21,7 @@ public class Main extends Application {
             primaryStage.setOnCloseRequest(event -> {
                 // Stop any background tasks
                 ui.stopAllBackgroundTasks();
+                ui.removeUserFromServer();
                 Platform.exit();
             });
         } catch (Exception e) {

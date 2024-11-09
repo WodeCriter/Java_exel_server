@@ -1,9 +1,7 @@
 package exel.userinterface.util.http;
 
-import javafx.application.Platform;
 import okhttp3.*;
 import org.jetbrains.annotations.NotNull;
-import static exel.userinterface.util.ScreenUtils.showAlert;
 
 import java.io.IOException;
 import java.util.function.Consumer;
@@ -25,8 +23,8 @@ public class HttpClientUtil {
         simpleCookieManager.setLogData(logConsumer);
     }
 
-    public static Callback getGenericCallback(ThrowingConsumer<Response> activateWhenOk) {
-
+    public static Callback getGenericCallback(ThrowingConsumer<Response> activateWhenOk,
+                                              ThrowingConsumer<Response> activateOnError) {
         return new Callback()
         {
             @Override
@@ -40,6 +38,7 @@ public class HttpClientUtil {
                     activateWhenOk.accept(response);
                 else
                 {
+                    activateOnError.accept(response);
 //                    String message = response.body().string();
 //                    Platform.runLater(() -> showAlert(String.valueOf(response.code()), message));
                     System.out.println(YELLOW + "Something went wrong: " + response.body().string() + RESET);
@@ -49,19 +48,14 @@ public class HttpClientUtil {
         };
     }
 
+    public static Callback getGenericCallback(ThrowingConsumer<Response> activateWhenOk) {
+        return getGenericCallback(activateWhenOk, r -> {});
+    }
+
     public static void removeCookiesOf(String domain) {
         simpleCookieManager.removeCookiesOf(domain);
     }
 
-    public static void runAsync(String url, String queryName, String queryValue, Callback callback) {
-        String finalURL = HttpUrl
-                .parse(url)
-                .newBuilder()
-                .addQueryParameter(queryName, queryValue)
-                .build()
-                .toString();
-        runAsync(finalURL, callback);
-    }
 
     public static void runAsync(String finalUrl, Callback callback) {
         Request request = new Request.Builder()
@@ -70,13 +64,9 @@ public class HttpClientUtil {
         runAsync(request, callback);
     }
 
-    public static void runAsync(Request request, Callback callback) {
-        Call call = HttpClientUtil.HTTP_CLIENT.newCall(request);
+    private static void runAsync(Request request, Callback callback) {
+        Call call = HTTP_CLIENT.newCall(request);
         call.enqueue(callback);
-    }
-
-    public static void runAsync(String url, String queryName, String queryValue, ThrowingConsumer<Response> activateWhenOk){
-        runAsync(url, queryName, queryValue, getGenericCallback(activateWhenOk));
     }
 
     public static void runAsync(String finalUrl, ThrowingConsumer<Response> activateWhenOk){
@@ -107,6 +97,11 @@ public class HttpClientUtil {
 
     public static void runAsync(Request request, ThrowingConsumer<Response> activateWhenOk){
         runAsync(request, getGenericCallback(activateWhenOk));
+    }
+
+    public static void runAsync(Request request, ThrowingConsumer<Response> activateWhenOk,
+                                ThrowingConsumer<Response> activateOnError){
+        runAsync(request, getGenericCallback(activateWhenOk, activateOnError));
     }
 
     public static void shutdown() {

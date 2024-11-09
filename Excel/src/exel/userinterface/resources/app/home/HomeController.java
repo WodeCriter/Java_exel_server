@@ -104,10 +104,12 @@ public class HomeController extends ControllerWithEventBus
     void uploadFileListener(ActionEvent event) {
         Window ownerWindow = filesListContainer.getScene().getWindow();
         File loadedFile = FileHelper.selectFileFromPC(ownerWindow);
-
-        loadingFileIndicator.setVisible(true);
-        FileHelper.uploadFile(loadedFile);
-        refresher.run();
+        if (loadedFile != null)
+        {
+            if (!FileHelper.uploadFile(loadedFile))
+                loadingFileIndicator.setVisible(true);
+            refresher.run();
+        }
     }
 
     private void setActiveUsers(List<String> activeUsers) {
@@ -120,9 +122,11 @@ public class HomeController extends ControllerWithEventBus
         {
             this.savedFiles = savedFiles;
             filesController.updateFilesList(savedFiles);
-
-            loadingFileIndicator.setVisible(false);
         }
+    }
+
+    private void hideLoadingIndicator() {
+        loadingFileIndicator.setVisible(false);
     }
 
     private void setFilePermissionsTable(List<PermissionRequest> permissionRequests) {
@@ -135,7 +139,8 @@ public class HomeController extends ControllerWithEventBus
 
     public void startDataRefresher() {
         refresher = new HomeRefresher(this::setActiveUsers, this::setSavedFiles,
-                this::setPermissionRequests, this::setFilePermissionsTable);
+                this::setPermissionRequests, this::setFilePermissionsTable,
+                this::hideLoadingIndicator);
         timer = new Timer();
         timer.schedule(refresher, 0, 2000);
     }
@@ -153,10 +158,6 @@ public class HomeController extends ControllerWithEventBus
         System.out.println("File pressed on Once: " + fileName);
         refresher.setFileForTableFetch(fileName);
         updateData();
-    }
-
-    public ProgressIndicator getProgressIndicator() {
-        return loadingFileIndicator;
     }
 
     public void updateData(){

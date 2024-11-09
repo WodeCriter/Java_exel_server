@@ -3,6 +3,7 @@ package exel.userinterface.resources.app.home;
 import engine.util.FileData;
 import exel.userinterface.util.http.HttpClientUtil;
 import javafx.application.Platform;
+import javafx.scene.control.ProgressIndicator;
 import okhttp3.HttpUrl;
 import okhttp3.ResponseBody;
 import utils.perms.PermissionRequest;
@@ -21,16 +22,23 @@ public class HomeRefresher extends TimerTask
     private final Consumer<List<FileData>> savedFilesConsumer;
     private final Consumer<List<PermissionRequest>> pendingRequestsConsumer;
     private final Consumer<List<PermissionRequest>> filePermissionRequestsConsumer;
+    private final Runnable hideLoadingFileIndicator;
+
     private String fileForPermissionTable;
     private int requestNumber;
+    private ProgressIndicator loadingFileIndicator;
 
 
-    public HomeRefresher(Consumer<List<String>> activeUsersConsumer, Consumer<List<FileData>> savedFilesConsumer, Consumer<List<PermissionRequest>> pendingRequestsConsumer, Consumer<List<PermissionRequest>> premissorRequestsConsumer)
+    public HomeRefresher(Consumer<List<String>> activeUsersConsumer, Consumer<List<FileData>> savedFilesConsumer,
+                         Consumer<List<PermissionRequest>> pendingRequestsConsumer,
+                         Consumer<List<PermissionRequest>> filePermissionRequestsConsumer,
+                         Runnable hideLoadingFileIndicator)
     {
         this.activeUsersConsumer = activeUsersConsumer;
         this.savedFilesConsumer = savedFilesConsumer;
         this.pendingRequestsConsumer = pendingRequestsConsumer;
-        this.filePermissionRequestsConsumer = premissorRequestsConsumer;
+        this.filePermissionRequestsConsumer = filePermissionRequestsConsumer;
+        this.hideLoadingFileIndicator = hideLoadingFileIndicator;
         fileForPermissionTable = "";
         requestNumber = 0;
     }
@@ -53,7 +61,11 @@ public class HomeRefresher extends TimerTask
         {
             if ("true".equals(response.header("X-Data-Update-Available")))
             {
-                Platform.runLater(() -> updateListsFromJson(response.body()));
+                Platform.runLater(() ->
+                {
+                    updateListsFromJson(response.body());
+                    hideLoadingFileIndicator.run();
+                });
                 requestNumber = Integer.parseInt(response.header("X-Latest-Number"));
             }
         });

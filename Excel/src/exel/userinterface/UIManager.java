@@ -509,4 +509,15 @@ public class UIManager {
 
         HttpClientUtil.shutdown();
     }
+
+    public void removeUserFromServer(){
+        String finalURL = HttpUrl
+                .parse(LOGIN_PAGE)
+                .newBuilder()
+                //.addQueryParameter("username", username)
+                .build()
+                .toString();
+
+        HttpClientUtil.runAsync(finalURL, HttpRequestType.DELETE, response -> {});
+    }
 }
