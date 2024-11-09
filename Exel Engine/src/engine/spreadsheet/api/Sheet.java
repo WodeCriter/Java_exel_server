@@ -30,12 +30,12 @@ public interface Sheet {
     Cell setCell(Coordinate coordinate, String value) throws IllegalArgumentException;
 
     int getCellHeight();
-    void updateCellValueAndVersion(Coordinate coordinate, String newValue) throws Exception;
+    void updateCellValueAndVersion(Coordinate coordinate, String newValue, String editorName) throws Exception;
     Sheet getSheetByVersion(int version);
     List<Integer> getNumOfChangesInEachVersion();
     List<ReadOnlyCell> getReadOnlyCells();
 
-    void increaseVersionAndUpdateChangedCells(List<Cell> changedCells);
+    void increaseVersionAndUpdateChangedCells(List<Cell> changedCells, String editorName);
 
     SheetImp copySheet();
 

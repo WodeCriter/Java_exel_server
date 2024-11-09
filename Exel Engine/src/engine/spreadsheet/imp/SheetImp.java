@@ -152,10 +152,10 @@ public class SheetImp implements Sheet, Serializable
     }
 
     @Override
-    public void updateCellValueAndVersion(Coordinate coordinate, String newValue) throws Exception
+    public void updateCellValueAndVersion(Coordinate coordinate, String newValue, String editorName) throws Exception
     {
         List<Cell> orderedCells = updateCellValue(coordinate, newValue);
-        increaseVersionAndUpdateChangedCells(orderedCells);
+        increaseVersionAndUpdateChangedCells(orderedCells, editorName);
     }
 
     public List<Cell> updateCellValue(Coordinate coordinate, String newValue) throws Exception {
@@ -170,9 +170,13 @@ public class SheetImp implements Sheet, Serializable
     }
 
     @Override
-    public void increaseVersionAndUpdateChangedCells(List<Cell> changedCells){
+    public void increaseVersionAndUpdateChangedCells(List<Cell> changedCells, String editorName){
         version++;
-        changedCells.forEach(changedCell -> changedCell.setVersion(version));
+        changedCells.forEach(changedCell ->
+        {
+            changedCell.setVersion(version);
+            changedCell.setEditor(editorName);
+        });
         versionManager.recordChanges(changedCells);
         passVersionManager(versionManager);
     }

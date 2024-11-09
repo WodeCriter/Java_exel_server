@@ -1,4 +1,4 @@
-package exel.userinterface.resources.app.home;
+package exel.userinterface.resources.app.mainWindows.home;
 
 import engine.util.FileData;
 import utils.perms.PermissionRequest;

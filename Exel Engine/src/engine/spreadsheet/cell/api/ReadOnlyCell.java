@@ -39,4 +39,6 @@ public interface ReadOnlyCell {
      * @return the list of cells influenced by this cell.
      */
     List<String> getInfluencingOn();
+
+    String getEditorName();
 }

@@ -82,7 +82,7 @@ class Row implements Comparable<Row>
         {
             readOnlyCells.add(new ReadOnlyCellImp(new Coordinate(cell.getCoordinate().getCol(), newRowNum).toString(),
                     cell.getOriginalValue(), cell.getEffectiveValue(),cell.getVersion(),
-                    cell.getDependsOn(), cell.getInfluencingOn()));
+                    cell.getDependsOn(), cell.getInfluencingOn(), cell.getEditor()));
         }
         return readOnlyCells;
     }

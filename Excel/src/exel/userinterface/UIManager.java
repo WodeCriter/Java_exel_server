@@ -13,9 +13,9 @@ import exel.eventsys.events.file.FileSelectedForOpeningEvent;
 import exel.eventsys.events.range.*;
 import exel.eventsys.events.sheet.*;
 import exel.userinterface.resources.app.general.ControllerWithEventBus;
-import exel.userinterface.resources.app.IndexController;
-import exel.userinterface.resources.app.home.HomeController;
-import exel.userinterface.resources.app.login.LoginController;
+import exel.userinterface.resources.app.mainWindows.index.IndexController;
+import exel.userinterface.resources.app.mainWindows.home.HomeController;
+import exel.userinterface.resources.app.mainWindows.login.LoginController;
 import exel.userinterface.util.http.HttpClientUtil;
 import exel.userinterface.util.http.HttpRequestType;
 import javafx.application.Platform;
@@ -382,13 +382,13 @@ public class UIManager {
     }
 
     public void showLogin() {
-        Pair<LoginController, Parent> result = loadFXML("/exel/userinterface/resources/app/login/login.fxml");
+        Pair<LoginController, Parent> result = loadFXML("/exel/userinterface/resources/app/mainWindows/login/login.fxml");
         if (result != null)
             setPrimaryStage(result.getValue());
     }
 
     public void showHomePage() {
-        Pair<HomeController, Parent> result = loadFXML("/exel/userinterface/resources/app/home/home.fxml");
+        Pair<HomeController, Parent> result = loadFXML("/exel/userinterface/resources/app/mainWindows/home/home.fxml");
         if (result != null)
         {
             homeController = result.getKey();
@@ -397,7 +397,7 @@ public class UIManager {
     }
 
     public void showSheetPage(){
-        Pair<IndexController, Parent> result = loadFXML("/exel/userinterface/resources/app/Index.fxml");
+        Pair<IndexController, Parent> result = loadFXML("/exel/userinterface/resources/app/mainWindows/index/Index.fxml");
         if (result != null)
         {
             indexController = result.getKey();

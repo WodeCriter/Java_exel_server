@@ -119,10 +119,10 @@ public class EngineImp implements Engine
         return dynamicAnalysisHelper.updateCellsValuesForAnalyzing(newValue);
     }
 
-    public ReadOnlySheet saveSheetAfterDynamicAnalysis(){
+    public ReadOnlySheet saveSheetAfterDynamicAnalysis(String editorName){
         if (dynamicAnalysisHelper == null)
             throw new IllegalArgumentException("Illegal call. Need to pick cell first.");
-        currentSheet = dynamicAnalysisHelper.saveCellChanges();
+        currentSheet = dynamicAnalysisHelper.saveCellChanges(editorName);
         readOnlyCurrentSheet = new ReadOnlySheetImp(currentSheet);
         dynamicAnalysisHelper = null;
 
@@ -236,20 +236,18 @@ public class EngineImp implements Engine
     public ReadOnlyCell getCellContents(String cellCoordinate) {
         if (currentSheet != null) {
             Cell cell = currentSheet.getCell(new Coordinate(cellCoordinate));
-            return cell != null ? new ReadOnlyCellImp(cellCoordinate, cell.getOriginalValue(), cell.getEffectiveValue(), cell.getVersion(), cell.getDependsOn(), cell.getInfluencingOn()) : null;
+            return cell != null ? new ReadOnlyCellImp(cell) : null;
         }
         return null;
     }
 
     @Override
-    public void updateCellContents(String coordinate, String value) throws Exception
+    public void updateCellContents(String coordinate, String value, String editorName) throws Exception
     {
         if (currentSheet == null) {
             throw new IllegalStateException("No sheet is currently loaded.");
         }
-        //update the current sheet to a copy created inside
-        currentSheet.updateCellValueAndVersion(new Coordinate(coordinate), value); // Directly set the cell's value in the modifiable sheet
-        //update your read only sheet based on the copy you just got
+        currentSheet.updateCellValueAndVersion(new Coordinate(coordinate), value, editorName); // Directly set the cell's value in the modifiable sheet
         readOnlyCurrentSheet = new ReadOnlySheetImp(currentSheet);
     }
 

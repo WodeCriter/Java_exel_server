@@ -1,4 +1,4 @@
-package exel.userinterface.resources.app.login;
+package exel.userinterface.resources.app.mainWindows.login;
 
 import exel.eventsys.events.LogInSuccessfulEvent;
 import exel.userinterface.resources.app.general.ControllerWithEventBus;

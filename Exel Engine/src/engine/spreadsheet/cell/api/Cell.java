@@ -32,4 +32,8 @@ public interface Cell extends Comparable<Cell>
     List<CellImp> getInfluencingOn();
 
     List<Cell> orderCellsForCalculation();
+
+    String getEditor();
+
+    void setEditor(String editorName);
 }

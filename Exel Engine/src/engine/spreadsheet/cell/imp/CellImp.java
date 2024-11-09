@@ -22,6 +22,7 @@ public class CellImp implements Cell, Serializable {
     private List<CellImp> dependsOn;
     private List<CellImp> influencingOn;
     private Range rangeUsed;
+    private String editorName;
 
 
     public CellImp(String coordinate, String originalValue, SheetImp sheet) {
@@ -33,6 +34,7 @@ public class CellImp implements Cell, Serializable {
         calculateEffectiveValue();
         this.dependsOn = makeCellDependent(originalValue);
         rangeUsed = null;
+        editorName = "";
     }
 
     public CellImp(String coordinate, SheetImp sheet){
@@ -46,6 +48,7 @@ public class CellImp implements Cell, Serializable {
         this.version = 1;
         this.influencingOn = new LinkedList<>();
         this.dependsOn = new LinkedList<>();
+        editorName = "";
     }
 
     private List<CellImp> makeCellDependent(String newValue){
@@ -214,5 +217,15 @@ public class CellImp implements Cell, Serializable {
     public int compareTo(Cell o)
     {
         return effectiveValue.compareTo(o.getEffectiveValue());
+    }
+
+    @Override
+    public String getEditor() {
+        return editorName;
+    }
+
+    @Override
+    public void setEditor(String editorName) {
+        this.editorName = editorName;
     }
 }

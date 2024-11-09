@@ -24,11 +24,12 @@ public class ReadOnlyCellImpAdapter extends TypeAdapter<ReadOnlyCellImp> {
         String originalValue = jsonObject.get("originalValue").getAsString();
         String effectiveValue = jsonObject.get("effectiveValue").getAsString();
         int version = jsonObject.get("version").getAsInt();
+        String editorName = jsonObject.get("editorName").getAsString();
 
         Gson gson = new Gson();
         List<String> dependsOn = gson.fromJson(jsonObject.get("dependsOn"), new TypeToken<List<String>>() {}.getType());
         List<String> influencingOn = gson.fromJson(jsonObject.get("influencingOn"), new TypeToken<List<String>>() {}.getType());
 
-        return new ReadOnlyCellImp(coordinate, originalValue, effectiveValue, version, dependsOn, influencingOn);
+        return new ReadOnlyCellImp(coordinate, originalValue, effectiveValue, version, dependsOn, influencingOn, editorName);
     }
 }

@@ -100,8 +100,8 @@ public class DisplaySheetController {
             setCellIdLabel(cell.getCoordinate());
             setCellValLabel(cell.getOriginalValue());
             setCellVersionLabel(String.valueOf(cell.getVersion()));
+            setCellEditorName(cell.getEditorName());
         }
-
     }
 
     public void setCellIdLabel(String cellId) {
@@ -114,5 +114,9 @@ public class DisplaySheetController {
 
     public void setCellVersionLabel(String version) {
         labalCellVersion.setText("Cell version: " + version);
+    }
+
+    private void setCellEditorName(String editorName) {
+        //todo: add label for editor and set text here
     }
 }

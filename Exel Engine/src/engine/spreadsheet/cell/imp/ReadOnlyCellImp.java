@@ -16,9 +16,10 @@ public class ReadOnlyCellImp implements ReadOnlyCell {
     private int version;
     private List<String> dependsOn;
     private List<String> influencingOn;
+    private String editorName;
 
     public ReadOnlyCellImp(String coordinate, String originalValue, EffectiveValue effectiveValue,
-                           int version, List<CellImp> dependsOn, List<CellImp> influencingOn) {
+                           int version, List<CellImp> dependsOn, List<CellImp> influencingOn, String editorName) {
         this.coordinate = coordinate;
         this.originalValue = originalValue;
         this.effectiveValue = effectiveValue.toString();
@@ -29,21 +30,23 @@ public class ReadOnlyCellImp implements ReadOnlyCell {
                 dependsOn.stream().map(CellImp::getCoordinateStr).collect(Collectors.toList());
         this.influencingOn = influencingOn == null ? Collections.emptyList() :
                 influencingOn.stream().map(CellImp::getCoordinateStr).collect(Collectors.toList());
+        this.editorName = editorName;
     }
 
     public ReadOnlyCellImp(String coordinate, String originalValue, String effectiveValue,
-                           int version, List<String> dependsOn, List<String> influencingOn){
+                           int version, List<String> dependsOn, List<String> influencingOn, String editorName){
         this.coordinate = coordinate;
         this.originalValue = originalValue;
         this.effectiveValue = effectiveValue;
         this.version = version;
         this.dependsOn = dependsOn;
         this.influencingOn = influencingOn;
+        this.editorName = editorName;
     }
 
     public ReadOnlyCellImp(Cell cell){
         this(cell.getCoordinateStr(), cell.getOriginalValue(), cell.getEffectiveValue(), cell.getVersion(),
-                cell.getDependsOn(), cell.getInfluencingOn());
+                cell.getDependsOn(), cell.getInfluencingOn(), cell.getEditor());
     }
 
     public ReadOnlyCellImp(){
@@ -53,10 +56,11 @@ public class ReadOnlyCellImp implements ReadOnlyCell {
         this.version = 1;
         this.dependsOn = Collections.emptyList();
         this.influencingOn = Collections.emptyList();
+        this.editorName = "";
     }
 
     public ReadOnlyCellImp(String coordinate){
-        this(coordinate, "", "", 1, Collections.emptyList(), Collections.emptyList());
+        this(coordinate, "", "", 1, Collections.emptyList(), Collections.emptyList(),"");
     }
 
     @Override
@@ -87,5 +91,10 @@ public class ReadOnlyCellImp implements ReadOnlyCell {
     @Override
     public List<String> getInfluencingOn() {
         return influencingOn;
+    }
+
+    @Override
+    public String getEditorName() {
+        return editorName;
     }
 }

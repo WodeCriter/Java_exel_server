@@ -283,13 +283,14 @@ public class SheetsServlet extends HttpServlet
 
     private void handleStopCellAnalysis(Engine engine, HttpServletRequest request, HttpServletResponse response) throws IOException {
         boolean toSave = Boolean.parseBoolean(request.getParameter("toSave"));
+        String sender = SessionUtils.getUsername(request);
         ReadOnlySheet sheet;
 
         synchronized (engine) {
             if (toSave)
-                sheet = engine.saveSheetAfterDynamicAnalysis();
+                sheet = engine.saveSheetAfterDynamicAnalysis(sender);
             else
-                sheet = engine.returnSheetBackAfterDynamicAnalysis();
+                sheet = engine.returnSheetBackAfterDynamicAnalysis(); //todo: delete returnBackToNormal
 
             addSheetToResponse(sheet, response);
             response.setStatus(HttpServletResponse.SC_OK);
@@ -297,11 +298,12 @@ public class SheetsServlet extends HttpServlet
     }
 
     private void handleUpdateCell(Engine engine, HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String sender = SessionUtils.getUsername(request);
         synchronized (engine) {
             // Read data from request to update the sheet
             try
             {
-                engine.updateCellContents(request.getParameter("coordinate"), request.getParameter("newValue"));
+                engine.updateCellContents(request.getParameter("coordinate"), request.getParameter("newValue"), sender);
                 response.setStatus(HttpServletResponse.SC_OK);
                 addSheetToResponse(engine.getSheet(), response);
             }

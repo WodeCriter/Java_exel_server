@@ -31,11 +31,11 @@ public class DynamicAnalysis
         return new ReadOnlySheetImp(sheet);
     }
 
-    public Sheet saveCellChanges(){
+    public Sheet saveCellChanges(String editorName){
         Cell firstCell = cellsToAnalyze.getFirst();
         firstCell.stopCellFromDepending(cellDependsOn);
         firstCell.clearDependsOn();
-        sheet.increaseVersionAndUpdateChangedCells(cellsToAnalyze);
+        sheet.increaseVersionAndUpdateChangedCells(cellsToAnalyze, editorName);
         return sheet;
     }
 

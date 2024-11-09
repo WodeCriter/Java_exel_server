@@ -1,4 +1,4 @@
-package exel.userinterface.resources.app.home.items;
+package exel.userinterface.resources.app.mainWindows.home.items;
 
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;

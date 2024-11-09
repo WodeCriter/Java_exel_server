@@ -56,8 +56,10 @@ public interface Engine extends PermissionHelper, DynamicAnalysisEngine
      * @param value The new value for the cell.
      * @throws IllegalStateException if there is an issue with updating the cell
      */
-    void updateCellContents(String coordinate, String value) throws Exception;
+    //void updateCellContents(String coordinate, String value) throws Exception;
 
+
+    void updateCellContents(String coordinate, String value, String editorName) throws Exception;
 
     /**
      * Saves the current spreadsheet to a file.

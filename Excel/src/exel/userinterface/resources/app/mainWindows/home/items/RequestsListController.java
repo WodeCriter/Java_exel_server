@@ -1,17 +1,14 @@
-package exel.userinterface.resources.app.home.items;
+package exel.userinterface.resources.app.mainWindows.home.items;
 
 import exel.eventsys.events.ApproveOrDenyRequestPickedEvent;
 import exel.userinterface.resources.app.general.ControllerWithEventBus;
-import exel.userinterface.resources.app.home.HomeController;
+import exel.userinterface.resources.app.mainWindows.home.HomeController;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.ContextMenu;
-import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
-import javafx.scene.control.Tooltip;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import javafx.util.Duration;
 import utils.perms.PermissionRequest;
 
 import java.util.List;

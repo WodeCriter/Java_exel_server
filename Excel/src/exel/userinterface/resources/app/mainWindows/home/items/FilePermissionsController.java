@@ -1,7 +1,7 @@
-package exel.userinterface.resources.app.home.items;
+package exel.userinterface.resources.app.mainWindows.home.items;
 
 import exel.userinterface.resources.app.general.ControllerWithEventBus;
-import exel.userinterface.resources.app.home.HomeController;
+import exel.userinterface.resources.app.mainWindows.home.HomeController;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
