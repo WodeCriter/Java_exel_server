@@ -77,10 +77,11 @@ public class LoginServlet extends HttpServlet {
     }
 
     @Override
-    protected void doDelete(HttpServletRequest request, HttpServletResponse response){
-        request.getSession(true).removeAttribute(USERNAME);
+    protected void doDelete(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException{
         UserManager userManager = ServletUtils.getUserManager(getServletContext());
         userManager.removeUser(SessionUtils.getUsername(request));
+        request.getSession(true).removeAttribute(USERNAME);
     }
 
     /**

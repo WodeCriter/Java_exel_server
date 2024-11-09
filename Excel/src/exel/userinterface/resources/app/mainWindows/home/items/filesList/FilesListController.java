@@ -59,7 +59,9 @@ public class FilesListController extends ControllerWithEventBus
                             return "writer-item";
                         case OWNER:
                             return "owner-item";
-                        default: return ""; // No style for NONE
+                        case NONE:
+                        default:
+                            return "none-item";
                     }
                 });
     }

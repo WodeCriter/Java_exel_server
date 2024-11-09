@@ -1,3 +1,15 @@
+/* None permission color */
+.none-item {
+    -fx-background-color: #f55b5b;
+    -fx-text-fill: black; /* Optional: set text color */
+}
+.none-item:hover {
+    -fx-background-color: #f63434;
+}
+.none-item:selected {
+    -fx-background-color: red;
+}
+
 /* Reader permission color */
 .reader-item {
     -fx-background-color: lightblue;
