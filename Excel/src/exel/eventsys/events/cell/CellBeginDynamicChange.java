@@ -1,13 +1,15 @@
 package exel.eventsys.events.cell;
 
-public class CellBeginDynamicChange {
-    private final String coordinate;
+import java.util.Set;
 
-    public CellBeginDynamicChange(String cellCoordinate) {
-        this.coordinate = cellCoordinate;
+public class CellBeginDynamicChange {
+    private final Set<String> coordinates;
+
+    public CellBeginDynamicChange(Set<String> cellCoordinate) {
+        this.coordinates = cellCoordinate;
     }
 
-    public String getCoordinate() {
-        return coordinate;
+    public Set<String> getCoordinates() {
+        return coordinates;
     }
 }

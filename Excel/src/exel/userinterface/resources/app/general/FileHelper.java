@@ -11,8 +11,6 @@ import static utils.Constants.FILES;
 
 public class FileHelper
 {
-    private static boolean wasUploaded;
-
     public static File selectFileFromPC(Window ownerWindow){
         // Create a new FileChooser instance
         FileChooser fileChooser = new FileChooser();
@@ -32,7 +30,7 @@ public class FileHelper
         return fileChooser.showOpenDialog(ownerWindow);
     }
 
-    public static boolean uploadFile(File file){
+    public static void uploadFile(File file){
         RequestBody body = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
                 .addFormDataPart("file", file.getName(),
@@ -44,7 +42,6 @@ public class FileHelper
                 .post(body)
                 .build();
 
-        HttpClientUtil.runAsync(request, r -> wasUploaded = true, r -> wasUploaded = false);
-        return wasUploaded;
+        HttpClientUtil.runAsync(request, r -> {});
     }
 }

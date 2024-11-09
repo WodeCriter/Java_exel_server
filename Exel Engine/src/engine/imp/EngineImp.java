@@ -32,7 +32,7 @@ public class EngineImp implements Engine
 {
     private Sheet currentSheet;
     private ReadOnlySheet readOnlyCurrentSheet;
-    private DynamicAnalysis dynamicAnalysisHelper;
+    private Map<String, DynamicAnalysis> dynamicAnalysisHelper;
 
     private final String engineName;
     private final String ownerName;
@@ -107,22 +107,26 @@ public class EngineImp implements Engine
         return permissions.remove(username) != null;
     }
 
-    public void pickCellForDynamicAnalysis(String coordinate){
+    public void pickCellForDynamicAnalysis(Set<String> coordinates){
         Sheet copySheet = currentSheet.copySheet();
-        Cell pickedCell = copySheet.getCell(new Coordinate(coordinate));
-        dynamicAnalysisHelper = new DynamicAnalysis(pickedCell, copySheet);
+        for (String coordinate : coordinates)
+        {
+            Cell pickedCell = copySheet.getCell(new Coordinate(coordinate));
+            dynamicAnalysisHelper.put(coordinate, new DynamicAnalysis(pickedCell, copySheet));
+        }
     }
 
-    public ReadOnlySheet changeCellValueForDynamicAnalysis(String newValue){
+    public ReadOnlySheet changeCellValueForDynamicAnalysis(String coordinate, String newValue){
         if (dynamicAnalysisHelper == null)
             throw new IllegalArgumentException("Illegal call. Need to pick cell first.");
-        return dynamicAnalysisHelper.updateCellsValuesForAnalyzing(newValue);
+        return dynamicAnalysisHelper.get(coordinate).updateCellsValuesForAnalyzing(newValue);
     }
 
     public ReadOnlySheet saveSheetAfterDynamicAnalysis(String editorName){
         if (dynamicAnalysisHelper == null)
             throw new IllegalArgumentException("Illegal call. Need to pick cell first.");
-        currentSheet = dynamicAnalysisHelper.saveCellChanges(editorName);
+        for (DynamicAnalysis analysis : dynamicAnalysisHelper.values())
+            currentSheet = analysis.saveCellChanges(editorName);
         readOnlyCurrentSheet = new ReadOnlySheetImp(currentSheet);
         dynamicAnalysisHelper = null;
 

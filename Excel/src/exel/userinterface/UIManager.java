@@ -438,13 +438,14 @@ public class UIManager {
     }
 
     private void handleCellBeginDynamicChange(CellBeginDynamicChange event){
-        String finalURL = HttpUrl
+        HttpUrl.Builder builder = HttpUrl
                 .parse(PUT_CELL_FOR_ANALYSIS_REQUEST_PATH(currSheetFileName))
-                .newBuilder()
-                .addQueryParameter("coordinate", event.getCoordinate())
-                .build()
-                .toString();
+                .newBuilder();
 
+        for (String coordinate : event.getCoordinates())
+            builder.addQueryParameter("coordinate", coordinate);
+
+        String finalURL = builder.build().toString();
         HttpClientUtil.runAsync(finalURL, HttpRequestType.PUT, response -> {});
     }
 
@@ -453,6 +454,7 @@ public class UIManager {
                 .parse(UPDATE_CELL_ANALYSIS_REQUEST_PATH(currSheetFileName))
                 .newBuilder()
                 .addQueryParameter("newValue", event.getOriginalValue())
+                .addQueryParameter("coordinate", event.getCoordinate())
                 .build()
                 .toString();
 

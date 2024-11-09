@@ -54,10 +54,7 @@ import javafx.application.Platform;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Timer;
+import java.util.*;
 
 import static exel.userinterface.util.ScreenUtils.showAlert;
 
@@ -1050,7 +1047,6 @@ public class IndexController extends ControllerWithEventBus
 
             // Get the controller
             SliderInputDialogController controller = loader.getController();
-
             // Simplify the result converter by checking the ButtonData
             dialog.setResultConverter(dialogButton -> {
                 if (dialogButton != null && dialogButton.getButtonData() == ButtonBar.ButtonData.OK_DONE) {
@@ -1070,12 +1066,15 @@ public class IndexController extends ControllerWithEventBus
                     sliderStage.setTitle("Adjust Value");
                     sliderStage.setScene(new Scene(sliderLoader.load()));
 
+                    Set<String> pickedCells = controller.getMoreCells();
+                    pickedCells.add(selectedCell.getCoordinate());
+
                     // Get the controller
-                    eventBus.publish(new CellBeginDynamicChange(selectedCell.getCoordinate()));
+                    eventBus.publish(new CellBeginDynamicChange(pickedCells));
                     SliderWindowController sliderController = sliderLoader.getController();
                     sliderController.initializeSlider(rangeData.get("min"), rangeData.get("max"), rangeData.get("step"));
                     sliderController.setStage(sliderStage);
-                    sliderController.setCell(selectedCell.getCoordinate());
+                    sliderController.setCells(pickedCells);
                     sliderController.setEventBus(eventBus);
 
                     sliderStage.show();

@@ -1,24 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.ButtonType?>
+<?import javafx.scene.control.DialogPane?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
 
-<DialogPane xmlns:fx="http://javafx.com/fxml/1" fx:id="dialogPane" fx:controller="exel.userinterface.resources.app.popups.dynamicAnalsys.SliderInputDialogController">
+<DialogPane fx:id="dialogPane" prefHeight="200.0" prefWidth="268.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/22" fx:controller="exel.userinterface.resources.app.popups.dynamicAnalsys.SliderInputDialogController">
     <content>
         <GridPane hgap="10" vgap="10">
-            <Label text="Minimum Value:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
-            <TextField fx:id="minField" promptText="Minimum value" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
-            <Label text="Maximum Value:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
-            <TextField fx:id="maxField" promptText="Maximum value" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
-            <Label text="Step Size:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
-            <TextField fx:id="stepField" promptText="Step size" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+            <Label text="Minimum Value:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+            <TextField fx:id="minField" promptText="Minimum value" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+            <Label text="Maximum Value:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+            <TextField fx:id="maxField" promptText="Maximum value" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <Label text="Step Size:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+            <TextField fx:id="stepField" promptText="Step size" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+         <TextField fx:id="moreCellsField" promptText="E.g: A1,B2,C2" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+         <Label text="Add More Cells:" GridPane.rowIndex="3" />
+         <columnConstraints>
+            <ColumnConstraints />
+            <ColumnConstraints />
+         </columnConstraints>
+         <rowConstraints>
+            <RowConstraints />
+            <RowConstraints />
+            <RowConstraints />
+            <RowConstraints />
+         </rowConstraints>
         </GridPane>
     </content>
     <buttonTypes>
-        <ButtonType text="Confirm" buttonData="OK_DONE"/>
-        <ButtonType text="Cancel" buttonData="CANCEL_CLOSE"/>
+        <ButtonType buttonData="OK_DONE" text="Confirm" />
+        <ButtonType buttonData="CANCEL_CLOSE" text="Cancel" />
     </buttonTypes>
 </DialogPane>

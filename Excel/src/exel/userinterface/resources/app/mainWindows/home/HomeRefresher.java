@@ -58,17 +58,15 @@ public class HomeRefresher extends TimerTask
                 .toString();
 
         HttpClientUtil.runAsync(finalURL, response ->
-        {
-            if ("true".equals(response.header("X-Data-Update-Available")))
+            Platform.runLater(() ->
             {
-                Platform.runLater(() ->
+                if ("true".equals(response.header("X-Data-Update-Available")))
                 {
                     updateListsFromJson(response.body());
                     hideLoadingFileIndicator.run();
-                });
-                requestNumber = Integer.parseInt(response.header("X-Latest-Number"));
-            }
-        });
+                    requestNumber = Integer.parseInt(response.header("X-Latest-Number"));
+                }
+            }));
     }
 
     private void updateListsFromJson(ResponseBody body){

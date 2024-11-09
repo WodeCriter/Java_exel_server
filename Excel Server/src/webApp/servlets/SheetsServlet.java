@@ -17,8 +17,7 @@ import webApp.utils.SessionUtils;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static utils.Constants.*;
 
@@ -268,14 +267,16 @@ public class SheetsServlet extends HttpServlet
 
     private void handlePutCellAnalysis(Engine engine, HttpServletRequest request, HttpServletResponse response) {
         synchronized (engine) {
-            engine.pickCellForDynamicAnalysis(request.getParameter("coordinate"));
+            Set<String> coordinates = new HashSet<>(Arrays.asList(request.getParameterValues("coordinate")));
+            engine.pickCellForDynamicAnalysis(coordinates);
             response.setStatus(HttpServletResponse.SC_OK);
         }
     }
 
     private void handleUpdateCellAnalysis(Engine engine, HttpServletRequest request, HttpServletResponse response) throws IOException {
         synchronized (engine) {
-            ReadOnlySheet sheet = engine.changeCellValueForDynamicAnalysis(request.getParameter("newValue"));
+            ReadOnlySheet sheet = engine.changeCellValueForDynamicAnalysis(request.getParameter("coordinate"),
+                    request.getParameter("newValue"));
             addSheetToResponse(sheet, response);
             response.setStatus(HttpServletResponse.SC_OK);
         }

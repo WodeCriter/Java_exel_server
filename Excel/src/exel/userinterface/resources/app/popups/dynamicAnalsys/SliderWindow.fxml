@@ -1,19 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
 
-<VBox xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="exel.userinterface.resources.app.popups.dynamicAnalsys.SliderWindowController"
-      spacing="10" alignment="CENTER">
+<VBox alignment="CENTER" spacing="10" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/22" fx:controller="exel.userinterface.resources.app.popups.dynamicAnalsys.SliderWindowController">
     <padding>
-        <Insets top="20" right="20" bottom="20" left="20"/>
+        <Insets bottom="20" left="20" right="20" top="20" />
     </padding>
-    <Slider fx:id="slider" prefWidth="300"/>
-    <Label fx:id="valueLabel" text="Current Value: "/>
-    <HBox spacing="10" alignment="CENTER">
-        <Button text="Accept" onAction="#handleAccept"/>
-        <Button text="Cancel" onAction="#handleCancel"/>
+   <GridPane fx:id="slidersGridPane" alignment="CENTER">
+      <columnConstraints>
+         <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" />
+      </columnConstraints>
+      <rowConstraints>
+         <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+      </rowConstraints>
+   </GridPane>
+    <HBox alignment="CENTER" spacing="10">
+        <Button onAction="#handleAccept" text="Accept" />
+        <Button onAction="#handleCancel" text="Cancel" />
     </HBox>
 </VBox>

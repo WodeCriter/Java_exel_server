@@ -106,8 +106,8 @@ public class HomeController extends ControllerWithEventBus
         File loadedFile = FileHelper.selectFileFromPC(ownerWindow);
         if (loadedFile != null)
         {
-            if (!FileHelper.uploadFile(loadedFile))
-                loadingFileIndicator.setVisible(true);
+            FileHelper.uploadFile(loadedFile);
+            loadingFileIndicator.setVisible(true);
             refresher.run();
         }
     }
