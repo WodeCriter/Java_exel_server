@@ -72,6 +72,9 @@ public class HomeRefresher extends TimerTask
     private void updateListsFromJson(ResponseBody body){
         try
         {
+            if (body == null)
+                return;
+
             //Map<String, List> jsonHeaderToList = GSON_INSTANCE.fromJson(body.string(), Map.class);
             String json = body.string();
             HomeDataWrapper data = GSON_INSTANCE.fromJson(json, HomeDataWrapper.class);

@@ -107,7 +107,7 @@ public class HomeController extends ControllerWithEventBus
         File loadedFile = FileHelper.selectFileFromPC(ownerWindow);
         if (loadedFile != null)
         {
-            FileHelper.uploadFile(loadedFile);
+            FileHelper.uploadFile(loadedFile, this::hideLoadingIndicator);
             loadingFileIndicator.setVisible(true);
             refresher.run();
         }
@@ -160,7 +160,7 @@ public class HomeController extends ControllerWithEventBus
 
     public void handleFileSelectedForLooking(String fileName) {
         //todo: need to present users with access to file
-        System.out.println("File pressed on Once: " + fileName);
+        //System.out.println("File pressed on Once: " + fileName);
         refresher.setFileForTableFetch(fileName);
         updateData();
     }

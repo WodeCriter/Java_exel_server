@@ -3,32 +3,16 @@ package exel.userinterface.resources.app.mainWindows.home.items;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.Tooltip;
-import javafx.scene.input.MouseEvent;
 import javafx.util.Duration;
 import java.util.function.Function;
 
-public class TooltipUtil<T> extends Tooltip {
+public final class TooltipUtil {
 
-    private ListView<T> listView;
+    // Private constructor to prevent instantiation
+    private TooltipUtil() {}
 
-    // Constructor for tooltip-only functionality
-    public TooltipUtil(ListView<T> listView, Function<T, String> tooltipTextProvider) {
-        this.listView = listView;
-        super.setShowDelay(Duration.millis(600));
-        super.setHideDelay(Duration.millis(100));
-        setUpTooltip(tooltipTextProvider, this);
-    }
-
-    // Constructor for tooltip and color styling functionality
-    public TooltipUtil(ListView<T> listView, Function<T, String> tooltipTextProvider, Function<T, String> styleClassProvider) {
-        this.listView = listView;
-        super.setShowDelay(Duration.millis(600));
-        super.setHideDelay(Duration.millis(100));
-        setUpTooltipAndStyle(tooltipTextProvider, styleClassProvider, this);
-    }
-
-    // Tooltip-only setup
-    private void setUpTooltip(Function<T, String> tooltipTextProvider, Tooltip tooltip) {
+    // Static method for tooltip-only functionality
+    public static <T> void applyTooltip(ListView<T> listView, Function<T, String> tooltipTextProvider) {
         listView.setCellFactory(lv -> new ListCell<>() {
             @Override
             protected void updateItem(T item, boolean empty) {
@@ -42,23 +26,25 @@ public class TooltipUtil<T> extends Tooltip {
                     // Set cell text
                     setText(item.toString());
 
-                    // Attach the tooltip to the cell
-                    setTooltip(tooltip);
-                    tooltip.setText(tooltipTextProvider.apply(item));
+                    // Create and set a new tooltip for this cell
+                    Tooltip cellTooltip = new Tooltip(tooltipTextProvider.apply(item));
+                    cellTooltip.setShowDelay(Duration.millis(600));
+                    cellTooltip.setHideDelay(Duration.millis(100));
+                    setTooltip(cellTooltip);
                 }
             }
         });
     }
 
-    // Combined tooltip and color styling setup
-    private void setUpTooltipAndStyle(Function<T, String> tooltipTextProvider, Function<T, String> styleClassProvider, Tooltip tooltip) {
+    // Static method for tooltip and color styling functionality
+    public static <T> void applyTooltipAndStyle(ListView<T> listView, Function<T, String> tooltipTextProvider, Function<T, String> styleClassProvider) {
         listView.setCellFactory(lv -> new ListCell<>() {
             @Override
             protected void updateItem(T item, boolean empty) {
                 super.updateItem(item, empty);
 
                 // Clear previous styles and tooltip content
-                getStyleClass().clear();
+                getStyleClass().clear(); // Adjust as needed
                 setText(null);
                 setTooltip(null);
 
@@ -66,9 +52,11 @@ public class TooltipUtil<T> extends Tooltip {
                     // Set cell text
                     setText(item.toString());
 
-                    // Set the tooltip text
-                    setTooltip(tooltip);
-                    tooltip.setText(tooltipTextProvider.apply(item));
+                    // Create and set a new tooltip for this cell
+                    Tooltip cellTooltip = new Tooltip(tooltipTextProvider.apply(item));
+                    cellTooltip.setShowDelay(Duration.millis(600));
+                    cellTooltip.setHideDelay(Duration.millis(100));
+                    setTooltip(cellTooltip);
 
                     // Apply the color style based on the item's property
                     String styleClass = styleClassProvider.apply(item);
@@ -80,5 +68,6 @@ public class TooltipUtil<T> extends Tooltip {
         });
     }
 }
+
 
 

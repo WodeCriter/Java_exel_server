@@ -1,6 +1,7 @@
 package exel.userinterface.resources.app.general;
 
 import exel.userinterface.util.http.HttpClientUtil;
+import javafx.application.Platform;
 import javafx.stage.FileChooser;
 import javafx.stage.Window;
 import okhttp3.*;
@@ -30,7 +31,7 @@ public class FileHelper
         return fileChooser.showOpenDialog(ownerWindow);
     }
 
-    public static void uploadFile(File file){
+    public static void uploadFile(File file, Runnable hideLoading){
         RequestBody body = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
                 .addFormDataPart("file", file.getName(),
@@ -42,6 +43,6 @@ public class FileHelper
                 .post(body)
                 .build();
 
-        HttpClientUtil.runAsync(request, r -> {});
+        HttpClientUtil.runAsync(request, r -> {}, hideLoading);
     }
 }

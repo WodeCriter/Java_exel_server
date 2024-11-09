@@ -27,12 +27,13 @@ public class HttpClientUtil {
     }
 
     public static Callback getGenericCallback(ThrowingConsumer<Response> activateWhenOk,
-                                              ThrowingConsumer<Response> activateOnError) {
+                                              Runnable activateOnError) {
         return new Callback()
         {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 System.out.println(YELLOW + "Something went wrong: " + e.getMessage() + RESET);
+                activateOnError.run();
             }
 
             @Override
@@ -41,7 +42,7 @@ public class HttpClientUtil {
                     activateWhenOk.accept(response);
                 else
                 {
-                    activateOnError.accept(response);
+                    activateOnError.run();
                     String message = response.body().string();
                     Platform.runLater(() -> showAlert("Something went wrong", message));
                     //System.out.println(YELLOW + "Something went wrong: " + response.body().string() + RESET);
@@ -52,7 +53,7 @@ public class HttpClientUtil {
     }
 
     public static Callback getGenericCallback(ThrowingConsumer<Response> activateWhenOk) {
-        return getGenericCallback(activateWhenOk, r -> {});
+        return getGenericCallback(activateWhenOk, () -> {});
     }
 
     public static void removeCookiesOf(String domain) {
@@ -102,8 +103,13 @@ public class HttpClientUtil {
         runAsync(request, getGenericCallback(activateWhenOk));
     }
 
+    public static void runAsync(String URL, ThrowingConsumer<Response> activateWhenOk,
+                                Runnable activateOnError){
+        runAsync(URL, getGenericCallback(activateWhenOk, activateOnError));
+    }
+
     public static void runAsync(Request request, ThrowingConsumer<Response> activateWhenOk,
-                                ThrowingConsumer<Response> activateOnError){
+                                Runnable activateOnError){
         runAsync(request, getGenericCallback(activateWhenOk, activateOnError));
     }
 
