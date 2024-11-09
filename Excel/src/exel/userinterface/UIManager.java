@@ -77,6 +77,7 @@ public class UIManager {
         eventBus.subscribe(CellDynamicReturnToNormal.class, this::handleCellDynamicReturnToNormal);
         eventBus.subscribe(CellUpdateDynamicValInSheet.class, this::handleCellDynamicSaveSheet);
         eventBus.subscribe(CellBeginDynamicChange.class, this::handleCellBeginDynamicChange);
+        eventBus.subscribe(LogOutEvent.class, this::handleLogOutRequest);
     }
 
     private void handleCreateNewRange(CreateNewRangeEvent event) {
@@ -507,6 +508,12 @@ public class UIManager {
                     });
 
                 });
+    }
+
+    private void handleLogOutRequest(LogOutEvent event){
+        removeUserFromServer();
+        homeController.stopDataRefresher();
+        showLogin();
     }
 
     public void stopAllBackgroundTasks() {

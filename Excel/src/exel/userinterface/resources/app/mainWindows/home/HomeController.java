@@ -2,6 +2,7 @@ package exel.userinterface.resources.app.mainWindows.home;
 
 import engine.util.FileData;
 import exel.eventsys.EventBus;
+import exel.eventsys.events.LogOutEvent;
 import exel.userinterface.resources.app.general.ControllerWithEventBus;
 import exel.userinterface.resources.app.general.FileHelper;
 import exel.userinterface.resources.app.mainWindows.home.items.filePermissions.FilePermissionsController;
@@ -110,6 +111,10 @@ public class HomeController extends ControllerWithEventBus
             loadingFileIndicator.setVisible(true);
             refresher.run();
         }
+    }
+    @FXML
+    void logOutButtonListener(ActionEvent event) {
+        eventBus.publish(new LogOutEvent());
     }
 
     private void setActiveUsers(List<String> activeUsers) {

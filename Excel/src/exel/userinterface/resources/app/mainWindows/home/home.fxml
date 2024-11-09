@@ -18,9 +18,8 @@
         <Menu fx:id="userNameButton" mnemonicParsing="false" text="Username">
           <items>
             <MenuItem mnemonicParsing="false" onAction="#uploadFileListener" text="Upload File" />
-            <Menu mnemonicParsing="false" text="My Sheets" />
             <SeparatorMenuItem mnemonicParsing="false" />
-            <MenuItem mnemonicParsing="false" text="Log Out" visible="false" />
+            <MenuItem mnemonicParsing="false" onAction="#logOutButtonListener" text="Log Out" />
           </items>
         </Menu>
         <Menu mnemonicParsing="false" text="Help">
