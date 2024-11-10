@@ -18,6 +18,7 @@
         <Menu fx:id="userNameButton" mnemonicParsing="false" text="Username">
           <items>
             <MenuItem mnemonicParsing="false" onAction="#uploadFileListener" text="Upload File" />
+                  <MenuItem mnemonicParsing="false" onAction="#handleOpenChatClicked" text="Open Chat" />
             <SeparatorMenuItem mnemonicParsing="false" />
             <MenuItem mnemonicParsing="false" onAction="#logOutButtonListener" text="Log Out" />
           </items>

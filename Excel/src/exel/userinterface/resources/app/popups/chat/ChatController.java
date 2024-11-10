@@ -6,6 +6,8 @@ import exel.userinterface.resources.app.general.ControllerWithEventBus;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextArea;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 
 import java.util.List;
 import java.util.Timer;
@@ -14,12 +16,23 @@ public class ChatController extends ControllerWithEventBus
 {
     @FXML private TextArea chatLineTextArea;
     @FXML private TextArea mainChatLinesTextArea;
+    private String userName = "You";
 
     private ChatRefresher refresher;
     private Timer timer;
 
     @FXML
     private void sendButtonClicked(ActionEvent event) {
+        sendMessage();
+    }
+
+    @FXML
+    private void handleKeyPress(KeyEvent event) {
+        if (event.getCode() == KeyCode.ENTER)
+            sendMessage();
+    }
+
+    private void sendMessage() {
         String message = chatLineTextArea.getText().trim();
         if (!message.isEmpty())
         {
@@ -27,7 +40,7 @@ public class ChatController extends ControllerWithEventBus
             eventBus.publish(new ChatMessageSentEvent(message));
 
             // Add the message to the chat list as "You"
-            mainChatLinesTextArea.appendText("You: " + message + '\n');
+            mainChatLinesTextArea.appendText(userName + ": " + message + '\n');
             //chatListView.getItems().add("You: " + message);
             chatLineTextArea.clear();
         }
@@ -36,6 +49,11 @@ public class ChatController extends ControllerWithEventBus
     private void putMessagesOnScreen(List<String> messages){
         mainChatLinesTextArea.clear();
         messages.forEach(this::appendChatMessage);
+        scrollDown();
+    }
+
+    private void scrollDown() {
+        mainChatLinesTextArea.setScrollTop(Double.MAX_VALUE);
     }
 
     private void appendChatMessage(String message){
@@ -54,5 +72,9 @@ public class ChatController extends ControllerWithEventBus
             refresher.cancel();
             timer.cancel();
         }
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 }

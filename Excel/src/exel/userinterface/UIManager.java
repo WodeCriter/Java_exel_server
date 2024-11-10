@@ -8,6 +8,7 @@ import exel.eventsys.EventBus;
 import exel.eventsys.events.*;
 import exel.eventsys.events.cell.*;
 import exel.eventsys.events.chat.ChatMessageSentEvent;
+import exel.eventsys.events.chat.OpenChatRequestedEvent;
 import exel.eventsys.events.file.DeleteFileRequestedEvent;
 import exel.eventsys.events.file.FilePermissionRequestedEvent;
 import exel.eventsys.events.file.FileSelectedForOpeningEvent;
@@ -25,6 +26,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Pair;
 import okhttp3.*;
@@ -82,6 +84,7 @@ public class UIManager {
         eventBus.subscribe(CellBeginDynamicChange.class, this::handleCellBeginDynamicChange);
         eventBus.subscribe(LogOutEvent.class, this::handleLogOutRequest);
         eventBus.subscribe(ChatMessageSentEvent.class, this::handleChatMessageSent);
+        eventBus.subscribe(OpenChatRequestedEvent.class, this::handleOpenChatRequested);
     }
 
     private void handleCreateNewRange(CreateNewRangeEvent event) {
@@ -352,6 +355,10 @@ public class UIManager {
         HttpClientUtil.runAsync(request, r -> {});
     }
 
+    private void handleOpenChatRequested(OpenChatRequestedEvent event){
+        showChat();
+    }
+
     //    //TODO: REDUNDANT?
 //    private void handleCreateNewSheet(CreateNewSheetEvent event) {
 //        // Call the engine to create a new sheet based on the event details
@@ -433,8 +440,23 @@ public class UIManager {
         if (result != null)
         {
             chatController = result.getKey();
-            setPrimaryStage(result.getValue());
+            chatController.setUserName(username);
+            chatController.startDataRefresher();
+            openPopup(result.getValue());
         }
+    }
+
+    private void openPopup(Parent root) {
+        // Create a new stage for the popup
+        Stage popupStage = new Stage();
+        popupStage.setTitle("Chat");
+        //popupStage.initModality(Modality.WINDOW_MODAL);
+        Scene popupScene = new Scene(root, 300, 200);
+
+        popupStage.setScene(popupScene);
+        popupStage.setOnCloseRequest(e->chatController.stopDataRefresher());
+        // Show the popup
+        popupStage.showAndWait();
     }
 
     private <T extends ControllerWithEventBus> Pair<T, Parent> loadFXML(@NotNull String fxmlPath) {
@@ -546,6 +568,8 @@ public class UIManager {
             homeController.stopDataRefresher();
         if (indexController != null)
             indexController.stopDataRefresher();
+        if (chatController != null)
+            chatController.stopDataRefresher();
 
         HttpClientUtil.shutdown();
     }

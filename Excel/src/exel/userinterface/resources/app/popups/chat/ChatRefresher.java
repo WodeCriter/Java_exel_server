@@ -16,7 +16,7 @@ import static utils.Constants.*;
 public class ChatRefresher extends TimerTask
 {
     private Consumer<List<String>> enterMessages;
-    private int requestNumber = 0;
+    private int requestNumber = 1;
 
     public ChatRefresher(Consumer<List<String>> enterMessages) {
         this.enterMessages = enterMessages;

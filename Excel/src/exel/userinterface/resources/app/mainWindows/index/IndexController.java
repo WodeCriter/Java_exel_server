@@ -8,6 +8,7 @@ import exel.eventsys.events.cell.CellBeginDynamicChange;
 import exel.eventsys.events.cell.CellStyleUpdateEvent;
 import exel.eventsys.events.cell.CellUpdateEvent;
 import exel.eventsys.events.cell.DisplaySelectedCellEvent;
+import exel.eventsys.events.chat.OpenChatRequestedEvent;
 import exel.eventsys.events.range.DeletedRangeEvent;
 import exel.eventsys.events.range.RangeCreatedEvent;
 import exel.eventsys.events.range.RangeDeleteEvent;
@@ -1108,5 +1109,10 @@ public class IndexController extends ControllerWithEventBus
         indicateUserIsOnUpdatedSheet();
         eventBus.publish(new SheetDisplayEvent(mostRecentSheetFromServer));
         //mostRecentSheetFromServer = null;
+    }
+
+    @FXML
+    public void handleOpenChatClicked(ActionEvent event){
+        eventBus.publish(new OpenChatRequestedEvent());
     }
 }

@@ -3,6 +3,7 @@ package exel.userinterface.resources.app.mainWindows.home;
 import engine.util.FileData;
 import exel.eventsys.EventBus;
 import exel.eventsys.events.LogOutEvent;
+import exel.eventsys.events.chat.OpenChatRequestedEvent;
 import exel.userinterface.resources.app.general.ControllerWithEventBus;
 import exel.userinterface.resources.app.general.FileHelper;
 import exel.userinterface.resources.app.mainWindows.home.items.filePermissions.FilePermissionsController;
@@ -163,6 +164,11 @@ public class HomeController extends ControllerWithEventBus
         //System.out.println("File pressed on Once: " + fileName);
         refresher.setFileForTableFetch(fileName);
         updateData();
+    }
+
+    @FXML
+    public void handleOpenChatClicked(ActionEvent event){
+        eventBus.publish(new OpenChatRequestedEvent());
     }
 
     public void updateData(){
