@@ -1,14 +1,13 @@
 package exel.userinterface.resources.app.general;
 
 import exel.userinterface.util.http.HttpClientUtil;
-import javafx.application.Platform;
 import javafx.stage.FileChooser;
 import javafx.stage.Window;
 import okhttp3.*;
 
 import java.io.File;
 
-import static utils.Constants.FILES;
+import static utils.Constants.FILES_PAGE;
 
 public class FileHelper
 {
@@ -39,7 +38,7 @@ public class FileHelper
                 .build();
 
         Request request = new Request.Builder()
-                .url(FILES)
+                .url(FILES_PAGE)
                 .post(body)
                 .build();
 

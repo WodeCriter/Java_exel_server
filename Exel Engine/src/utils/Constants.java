@@ -15,6 +15,7 @@ public class Constants {
     public static final String LOGIN_PATH = "/login";
     public static final String FILES_PATH = "/files";
     public static final String SHEETS_PATH = "/sheets";
+    public static final String CHAT_PATH = "/chat";
 
     public static final String VIEW_SHEET = "viewsheet";
     public static final String DELETE_SHEET = "deletesheet";
@@ -33,10 +34,7 @@ public class Constants {
     public static final int INT_PARAMETER_ERROR = Integer.MIN_VALUE;
 
     // global constants
-    public final static String LINE_SEPARATOR = System.getProperty("line.separator");
-    public final static String JHON_DOE = "<Anonymous>";
-    public final static int REFRESH_RATE = 2000;
-    public final static String CHAT_LINE_FORMATTING = "%tH:%tM:%tS | %.10s: %s%n";
+    public static final String DATA_UPDATE_HEADER = "X-Data-Update-Available";
 
     // Server resources locations
     public final static String BASE_DOMAIN = "localhost";
@@ -105,7 +103,8 @@ public class Constants {
 
     public final static String LOGIN_PAGE = FULL_SERVER_PATH + LOGIN_PATH;
     public final static String HOME_PAGE = FULL_SERVER_PATH + HOME_PATH;
-    public final static String FILES = FULL_SERVER_PATH + FILES_PATH;
+    public final static String FILES_PAGE = FULL_SERVER_PATH + FILES_PATH;
+    public final static String CHAT_PAGE = FULL_SERVER_PATH + CHAT_PATH;
 
     // GSON instance
     public final static Gson GSON_INSTANCE = new Gson();

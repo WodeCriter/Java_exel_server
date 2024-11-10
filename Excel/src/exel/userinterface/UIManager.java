@@ -7,6 +7,7 @@ import engine.spreadsheet.range.ReadOnlyRange;
 import exel.eventsys.EventBus;
 import exel.eventsys.events.*;
 import exel.eventsys.events.cell.*;
+import exel.eventsys.events.chat.ChatMessageSentEvent;
 import exel.eventsys.events.file.DeleteFileRequestedEvent;
 import exel.eventsys.events.file.FilePermissionRequestedEvent;
 import exel.eventsys.events.file.FileSelectedForOpeningEvent;
@@ -16,6 +17,7 @@ import exel.userinterface.resources.app.general.ControllerWithEventBus;
 import exel.userinterface.resources.app.mainWindows.index.IndexController;
 import exel.userinterface.resources.app.mainWindows.home.HomeController;
 import exel.userinterface.resources.app.mainWindows.login.LoginController;
+import exel.userinterface.resources.app.popups.chat.ChatController;
 import exel.userinterface.util.http.HttpClientUtil;
 import exel.userinterface.util.http.HttpRequestType;
 import javafx.application.Platform;
@@ -41,6 +43,7 @@ public class UIManager {
     private String currSheetFileName;
     private IndexController indexController;
     private HomeController homeController;
+    private ChatController chatController;
     private Stage primaryStage;
     private String username;
 
@@ -78,6 +81,7 @@ public class UIManager {
         eventBus.subscribe(CellUpdateDynamicValInSheet.class, this::handleCellDynamicSaveSheet);
         eventBus.subscribe(CellBeginDynamicChange.class, this::handleCellBeginDynamicChange);
         eventBus.subscribe(LogOutEvent.class, this::handleLogOutRequest);
+        eventBus.subscribe(ChatMessageSentEvent.class, this::handleChatMessageSent);
     }
 
     private void handleCreateNewRange(CreateNewRangeEvent event) {
@@ -312,7 +316,7 @@ public class UIManager {
         String fileName = event.getFileName();
         String permissionRequested = event.getPermission();
         String finalURL = HttpUrl
-                .parse(FILES)
+                .parse(FILES_PAGE)
                 .newBuilder()
                 .addQueryParameter("fileName", fileName)
                 .addQueryParameter("permission", permissionRequested)
@@ -334,6 +338,18 @@ public class UIManager {
                 .toString();
 
         HttpClientUtil.runAsync(finalURL, HttpRequestType.PUT, response -> homeController.updateData());
+    }
+
+    private void handleChatMessageSent(ChatMessageSentEvent event){
+        RequestBody body = RequestBody.create(event.getMessage(),
+                MediaType.parse("text/plain; charset=utf-8"));
+
+        Request request = new Request.Builder()
+                .url(CHAT_PAGE)
+                .post(body)
+                .build();
+
+        HttpClientUtil.runAsync(request, r -> {});
     }
 
     //    //TODO: REDUNDANT?
@@ -408,6 +424,15 @@ public class UIManager {
         if (result != null)
         {
             indexController = result.getKey();
+            setPrimaryStage(result.getValue());
+        }
+    }
+
+    public void showChat(){
+        Pair<ChatController, Parent> result = loadFXML("/exel/userinterface/resources/app/popups/chat/chat-area.fxml");
+        if (result != null)
+        {
+            chatController = result.getKey();
             setPrimaryStage(result.getValue());
         }
     }

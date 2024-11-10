@@ -23,7 +23,6 @@ import static utils.Constants.*;
 @WebServlet(HOME_PATH)
 public class HomeServlet extends HttpServlet
 {
-    private static final String DATA_UPDATE_HEADER = "X-Data-Update-Available";
     private static int latestRequestNumber = 0;
 
     @Override
