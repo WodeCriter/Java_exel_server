@@ -134,7 +134,7 @@
                                     </GridPane>
                                     <HBox prefHeight="100.0" prefWidth="200.0">
                                        <children>
-                                          <TextField fx:id="textFiledOriginalVal" prefHeight="25.0" prefWidth="348.0" promptText="Enter Original Value for Cell" />
+                                          <TextField fx:id="textFiledOriginalVal" onKeyPressed="#handleKeyPressed" prefHeight="25.0" prefWidth="348.0" promptText="Enter Original Value for Cell" />
                                           <Button fx:id="updateCellButton" mnemonicParsing="false" onAction="#updateCellButtonListener" text="Update cell" />
                                        </children>
                                        <padding>

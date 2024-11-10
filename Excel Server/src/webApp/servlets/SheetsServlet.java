@@ -75,7 +75,7 @@ public class SheetsServlet extends HttpServlet
             }
         else
             addErrorToResponse(HttpServletResponse.SC_FORBIDDEN,
-                    "User \"" + sender + "\" is not allowed to " + requestData.action, response);
+                    "User \"" + sender + "\" is not allowed to " + convertAction(requestData.action), response);
     }
 
     @Override
@@ -120,7 +120,7 @@ public class SheetsServlet extends HttpServlet
         else
         {
             addErrorToResponse(HttpServletResponse.SC_FORBIDDEN,
-                    "User \"" + sender + "\" is not allowed to " + requestData.action, response);
+                    "User \"" + sender + "\" is not allowed to " + convertAction(requestData.action), response);
         }
     }
 
@@ -145,7 +145,8 @@ public class SheetsServlet extends HttpServlet
                 if (engine.getUserPermission(sender).compareTo(Permission.OWNER) >= 0)
                     handleDeleteSheet(requestData.fileName, response);
                 else
-                    response.sendError(SC_FORBIDDEN, "\"" + sender + "\" is not allowed to " + requestData.action);
+                    addErrorToResponse(SC_FORBIDDEN, "\"" + sender + "\" is not allowed to " + convertAction(requestData.action)
+                    ,response);
                 break;
             case DELETE_RANGE:
                 if (engine.getUserPermission(sender).compareTo(Permission.WRITER) >= 0)
@@ -155,11 +156,48 @@ public class SheetsServlet extends HttpServlet
                 }
                 else
                     addErrorToResponse(SC_FORBIDDEN,
-                            "\"" + sender + "\" is not allowed to " + requestData.action, response);
+                            "\"" + sender + "\" is not allowed to " + convertAction(requestData.action), response);
                 break;
             default:
                 addErrorToResponse(SC_BAD_REQUEST,
                         "Unknown action for DELETE: " + requestData.action, response);
+        }
+    }
+
+    private String convertAction(String action){
+        String becauseWriter = ", because he is not a writer.";
+        String becauseReader = ", because he is not a reader.";
+        String becauseOwner = ", because he is not the owner.";
+
+        switch (action){
+            case DELETE_SHEET:
+                return "delete the file" + becauseOwner;
+            case UPDATE_CELL:
+                return "update the cell" + becauseWriter;
+            case ADD_RANGE:
+                return "add a range" + becauseWriter;
+            case SET_CELL_WIDTH:
+                return "set cell width" + becauseWriter;
+            case SET_CELL_HEIGHT:
+                return "set cell height" + becauseWriter;
+            case PUT_CELL_FOR_ANALYSIS:
+                return "analyze the cell" + becauseWriter;
+            case UPDATE_CELL_ANALYSIS:
+                return "analyze the cell" + becauseWriter;
+            case STOP_CELL_ANALYSIS:
+                return "analyze the cell" + becauseWriter;
+            case DELETE_RANGE:
+                return "delete the range" + becauseWriter;
+            case VIEW_SHEET:
+                return "view the sheet" + becauseReader;
+            case VIEW_BY_VERSION:
+                return "view the sheet by version" + becauseReader;
+            case VIEW_SORTED_SHEET:
+                return "view the sorted sheet" + becauseReader;
+            case VIEW_FILTERED_SHEET:
+                return "view the filtered sheet" + becauseReader;
+            default:
+                return action;
         }
     }
 
@@ -168,13 +206,13 @@ public class SheetsServlet extends HttpServlet
     private RequestData parseRequest(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String pathInfo = request.getPathInfo(); // e.g., /FileName/action
         if (pathInfo == null || pathInfo.equals("/")) {
-            response.sendError(SC_BAD_REQUEST, "FileName and action are required in the path.");
+            addErrorToResponse(SC_BAD_REQUEST, "FileName and action are required in the path.", response);
             return null;
         }
 
         String[] pathParts = pathInfo.substring(1).split("/");
         if (pathParts.length < 2) {
-            response.sendError(SC_BAD_REQUEST, "Invalid request path.");
+            addErrorToResponse(SC_BAD_REQUEST, "Invalid request path.", response);
             return null;
         }
 

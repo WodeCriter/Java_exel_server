@@ -101,12 +101,16 @@ public class FilesServlet extends HttpServlet
         }
         catch (IllegalArgumentException e)
         {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid permission was received");
+            addErrorToResponse(HttpServletResponse.SC_BAD_REQUEST, "Invalid permission was received", response);
             return null;
         }
     }
 
     private String fileNameWithoutXML(String fileName){
         return fileName.substring(0, fileName.length() - 4);
+    }
+    private static void addErrorToResponse(int statusCode, String errorMessage, HttpServletResponse response) throws IOException {
+        response.getWriter().write(errorMessage);
+        response.setStatus(statusCode);
     }
 }

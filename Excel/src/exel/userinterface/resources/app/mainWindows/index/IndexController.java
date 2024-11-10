@@ -35,6 +35,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
@@ -273,6 +275,16 @@ public class IndexController extends ControllerWithEventBus
 
     @FXML
     void updateCellButtonListener(ActionEvent event) {
+        updateCell();
+    }
+
+    @FXML
+    void handleKeyPressed(KeyEvent event){
+        if (event.getCode() == KeyCode.ENTER)
+            updateCell();
+    }
+
+    private void updateCell() {
         if (!isSheetLoaded || selectedCell == null)
             return;
 
